@@ -1,24 +1,21 @@
 import asyncio
 from typing import *
 
-from aiogram import Bot, Dispatcher, Router, F
+from aiogram import Bot as AiogramBot, Dispatcher, F
 from aiogram.client.default import DefaultBotProperties
 from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery
+from aiogram.methods import DeleteWebhook
 
 from .data import SillySettings
 from .management import SillyEvent, SillyManager
 from .data import Data, SillyDefaults
 from .ui import Page, ActionButton
 
-DEFAULT_PARSE_MODE = "HTML"
-DEFAULT_BOT_PROPERTIES = DefaultBotProperties(parse_mode=DEFAULT_PARSE_MODE)
-
 
 class SillyBot:
-    _bot: Bot
-    _dispatcher: Dispatcher = Dispatcher()
-    _router_for_default_handler: Router
+    _aiogram_bot: AiogramBot
+    _dispatcher: Dispatcher
 
     _data: Data
     _manager: SillyManager
@@ -34,7 +31,7 @@ class SillyBot:
         Use this method to start the bot asynchronously. It must be called from synchronous code.
 
         After this method is called, the program goes into an endless loop,
-        and the program will be blocked until the bot is terminated. Therefore, all the settings must be up
+        and the thread will be blocked until the bot is terminated. Therefore, all the settings must be up
         before the SillyBot is launched.
         """
 
@@ -45,11 +42,13 @@ class SillyBot:
         Use this method to start the bot. It must be called from asynchronous code.
 
         After this method is called, the program goes into an endless loop,
-        and the program will be blocked until the bot is terminated. Therefore, all the settings must be up
+        and the thread will be blocked until the bot is terminated. Therefore, all the settings must be up
         before the SillyBot is launched.
         """
+        if self._data.settings.skip_updates:
+            await self._aiogram_bot(DeleteWebhook(drop_pending_updates=True))
 
-        await self._dispatcher.start_polling(self._bot, skip_updates=True)
+        await self._dispatcher.start_polling(self._aiogram_bot, skip_updates=True)
 
     # endregion
 
@@ -140,6 +139,7 @@ class SillyBot:
             ...
 
     async def _on_dialog_option_clicked(self, callback: CallbackQuery):
+        self._data.users.indicate(callback.from_user)
         option = int(callback.data.replace(SillyDefaults.CallbackData.OPTION_TEMPLATE, ""))
         self._data.session.push_dialog_result(callback.from_user.id, option)
 
@@ -157,7 +157,7 @@ class SillyBot:
         if target_message_id is None:
             return
 
-        await self._bot.edit_message_reply_markup(chat_id=user.id, message_id=target_message_id,
+        await self._aiogram_bot.edit_message_reply_markup(chat_id=user.id, message_id=target_message_id,
                                                           reply_markup=None)
 
         await self._manager.show_page(user,
@@ -178,14 +178,17 @@ class SillyBot:
 
     # endregion
 
-    def __init__(self, token: str, *pages: Page, settings: SillySettings = SillySettings()):
+    def __init__(self, token: str, *pages: Page, settings: Optional[SillySettings] = None):
         """
-        :param token: Telegram-API token received from BotFather.
-        :param pages: Page objects to include. Names must be unique.
+        :param token: telegram-API token received from BotFather.
+        :param pages: page objects to include. Names must be unique.
+        :param settings: settings for bot. Leave empty for default settings.
         """
-        self._data = Data(settings, *pages)
-        self._bot = Bot(token=token, default=DEFAULT_BOT_PROPERTIES)
+
+        self._data = Data(settings if settings is not None else SillySettings(), *pages)
+        self._aiogram_bot = AiogramBot(token=token, default=DefaultBotProperties(parse_mode="HTML"))
+        self._dispatcher = Dispatcher()
         self._dispatcher.startup.register(SillyBot._on_startup)
-        self._manager = SillyManager(self._bot, self._data)
+        self._manager = SillyManager(self._aiogram_bot, self._data)
 
         self._setup_handlers()

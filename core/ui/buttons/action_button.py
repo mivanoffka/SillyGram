@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
-from utility import SillyText
+#from utility import SillyText
 
 if TYPE_CHECKING:
     from core.management.manager import SillyManager
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 from ...data.storage import SillyDefaults
 
 from aiogram.types import InlineKeyboardButton
-from typing import List, Callable, Awaitable
+from typing import List, Callable, Awaitable, Dict, Sequence
 
 from .button import Button
 
@@ -24,7 +24,7 @@ class ActionButton(Button):
     # region Properties etc.
 
     @property
-    def text(self) -> SillyText:
+    def text(self) -> str | Dict[str | List[str], str]:
         return self._text
 
     @property
@@ -59,7 +59,7 @@ class ActionButton(Button):
     # endregion
 
     def __init__(self,
-                 text: SillyText,
+                 text: str | Dict[str | Sequence[str], str],
                  on_click: Callable[[SillyManager, SillyEvent], Awaitable[None]] = None):
         super().__init__(text)
         self._generate_id()

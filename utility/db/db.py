@@ -2,13 +2,13 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import sessionmaker
 
-from utility import Singleton
+# from utility import Singleton
 
 SQL_LITE_PATH_TEMPLATE = 'sqlite:///{}'
 RELATIVE_DB_PATH = "{}.db"
 
 
-class SillyDB(metaclass=Singleton):
+class SillyDB():
     __engine: Engine
     __session_maker: sessionmaker
     __name: str

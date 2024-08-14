@@ -1,7 +1,7 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Dict, List
+from typing import TYPE_CHECKING, Dict, List, Sequence
 
-from utility import SillyText
+# #from utility import SillyText
 
 if TYPE_CHECKING:
     pass
@@ -10,7 +10,7 @@ from .keyboard import Keyboard
 
 
 class Page:
-    _text: SillyText
+    _text: str | Dict[str | Sequence[str], str]
     _keyboard: Keyboard
     _name: str
 
@@ -18,7 +18,7 @@ class Page:
     _is_start: bool = False
 
     @property
-    def text(self) -> SillyText:
+    def text(self) -> str | Dict[str | List[str], str]:
         return self._text
 
     @property
@@ -38,7 +38,7 @@ class Page:
         return self._name
 
     def __init__(self, name: str,
-                 text: SillyText,
+                 text: str | Dict[str | Sequence[str], str],
                  keyboard: Keyboard,
                  is_home: bool = False,
                  is_start: bool = False):

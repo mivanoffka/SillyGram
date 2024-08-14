@@ -31,6 +31,10 @@ class SillyLabels:
         return self._yes
 
     @property
+    def no(self):
+        return self._no
+
+    @property
     def emoji_separator(self):
         return self._emoji_separator
 
