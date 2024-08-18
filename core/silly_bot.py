@@ -84,7 +84,7 @@ class SillyBot:
         pages = (self._data.pages.get(name) for name in self._data.pages.names)
         buttons = []
         for page in pages:
-            for button in page.keyboard.buttons:
+            for button in page.buttons:
                 if button not in buttons:
                     buttons.append(button)
 
@@ -118,10 +118,10 @@ class SillyBot:
     # region Default handlers
 
     async def _on_start(self, manager: SillyManager, event: SillyEvent):
-        await manager.show_page(event.user, SillyDefaults.Names.START_PAGE, new_target_message=True)
+        await manager.goto_page(event.user, SillyDefaults.Names.START_PAGE, new_target_message=True)
 
     async def _on_home(self, manager: SillyManager, event: SillyEvent):
-        await manager.show_page(event.user, SillyDefaults.Names.HOME_PAGE, new_target_message=True)
+        await manager.goto_page(event.user, SillyDefaults.Names.HOME_PAGE, new_target_message=True)
 
     async def _on_text_input(self, message: Message):
         try:
@@ -160,7 +160,7 @@ class SillyBot:
         await self._aiogram_bot.edit_message_reply_markup(chat_id=user.id, message_id=target_message_id,
                                                           reply_markup=None)
 
-        await self._manager.show_page(user,
+        await self._manager.goto_page(user,
                                       self._data.users.get_current_page_name(callback.from_user.id),
                                       new_target_message=True)
 

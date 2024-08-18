@@ -13,6 +13,7 @@ from aiogram.types import InlineKeyboardButton
 from typing import List, Callable, Awaitable, Dict, Sequence
 
 from .button import Button
+from utility import localize
 
 _button_ids: List[int] = list()
 
@@ -40,7 +41,7 @@ class ActionButton(Button):
     # region Methods
 
     def aiogramify(self, language_code) -> InlineKeyboardButton:
-        return InlineKeyboardButton(text=self._text[language_code], callback_data=self.identity)
+        return InlineKeyboardButton(text=localize(self._text, language_code), callback_data=self.identity)
 
     def _generate_id(self):
         if len(_button_ids) == 0:

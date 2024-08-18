@@ -14,26 +14,62 @@ class SillyManager:
 
     # region High-level messaging methods
 
-    # region Target message actions
+    # region Target message
 
-    async def show_page(self, user: SillyUser, page_name: Any, new_target_message=False):
+    async def goto_page(self, user: SillyUser, page_name: Any, new_target_message=False):
         page = self._data.pages.get(page_name)
         if new_target_message:
             await self._send_new_target_message(user, page.text[user.language_code],
-                                                page.keyboard.aiogramify(user.language_code))
+                                                page.keyboard(user.language_code))
         else:
             await self._edit_target_message(user, page.text[user.language_code],
-                                            page.keyboard.aiogramify(user.language_code))
+                                            page.keyboard(user.language_code))
         self._data.users.set_current_page_name(user.id, page_name)
 
     async def refresh_page(self, user: SillyUser):
         page = self._data.pages.get(self._data.users.get_current_page_name(user.id))
         await self._edit_target_message(user, page.text[user.language_code],
-                                        page.keyboard.aiogramify(user.language_code))
+                                        page.keyboard(user.language_code))
+
+    async def show_message(self, user: SillyUser, text: str | Dict[str | Sequence[str], str]):
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[[InlineKeyboardButton(text=self._data.settings.labels.go_back,
+                                                   callback_data=SillyDefaults.CallbackData.BACK)]]
+        )
+        await self._edit_target_message(user, localize(text, user.language_code), keyboard)
+
+    async def show_dialog(self, user: SillyUser, question: str | Dict[str | Sequence[str], str],
+                          *dialog_options: str | Dict[str | Sequence[str], str]) -> int | None:
+        buttons = []
+        row = []
+        c = 0
+        for i, text in enumerate(dialog_options):
+            c += 1
+            row.append(InlineKeyboardButton(text=localize(text, user.language_code), callback_data=f"OPTION_{i}"))
+
+            if c >= 3:
+                buttons.append(row)
+                row = []
+
+        if row:
+            buttons.append(row)
+
+        keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+        await self._edit_target_message(user, localize(question, user.language_code), keyboard=keyboard)
+
+        async def wait_for_result():
+            option = None
+            while option is None:
+                option = self._data.io.pop_dialog_result(user.id)
+                await asyncio.sleep(0.2)
+
+            return option
+
+        return await asyncio.get_event_loop().create_task(wait_for_result())
 
     # endregion
 
-    # region Other messages actions
+    # region Additional messages
 
     async def show_notification(self, user: SillyUser, text: str | Dict[str | Sequence[str], str]):
         keyboard = InlineKeyboardMarkup(
@@ -49,13 +85,6 @@ class SillyManager:
         )
         await self._edit_target_message(user, localize(text, user.language_code), keyboard)
 
-    async def show_message(self, user: SillyUser, text: str | Dict[str | Sequence[str], str]):
-        keyboard = InlineKeyboardMarkup(
-            inline_keyboard=[[InlineKeyboardButton(text=self._data.settings.labels.go_back,
-                                                   callback_data=SillyDefaults.CallbackData.BACK)]]
-        )
-        await self._edit_target_message(user, localize(text, user.language_code), keyboard)
-
     async def show_banner(self, user: SillyUser, text: str | Dict[str | Sequence[str], str]):
         current_page_name = self._data.users.get_current_page_name(user.id)
 
@@ -65,7 +94,7 @@ class SillyManager:
         page = self._data.pages.get(current_page_name)
 
         await self._send_new_target_message(user, localize(page.text, user.language_code),
-                                            keyboard=page.keyboard.aiogramify(user.language_code), separate=False)
+                                            keyboard=page.keyboard(user.language_code), separate=False)
 
     # endregion
 
@@ -97,34 +126,6 @@ class SillyManager:
                                         self._data.settings.labels.no,
                                         self._data.settings.labels.yes)
         return True if option else False
-
-    async def show_dialog(self, user: SillyUser, question: str | Dict[str | Sequence[str], str], *dialog_options: str) -> int | None:
-        buttons = []
-        row = []
-        c = 0
-        for i, text in enumerate(dialog_options):
-            c += 1
-            row.append(InlineKeyboardButton(text=localize(text, user.language_code), callback_data=f"OPTION_{i}"))
-
-            if c >= 3:
-                buttons.append(row)
-                row = []
-
-        if row:
-            buttons.append(row)
-
-        keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
-        await self._edit_target_message(user, localize(question, user.language_code), keyboard=keyboard)
-
-        async def wait_for_result():
-            option = None
-            while option is None:
-                option = self._data.io.pop_dialog_result(user.id)
-                await asyncio.sleep(0.2)
-
-            return option
-
-        return await asyncio.get_event_loop().create_task(wait_for_result())
 
     # endregion
 

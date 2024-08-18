@@ -14,7 +14,7 @@ class NavigationButton(ActionButton):
     _page_name: str
 
     async def _show_page(self, manager: SillyManager, event: SillyEvent):
-        await manager.show_page(event.user, self._page_name)
+        await manager.goto_page(event.user, self._page_name)
 
     def __init__(self, text: str | Dict[str | Sequence[str], str], page_name: str):
         super().__init__(text, self._show_page)
