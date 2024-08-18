@@ -12,18 +12,6 @@ class SillyManager:
     _aiogram_bot: AiogramBot
     _data: Data
 
-    # region Properties etc.
-
-    @property
-    def statistics(self):
-        return self._data.session.statistics
-
-    @property
-    def recent_users_count(self):
-        return self._data.session.recent_users_count
-
-    # endregion
-
     # region High-level messaging methods
 
     # region Target message actions
@@ -91,11 +79,11 @@ class SillyManager:
 )
 
             await self._edit_target_message(user, localize(prompt, user.language_code), keyboard)
-            self._data.session.start_listening(user.id)
+            self._data.io.start_listening(user.id)
 
             text = None
             while text is None:
-                text = self._data.session.pop_text(user.id)
+                text = self._data.io.pop_text(user.id)
                 await asyncio.sleep(0.2)
 
             return text
@@ -131,7 +119,7 @@ class SillyManager:
         async def wait_for_result():
             option = None
             while option is None:
-                option = self._data.session.pop_dialog_result(user.id)
+                option = self._data.io.pop_dialog_result(user.id)
                 await asyncio.sleep(0.2)
 
             return option

@@ -55,7 +55,7 @@ class SillyBot:
     # region Events handlers
 
     def _setup_handlers(self):
-        self._dispatcher.callback_query.register(SillyBot._on_close_button_clicked,
+        self._dispatcher.callback_query.register(self._on_close_button_clicked,
                                                  F.data.startswith(SillyDefaults.CallbackData.
                                                                    CLOSE))
 
@@ -129,7 +129,7 @@ class SillyBot:
         except Exception:
             ...
 
-        self._data.session.push_text(message.from_user.id, message.text)
+        self._data.io.push_text(message.from_user.id, message.text)
 
     async def _on_other_input(self, message: Message):
         print(message)
@@ -141,7 +141,7 @@ class SillyBot:
     async def _on_dialog_option_clicked(self, callback: CallbackQuery):
         self._data.users.indicate(callback.from_user)
         option = int(callback.data.replace(SillyDefaults.CallbackData.OPTION_TEMPLATE, ""))
-        self._data.session.push_dialog_result(callback.from_user.id, option)
+        self._data.io.push_dialog_result(callback.from_user.id, option)
 
     async def _on_close_button_clicked(self, callback: CallbackQuery):
         self._data.users.indicate(callback.from_user)
@@ -171,7 +171,7 @@ class SillyBot:
     async def _on_cancel_button_clicked(self, callback: CallbackQuery):
         user = self._data.users.indicate(callback.from_user)
 
-        self._data.session.stop_listening(callback.from_user.id)
+        self._data.io.stop_listening(callback.from_user.id)
         await self._manager.refresh_page(user)
 
     # endregion

@@ -1,7 +1,7 @@
 from typing import Dict, List
 
 from utility import SillyDB
-from .sections import Users, Session, Pages
+from .sections import Users, IO, Pages
 from .types import DECLARATIVE_BASE
 from ..ui import Page
 from .storage import SillySettings
@@ -9,7 +9,7 @@ from .storage import SillySettings
 
 class Data(SillyDB):
     _users: Users
-    _session: Session
+    _io: IO
     _pages: Pages
     _settings: SillySettings
 
@@ -18,8 +18,8 @@ class Data(SillyDB):
         return self._users
 
     @property
-    def session(self) -> Session:
-        return self._session
+    def io(self) -> IO:
+        return self._io
 
     @property
     def pages(self) -> Pages:
@@ -32,7 +32,7 @@ class Data(SillyDB):
     def __init__(self, settings: SillySettings, *pages: Page):
         super().__init__("sillygram", DECLARATIVE_BASE)
         self._users = Users(self)
-        self._session = Session(self)
+        self._io = IO()
         self._pages = Pages(*pages)
         self._settings = settings
 

@@ -14,7 +14,7 @@ class Pages:
         if name in self.names:
             return self._pages[name]
 
-        return None
+        raise KeyError("No page found with name '{}'".format(name))
 
     @staticmethod
     def _pages_to_dict(*pages: Page) -> Dict[Any, Page]:
