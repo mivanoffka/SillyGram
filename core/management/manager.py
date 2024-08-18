@@ -3,7 +3,8 @@ import asyncio
 from aiogram import Bot as AiogramBot
 from aiogram.types import InlineKeyboardMarkup, Message as AiogramMessage, InlineKeyboardButton
 
-from utility import localize
+from silly_config import PATH
+from utility import localize, SillyLogger
 from ..data import SillyDefaults, Data, SillyUser
 from typing import *
 
@@ -11,6 +12,8 @@ from typing import *
 class SillyManager:
     _aiogram_bot: AiogramBot
     _data: Data
+
+    _logger: SillyLogger
 
     # region High-level messaging methods
 
@@ -105,7 +108,7 @@ class SillyManager:
             keyboard = InlineKeyboardMarkup(
                 inline_keyboard=[[InlineKeyboardButton(text=self._data.settings.labels.cancel,
                                                        callback_data=SillyDefaults.CallbackData.CANCEL)]]
-)
+            )
 
             await self._edit_target_message(user, localize(prompt, user.language_code), keyboard)
             self._data.io.start_listening(user.id)
@@ -198,6 +201,8 @@ class SillyManager:
     def __init__(self, aiogram_bot: AiogramBot, data: Data):
         self._aiogram_bot = aiogram_bot
         self._data = data
+
+        self._logger = SillyLogger(PATH / "logs", self._data.settings.log_to_console)
 
 
 

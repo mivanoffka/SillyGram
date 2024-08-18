@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from typing import *
 
 from aiogram import Bot as AiogramBot, Dispatcher, F
@@ -24,7 +25,7 @@ class SillyBot:
 
     @staticmethod
     async def _on_startup():
-        print("SillyBot is polling...")
+        logging.info("SillyBot is polling...")
 
     def launch_async(self):
         """

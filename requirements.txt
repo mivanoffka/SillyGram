@@ -16,5 +16,5 @@ pydantic_core==2.20.1
 SQLAlchemy==2.0.31
 typing_extensions==4.12.2
 yarl==1.9.4
-
 langcodes~=3.4.0
+colorlog~=6.8.2
