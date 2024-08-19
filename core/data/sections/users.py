@@ -1,10 +1,10 @@
-from utility import SillyDataSection
+from utility import SillyDbSection
 from aiogram.types import User as AiogramUser
 from core.data.types import User
 from core.data.user import SillyUser
 
 
-class Users(SillyDataSection):
+class Users(SillyDbSection):
 
     def indicate(self, aiogram_user: AiogramUser) -> SillyUser:
         with self._get_session() as session:

@@ -1,10 +1,7 @@
 from typing import Dict, List, Sequence
 
-from ..aiogramable import Aiogramable
-# #from utility import SillyText
 
-
-class Button(Aiogramable):
+class Button:
     _text: str | Dict[str | Sequence[str], str]
 
     @property

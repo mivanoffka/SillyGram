@@ -1,5 +1,4 @@
 import asyncio
-import logging
 from typing import *
 
 from aiogram import Bot as AiogramBot, Dispatcher, F
@@ -23,11 +22,7 @@ class SillyBot:
     
     # region Starting
 
-    @staticmethod
-    async def _on_startup():
-        logging.info("SillyBot is polling...")
-
-    def launch_async(self):
+    def launch(self):
         """
         Use this method to start the bot asynchronously. It must be called from synchronous code.
 
@@ -36,9 +31,9 @@ class SillyBot:
         before the SillyBot is launched.
         """
 
-        asyncio.run(self.launch())
+        asyncio.run(self._launch())
 
-    async def launch(self):
+    async def _launch(self):
         """
         Use this method to start the bot. It must be called from asynchronous code.
 
@@ -183,13 +178,12 @@ class SillyBot:
         """
         :param token: telegram-API token received from BotFather.
         :param pages: page objects to include. Names must be unique.
-        :param settings: settings for bot. Leave empty for default settings.
+        :param settings: silly-bot settings. None means default settings.
         """
 
         self._data = Data(settings if settings is not None else SillySettings(), *pages)
         self._aiogram_bot = AiogramBot(token=token, default=DefaultBotProperties(parse_mode="HTML"))
         self._dispatcher = Dispatcher()
-        self._dispatcher.startup.register(SillyBot._on_startup)
         self._manager = SillyManager(self._aiogram_bot, self._data)
 
         self._setup_handlers()

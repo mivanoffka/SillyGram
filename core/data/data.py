@@ -1,5 +1,3 @@
-from typing import Dict, List
-
 from utility import SillyDB
 from .sections import Users, IO, Pages
 from .types import DECLARATIVE_BASE

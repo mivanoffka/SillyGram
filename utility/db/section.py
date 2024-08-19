@@ -1,7 +1,7 @@
 from .db import SillyDB
 
 
-class SillyDataSection:
+class SillyDbSection:
     __db: SillyDB
 
     def _get_session(self):

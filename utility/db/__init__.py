@@ -1,2 +1,2 @@
 from .db import SillyDB
-from .data_section import SillyDataSection
+from .section import SillyDbSection
