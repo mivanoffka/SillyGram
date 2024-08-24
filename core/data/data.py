@@ -1,8 +1,8 @@
 from utility import SillyDB
 from .sections import Users, IO, Pages
 from .types import DECLARATIVE_BASE
-from ..ui import Page
-from .storage import SillySettings
+from ..ui import SillyPage
+from .settings_and_defaults import SillySettings
 
 
 class Data(SillyDB):
@@ -27,7 +27,7 @@ class Data(SillyDB):
     def settings(self) -> SillySettings:
         return self._settings
 
-    def __init__(self, settings: SillySettings, *pages: Page):
+    def __init__(self, settings: SillySettings, *pages: SillyPage):
         super().__init__("sillygram", DECLARATIVE_BASE)
         self._users = Users(self)
         self._io = IO()

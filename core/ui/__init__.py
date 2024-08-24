@@ -1,2 +1,2 @@
-from .buttons import Button, ActionButton, NavigationButton, LinkButton
-from .page import Page
+from .buttons import SillyButton, ActionButton, NavigationButton, LinkButton
+from .sillypage import SillyPage

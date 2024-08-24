@@ -1,7 +1,7 @@
 from typing import Dict, List, Sequence
 
 
-class Button:
+class SillyButton:
     _text: str | Dict[str | Sequence[str], str]
 
     @property

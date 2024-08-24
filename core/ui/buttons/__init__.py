@@ -1,4 +1,4 @@
-from .button import Button
+from .sillybutton import SillyButton
 from .action_button import ActionButton
 from .link_button import LinkButton
 from .navigation_button import NavigationButton

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Dict, List
 
 from aiogram.types import InlineKeyboardMarkup
 
-from . import Button
+from . import SillyButton
 
 # #from utility import SillyText
 
@@ -13,10 +13,10 @@ if TYPE_CHECKING:
     pass
 
 
-class Page:
+class SillyPage:
     _text: str | Dict[str | Sequence[str], str]
     _name: str
-    _buttons: Sequence[Sequence[Button]]
+    _buttons: Sequence[Sequence[SillyButton]]
 
     _is_home: bool = False
     _is_start: bool = False
@@ -48,18 +48,18 @@ class Page:
 
     def __init__(self, name: str,
                  text: str | Dict[str | Sequence[str], str],
-                 buttons: Button | Sequence[Button] | Sequence[Sequence[Button]],
+                 buttons: SillyButton | Sequence[SillyButton] | Sequence[Sequence[SillyButton]],
                  is_home: bool = False,
                  is_start: bool = False):
 
         buttons_edited = []
         row = []
 
-        if isinstance(buttons, Button):
+        if isinstance(buttons, SillyButton):
             buttons_edited = [[buttons]]
         if isinstance(buttons, Sequence):
             for x in buttons:
-                if isinstance(x, Button):
+                if isinstance(x, SillyButton):
                     row.append(x)
                 if isinstance(x, Sequence):
                     if row:

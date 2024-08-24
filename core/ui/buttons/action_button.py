@@ -7,18 +7,18 @@ if TYPE_CHECKING:
     from core.management.manager import SillyManager
     from core.management.event import SillyEvent
 
-from ...data.storage import SillyDefaults
+from ...data.settings_and_defaults import SillyDefaults
 
 from aiogram.types import InlineKeyboardButton
 from typing import List, Callable, Awaitable, Dict, Sequence
 
-from .button import Button
+from .sillybutton import SillyButton
 from utility import localize
 
 _button_ids: List[int] = list()
 
 
-class ActionButton(Button):
+class ActionButton(SillyButton):
     _id: int
     _on_click: Callable[[SillyManager, SillyEvent], Awaitable[None]]
 

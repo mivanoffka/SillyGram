@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from typing import *
 
 from aiogram import Bot as AiogramBot, Dispatcher, F
@@ -10,7 +11,9 @@ from aiogram.methods import DeleteWebhook
 from .data import SillySettings
 from .management import SillyEvent, SillyManager
 from .data import Data, SillyDefaults
-from .ui import Page, ActionButton
+from .ui import SillyPage, ActionButton
+
+from .activities import SillyRegularActivity
 
 
 class SillyBot:
@@ -19,8 +22,28 @@ class SillyBot:
 
     _data: Data
     _manager: SillyManager
-    
-    # region Starting
+    _regular_activities: Sequence[SillyRegularActivity]
+
+    _startup_activity: Optional[Callable[[SillyManager], Awaitable[None]]]
+    _shutdown_activity: Optional[Callable[[SillyManager], Awaitable[None]]]
+
+    # region Startup & shutdown
+    async def _on_aiogram_startup(self):
+        if self._startup_activity:
+            asyncio.create_task(self._startup_activity())
+        if self._regular_activities:
+            asyncio.create_task(self._scheduling_loop())
+
+    async def _on_aiogram_shutdown(self):
+        if self._shutdown_activity:
+            asyncio.create_task(self._shutdown_activity())
+
+    async def _scheduling_loop(self, time_delta: int = 20):
+        while True:
+            logging.info("Checking for regular activities to run...")
+            for scheduled_activity in self._regular_activities:
+                await scheduled_activity.execute(self._manager)
+            await asyncio.sleep(time_delta)
 
     def launch(self):
         """
@@ -174,16 +197,25 @@ class SillyBot:
 
     # endregion
 
-    def __init__(self, token: str, *pages: Page, settings: Optional[SillySettings] = None):
+    def __init__(self,
+                 token: str,
+                 pages: Sequence[SillyPage],
+                 settings: Optional[SillySettings] = None,
+                 regular_activities: Optional[Sequence[SillyRegularActivity]] = None,
+                 startup_activity: Optional[Callable[[SillyManager], Awaitable[None]]] = None,
+                 shutdown_activity: Optional[Callable[[SillyManager], Awaitable[None]]] = None):
         """
         :param token: telegram-API token received from BotFather.
-        :param pages: page objects to include. Names must be unique.
+        :param pages: sequence of page objects to include. Names must be unique.
         :param settings: silly-bot settings. None means default settings.
         """
-
+        self._startup_activity = startup_activity
+        self._shutdown_activity = shutdown_activity
         self._data = Data(settings if settings is not None else SillySettings(), *pages)
         self._aiogram_bot = AiogramBot(token=token, default=DefaultBotProperties(parse_mode="HTML"))
         self._dispatcher = Dispatcher()
+        self._dispatcher.startup.register(self._on_aiogram_startup)
+        self._dispatcher.shutdown.register(self._on_aiogram_shutdown)
         self._manager = SillyManager(self._aiogram_bot, self._data)
-
+        self._regular_activities = regular_activities
         self._setup_handlers()

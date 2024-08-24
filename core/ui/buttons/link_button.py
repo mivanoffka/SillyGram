@@ -3,10 +3,10 @@ from typing import Dict, List, Sequence
 from aiogram.types import InlineKeyboardButton
 
 #from utility import SillyText
-from .button import Button
+from .sillybutton import SillyButton
 
 
-class LinkButton(Button):
+class LinkButton(SillyButton):
     _uri: str
 
     def aiogramify(self, language_code: str) -> any:

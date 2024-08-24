@@ -1,23 +1,23 @@
 from typing import Dict, Any, Tuple, Optional
-from ..storage import SillyDefaults
-from ...ui import Page
+from ..settings_and_defaults import SillyDefaults
+from ...ui import SillyPage
 
 
 class Pages:
-    _pages: Dict[Any, Page]
+    _pages: Dict[Any, SillyPage]
 
     @property
     def names(self) -> Tuple[str, ...]:
         return tuple(self._pages.keys())
 
-    def get(self, name: Any) -> Optional[Page]:
+    def get(self, name: Any) -> Optional[SillyPage]:
         if name in self.names:
             return self._pages[name]
 
         raise KeyError("No page found with name '{}'".format(name))
 
     @staticmethod
-    def _pages_to_dict(*pages: Page) -> Dict[Any, Page]:
+    def _pages_to_dict(*pages: SillyPage) -> Dict[Any, SillyPage]:
         pages_dict = {}
         for page in pages:
             if page.name in pages_dict.keys():
@@ -53,6 +53,6 @@ class Pages:
         else:
             self._pages[SillyDefaults.Names.HOME_PAGE] = home_pages[0]
 
-    def __init__(self, *pages: Page):
+    def __init__(self, *pages: SillyPage):
         self._pages = self._pages_to_dict(*pages)
         self._setup_specials()
