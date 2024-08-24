@@ -3,6 +3,7 @@ from .sections import Users, IO, Pages
 from .types import DECLARATIVE_BASE
 from ..ui import SillyPage
 from .settings_and_defaults import SillySettings
+from .registry import SillyRegistry
 
 
 class Data(SillyDB):
@@ -10,6 +11,7 @@ class Data(SillyDB):
     _io: IO
     _pages: Pages
     _settings: SillySettings
+    _registry: SillyRegistry
 
     @property
     def users(self) -> Users:
@@ -27,10 +29,15 @@ class Data(SillyDB):
     def settings(self) -> SillySettings:
         return self._settings
 
+    @property
+    def registry(self) -> SillyRegistry:
+        return self._registry
+
     def __init__(self, settings: SillySettings, *pages: SillyPage):
         super().__init__("sillygram", DECLARATIVE_BASE)
         self._users = Users(self)
         self._io = IO()
         self._pages = Pages(*pages)
         self._settings = settings
+        self._registry = SillyRegistry()
 

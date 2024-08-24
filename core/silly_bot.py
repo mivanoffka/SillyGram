@@ -30,13 +30,13 @@ class SillyBot:
     # region Startup & shutdown
     async def _on_aiogram_startup(self):
         if self._startup_activity:
-            asyncio.create_task(self._startup_activity())
+            asyncio.create_task(self._startup_activity(self._manager))
         if self._regular_activities:
             asyncio.create_task(self._scheduling_loop())
 
     async def _on_aiogram_shutdown(self):
         if self._shutdown_activity:
-            asyncio.create_task(self._shutdown_activity())
+            asyncio.create_task(self._shutdown_activity(self._manager))
 
     async def _scheduling_loop(self, time_delta: int = 20):
         while True:

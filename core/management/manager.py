@@ -15,6 +15,10 @@ class SillyManager:
 
     _logger: SillyLogger
 
+    @property
+    def registry(self):
+        return self._data.registry
+
     # region High-level messaging methods
 
     # region Target message
