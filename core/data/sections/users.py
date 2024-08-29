@@ -2,6 +2,7 @@ from utility import SillyDbSection
 from aiogram.types import User as AiogramUser
 from core.data.types import User
 from core.data.user import SillyUser
+from datetime import datetime
 
 
 class Users(SillyDbSection):
@@ -14,7 +15,9 @@ class Users(SillyDbSection):
                             nickname=aiogram_user.username,
                             first_name=aiogram_user.first_name,
                             last_name=aiogram_user.last_name,
-                            language_code=aiogram_user.language_code)
+                            language_code=aiogram_user.language_code,
+                            registered_at=datetime.now(),
+                            last_seen_at=datetime.now())
 
                 session.add(user)
 
@@ -23,11 +26,13 @@ class Users(SillyDbSection):
                 user.first_name = aiogram_user.first_name
                 user.last_name = aiogram_user.last_name
                 user.language_code = aiogram_user.language_code
+                user.last_seen_at = datetime.now()
 
             session.commit()
 
             return SillyUser(id=user.id, nickname=user.nickname,
-                             first_name=user.first_name, last_name=user.last_name, language_code=user.language_code)
+                             first_name=user.first_name, last_name=user.last_name, language_code=user.language_code,
+                             registered_at=user.registered_at, last_seen_at=user.last_seen_at)
 
     def get(self, user_id: int) -> SillyUser | None:
         with self._get_session() as session:

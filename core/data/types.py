@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, MetaData, ForeignKey
+from sqlalchemy import Column, Integer, String, MetaData, ForeignKey, DateTime
 
 DECLARATIVE_BASE = declarative_base()
 
@@ -15,4 +15,8 @@ class User(DECLARATIVE_BASE):
     first_name = Column(String, nullable=True)
     last_name = Column(String, nullable=True)
     language_code = Column(String, nullable=True)
+
+    registered_at = Column(DateTime, nullable=True)
+    last_seen_at = Column(DateTime, nullable=True)
+
 

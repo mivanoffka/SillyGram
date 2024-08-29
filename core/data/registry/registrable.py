@@ -4,20 +4,57 @@ from typing import Optional, Tuple
 
 class Registrable:
 
-    @abstractmethod
     def establish_key(self, key: str, default_value: Optional[str] = None):
-        raise NotImplementedError()
+        self._set_global_value(key, default_value)
+        self._set_local_value_for_all_users(key, default_value)
 
-    @abstractmethod
     def remove_key(self, key: str):
-        raise NotImplementedError()
+        self._remove_key_globally(key)
+        self._remove_key_locally(key)
 
-    @abstractmethod
     def get_value(self, key: str | Tuple[str, int]):
+        if isinstance(key, str):
+            return self._get_global_value(key)
+        elif isinstance(key, tuple) and isinstance(key[0], str) and isinstance(key[1], int) and len(key) == 2:
+            return self._get_local_value(key)
+        else:
+            raise KeyError("Invalid key format")
+
+    def set_value(self,  key: str | Tuple[str, int], value: str):
+        if isinstance(key, str):
+            self._set_global_value(key, value)
+
+        elif isinstance(key, tuple) and isinstance(key[0], str) and isinstance(key[1], int) and len(key) == 2:
+            self._set_local_value(key, value)
+        else:
+            raise KeyError("Invalid key format")
+
+    @abstractmethod
+    def _remove_key_globally(self, key: str):
         raise NotImplementedError()
 
     @abstractmethod
-    def set_value(self,  key: str | Tuple[str, int], value: str):
+    def _remove_key_locally(self, key: str):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def _get_global_value(self, key: str) -> str:
+        raise NotImplementedError()
+
+    @abstractmethod
+    def _get_local_value(self, key: Tuple[str, int]) -> str:
+        raise NotImplementedError()
+
+    @abstractmethod
+    def _set_global_value(self, key: str, value: str):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def _set_local_value(self, key: Tuple[str, int], value: str):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def _set_local_value_for_all_users(self, key: str, value: str):
         raise NotImplementedError()
 
     def __iadd__(self, other: str | Tuple[str, str]):
