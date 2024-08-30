@@ -17,8 +17,20 @@ class Registrable:
         raise NotImplementedError()
 
     def remove_key(self, key: str):
-        self._remove_key(key)
         self._remove_key_entrances(key)
+        self._remove_key(key)
+
+    def reset(self):
+        self._reset_keys()
+        self._reset_values()
+
+    @abstractmethod
+    def _reset_values(self):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def _reset_keys(self):
+        raise NotImplementedError()
 
     def get_value(self, key: str | Tuple[str, int]):
         if isinstance(key, str):

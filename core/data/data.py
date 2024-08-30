@@ -39,5 +39,5 @@ class Data(SillyDB):
         self._io = IO()
         self._pages = Pages(*pages)
         self._settings = settings
-        self._registry = SillyRegistry()
+        self._registry = SillyRegistry(self)
 

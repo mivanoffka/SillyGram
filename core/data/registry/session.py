@@ -38,6 +38,12 @@ class SessionRegistry(Registrable):
     def _set_local_value(self, key: Tuple[str, int], value: str):
         self._registry[key] = value
 
+    def _reset_keys(self):
+        self._keys.clear()
+
+    def _reset_values(self):
+        self._registry.clear()
+
     def __init__(self):
         super().__init__()
         self._registry = {}

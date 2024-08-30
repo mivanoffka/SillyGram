@@ -1,3 +1,5 @@
+from utility import SillyDB
+from . import DiskRegistry
 from .session import SessionRegistry
 from .registrable import Registrable
 
@@ -14,5 +16,6 @@ class SillyRegistry:
     def disk(self) -> Registrable:
         return self._disk
 
-    def __init__(self):
+    def __init__(self, db: SillyDB):
         self._session = SessionRegistry()
+        self._disk = DiskRegistry(db)
