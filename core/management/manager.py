@@ -1,4 +1,5 @@
 import asyncio
+from datetime import timedelta
 
 from aiogram import Bot as AiogramBot
 from aiogram.types import InlineKeyboardMarkup, Message as AiogramMessage, InlineKeyboardButton
@@ -7,6 +8,8 @@ from silly_config import PATH
 from utility import localize, SillyLogger
 from ..data import SillyDefaults, Data, SillyUser
 from typing import *
+
+from .event import SillyEvent
 
 
 class SillyManager:
@@ -19,6 +22,30 @@ class SillyManager:
     def registry(self):
         return self._data.registry
 
+    def amnesty(self):
+        return self._data.users.unban_all()
+
+    def get_user(self, name_or_id: int | str) -> SillyUser:
+        return self._data.users.get(name_or_id)
+
+    async def promote(self, user_id):
+        self._data.users.promote(user_id)
+
+    async def demote(self, user_id):
+        self._data.users.demote(user_id)
+
+    async def ban(self, user_id: int, duration: timedelta):
+        return self._data.users.ban(user_id, lasts=duration)
+
+    async def unban(self, user_id):
+        self._data.users.unban(user_id)
+
+    async def is_banned(self, user_id):
+        return self._data.users.is_banned(user_id)
+
+    async def is_admin(self, user_id):
+        return self._data.users.is_admin(user_id)
+
     # region High-level messaging methods
 
     # region Target message
@@ -26,16 +53,16 @@ class SillyManager:
     async def goto_page(self, user: SillyUser, page_name: Any, new_target_message=False):
         page = self._data.pages.get(page_name)
         if new_target_message:
-            await self._send_new_target_message(user, page.text[user.language_code],
+            await self._send_new_target_message(user, localize(page.text, user.language_code),
                                                 page.keyboard(user.language_code))
         else:
-            await self._edit_target_message(user, page.text[user.language_code],
+            await self._edit_target_message(user, localize(page.text, user.language_code),
                                             page.keyboard(user.language_code))
         self._data.users.set_current_page_name(user.id, page_name)
 
     async def refresh_page(self, user: SillyUser):
         page = self._data.pages.get(self._data.users.get_current_page_name(user.id))
-        await self._edit_target_message(user, page.text[user.language_code],
+        await self._edit_target_message(user, localize(page.text, user.language_code),
                                         page.keyboard(user.language_code))
 
     async def show_message(self, user: SillyUser, text: str | Dict[str | Sequence[str], str]):
@@ -199,6 +226,21 @@ class SillyManager:
             await self._aiogram_bot.delete_message(user.id, target_message_id)
         except Exception as e:
             pass
+
+    # endregion
+
+    # region Decorators
+
+    @staticmethod
+    def admin_only(handler: Callable):
+        async def wrapper(manager: SillyManager, event: SillyEvent):
+            print("a")
+            if not manager._data.users.is_admin(event.user.id):
+                await manager.show_message(event.user, manager._data.settings.labels.admin_only)
+            else:
+                await handler(manager, event)
+
+        return wrapper
 
     # endregion
 

@@ -1,5 +1,5 @@
 from utility import SillyDB
-from . import DiskRegistry
+from .disk import DiskRegistry
 from .session import SessionRegistry
 from .registrable import Registrable
 

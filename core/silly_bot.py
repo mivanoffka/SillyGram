@@ -14,6 +14,7 @@ from .data import Data, SillyDefaults
 from .ui import SillyPage, ActionButton
 
 from .activities import SillyRegularActivity
+from .configurator import configurator
 
 
 class SillyBot:
@@ -96,6 +97,7 @@ class SillyBot:
 
         self._register_command(SillyDefaults.Commands.HOME, self._on_home)
         self._register_command(SillyDefaults.Commands.START, self._on_start)
+        self._register_command(SillyDefaults.Commands.CONFIGURE, self._on_configure)
 
         self._dispatcher.message.register(self._on_text_input, F.text)
         self._dispatcher.message.register(self._on_other_input)
@@ -120,6 +122,9 @@ class SillyBot:
 
             user_info = self._data.users.indicate(message.from_user)
 
+            if self._data.users.is_banned(user_info.id):
+                return
+
             args = message.text.split()[1:]
             event = SillyEvent(user_info, *args)
             return await handler(self._manager, event)
@@ -129,6 +134,9 @@ class SillyBot:
     def _register_callback(self, callback_identity: str, handler: Any):
         async def aiogram_handler(callback: CallbackQuery):
             user_info = self._data.users.indicate(callback.from_user)
+            if self._data.users.is_banned(user_info.id):
+                return
+
             event = SillyEvent(user_info)
             return await handler(self._manager, event)
 
@@ -141,6 +149,11 @@ class SillyBot:
 
     async def _on_home(self, manager: SillyManager, event: SillyEvent):
         await manager.goto_page(event.user, SillyDefaults.Names.HOME_PAGE, new_target_message=True)
+
+    @staticmethod
+    @SillyManager.admin_only
+    async def _on_configure(manager: SillyManager, event: SillyEvent):
+        await manager.goto_page(event.user, SillyDefaults.Names.CONFIGURE_PAGE)
 
     async def _on_text_input(self, message: Message):
         try:
@@ -209,6 +222,7 @@ class SillyBot:
         :param pages: sequence of page objects to include. Names must be unique.
         :param settings: silly-bot settings. None means default settings.
         """
+        pages = (*pages, *configurator)
         self._startup_activity = startup_activity
         self._shutdown_activity = shutdown_activity
         self._data = Data(settings if settings is not None else SillySettings(), *pages)

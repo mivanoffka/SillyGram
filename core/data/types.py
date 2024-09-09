@@ -23,6 +23,21 @@ class User(DECLARATIVE_BASE):
     local_values = relationship("RegistryValue", back_populates="user")
 
 
+class Admin(DECLARATIVE_BASE):
+    __tablename__ = 'admins'
+    id = Column(Integer, ForeignKey('users.id'), primary_key=True)
+
+
+class Ban(DECLARATIVE_BASE):
+    __tablename__ = 'bans'
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+
+    starts = Column(DateTime, nullable=False)
+    expires = Column(DateTime, nullable=True)
+
+
 class RegistryKey(DECLARATIVE_BASE):
     __tablename__ = 'registry_keys'
 

@@ -60,7 +60,9 @@ class SillyPage:
         if isinstance(buttons, Sequence):
             for x in buttons:
                 if isinstance(x, SillyButton):
-                    row.append(x)
+                    buttons_edited.append(row)
+                    row = []
+                    buttons_edited.append([x])
                 if isinstance(x, Sequence):
                     if row:
                         buttons_edited.append(row)
