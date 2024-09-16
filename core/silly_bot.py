@@ -8,8 +8,8 @@ from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery
 from aiogram.methods import DeleteWebhook
 
-from .data import SillySettings
-from .management import SillyEvent, SillyManager
+from .data import SillySettings, SillyUser
+from .management import SillyManager
 from .data import Data, SillyDefaults
 from .ui import SillyPage, ActionButton
 
@@ -120,40 +120,37 @@ class SillyBot:
             except Exception:
                 ...
 
-            user_info = self._data.users.indicate(message.from_user)
-
-            if self._data.users.is_banned(user_info.id):
+            user = self._manager.users.get(self._data.indicate(message.from_user))
+            if user.is_banned:
                 return
 
             args = message.text.split()[1:]
-            event = SillyEvent(user_info, *args)
-            return await handler(self._manager, event)
+            return await handler(self._manager, user)
 
         self._dispatcher.message.register(aiogram_handler, Command(command))
 
     def _register_callback(self, callback_identity: str, handler: Any):
         async def aiogram_handler(callback: CallbackQuery):
-            user_info = self._data.users.indicate(callback.from_user)
-            if self._data.users.is_banned(user_info.id):
+            user = self._manager.users.get(self._data.indicate(callback.from_user))
+            if user.is_banned:
                 return
 
-            event = SillyEvent(user_info)
-            return await handler(self._manager, event)
+            return await handler(self._manager, user)
 
         self._dispatcher.callback_query.register(aiogram_handler, F.data.startswith(callback_identity))
 
     # region Default handlers
 
-    async def _on_start(self, manager: SillyManager, event: SillyEvent):
-        await manager.goto_page(event.user, SillyDefaults.Names.START_PAGE, new_target_message=True)
+    async def _on_start(self, manager: SillyManager, user: SillyUser):
+        await manager.goto_page(user, SillyDefaults.Names.START_PAGE, new_target_message=True)
 
-    async def _on_home(self, manager: SillyManager, event: SillyEvent):
-        await manager.goto_page(event.user, SillyDefaults.Names.HOME_PAGE, new_target_message=True)
+    async def _on_home(self, manager: SillyManager, user: SillyUser):
+        await manager.goto_page(user, SillyDefaults.Names.HOME_PAGE, new_target_message=True)
 
     @staticmethod
     @SillyManager.admin_only
-    async def _on_configure(manager: SillyManager, event: SillyEvent):
-        await manager.goto_page(event.user, SillyDefaults.Names.CONFIGURE_PAGE)
+    async def _on_configure(manager: SillyManager, user: SillyUser):
+        await manager.goto_page(user, SillyDefaults.Names.CONFIGURE_PAGE)
 
     async def _on_text_input(self, message: Message):
         try:
@@ -171,21 +168,20 @@ class SillyBot:
             ...
 
     async def _on_dialog_option_clicked(self, callback: CallbackQuery):
-        self._data.users.indicate(callback.from_user)
+        self._data.indicate(callback.from_user)
         option = int(callback.data.replace(SillyDefaults.CallbackData.OPTION_TEMPLATE, ""))
         self._data.io.push_dialog_result(callback.from_user.id, option)
 
     async def _on_close_button_clicked(self, callback: CallbackQuery):
-        self._data.users.indicate(callback.from_user)
+        self._data.indicate(callback.from_user)
         try:
             await callback.message.delete()
         except Exception:
             ...
 
     async def _on_continue_button_clicked(self, callback: CallbackQuery):
-        user = self._data.users.indicate(callback.from_user)
-
-        target_message_id = self._data.users.get_target_message_id(user.id)
+        user = self._manager.users.get(self._data.indicate(callback.from_user))
+        target_message_id = self._data.get_target_message_id(user.id)
         if target_message_id is None:
             return
 
@@ -193,15 +189,15 @@ class SillyBot:
                                                           reply_markup=None)
 
         await self._manager.goto_page(user,
-                                      self._data.users.get_current_page_name(callback.from_user.id),
+                                      self._data.get_current_page_name(callback.from_user.id),
                                       new_target_message=True)
 
     async def _on_return_button_clicked(self, callback: CallbackQuery):
-        user = self._data.users.indicate(callback.from_user)
+        user = self._data.indicate(callback.from_user)
         await self._manager.refresh_page(user)
 
     async def _on_cancel_button_clicked(self, callback: CallbackQuery):
-        user = self._data.users.indicate(callback.from_user)
+        user = self._data.indicate(callback.from_user)
 
         self._data.io.stop_listening(callback.from_user.id)
         await self._manager.refresh_page(user)
@@ -231,5 +227,6 @@ class SillyBot:
         self._dispatcher.startup.register(self._on_aiogram_startup)
         self._dispatcher.shutdown.register(self._on_aiogram_shutdown)
         self._manager = SillyManager(self._aiogram_bot, self._data)
+        self._data.init_users(self._manager)
         self._regular_activities = regular_activities
         self._setup_handlers()

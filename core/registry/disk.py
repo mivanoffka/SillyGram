@@ -2,7 +2,7 @@ from typing import Tuple
 
 from .registrable import Registrable
 from utility import SillyDbSection, SillyDB
-from ..types import RegistryKey, RegistryValue
+from ..data.types import *
 
 
 class DiskRegistry(Registrable, SillyDbSection):

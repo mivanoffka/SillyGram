@@ -3,20 +3,20 @@ from typing import Optional
 
 from ..ui import ActionButton, SillyPage, NavigationButton
 from ..data import SillyDefaults, SillyUser
-from ..management import SillyManager, SillyEvent
+from ..management import SillyManager
 
 from .utility import get_user_name_or_id
 
 
-async def _on_banned_button_click(manager: SillyManager, event: SillyEvent):
+async def _on_banned_button_click(manager: SillyManager, user: SillyUser):
     user: SillyUser
     try:
-        user = await get_user_name_or_id(manager, event, SillyDefaults.Configurator.BannedPage.BAN_USER_ID_INPUT_PROMPT)
+        user = await get_user_name_or_id(manager, user, SillyDefaults.Configurator.BannedPage.BAN_USER_ID_INPUT_PROMPT)
     except Exception as e:
-        await manager.show_message(event.user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(e))
+        await manager.show_message(user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(e))
         return
 
-    option = await manager.show_dialog(event.user, SillyDefaults.Configurator.BannedPage.BAN_DURATION_DIALOG_TEXT,
+    option = await manager.show_dialog(user, SillyDefaults.Configurator.BannedPage.BAN_DURATION_DIALOG_TEXT,
                                        SillyDefaults.Configurator.BannedPage.ONE_DAY_BAN_OPTION,
                                        SillyDefaults.Configurator.BannedPage.ONE_WEEK_BAN_OPTION,
                                        SillyDefaults.Configurator.BannedPage.ONE_MONTH_BAN_OPTION,
@@ -37,7 +37,7 @@ async def _on_banned_button_click(manager: SillyManager, event: SillyEvent):
         case 3:
             multiplier = 365
         case 4:
-            input_text = await manager.get_input(event.user,
+            input_text = await manager.get_input(user,
                                                  SillyDefaults.Configurator.BannedPage.BAN_DATE_INPUT_PROMPT)
             try:
                 if "," in input_text:
@@ -47,58 +47,58 @@ async def _on_banned_button_click(manager: SillyManager, event: SillyEvent):
                     raise ValueError()
                 multiplier = round(value, 2)
             except Exception as e:
-                await manager.show_message(event.user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE
+                await manager.show_message(user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE
                                            .format(SillyDefaults.Configurator.BannedPage.DAYS_PARSING_ERROR_TEXT))
                 return
         case 5:
             multiplier = 9999
         case 6:
-            await manager.refresh_page(event.user)
+            await manager.refresh_page(user)
 
     try:
         duration *= multiplier
-        expires = await manager.ban(user.id, timedelta(hours=int(duration)))
+        expires = await manager.users.ban(user.id, timedelta(hours=int(duration)))
 
         uinfo = str(user.id) if not user.nickname else "{} ({})".format(user.nickname, user.id)
-        await manager.show_message(event.user, SillyDefaults.Configurator.BannedPage
+        await manager.show_message(user, SillyDefaults.Configurator.BannedPage
                                    .TEMPORAL_BAN_SUCCESS_MESSAGE_TEMPLATE.format(uinfo, expires))
         return
     except Exception as e:
-        await manager.show_message(event.user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(e))
+        await manager.show_message(user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(e))
 
 
-async def _on_unban_button_click(manager: SillyManager, event: SillyEvent):
+async def _on_unban_button_click(manager: SillyManager, user: SillyUser):
     user: SillyUser
     try:
-        user = await get_user_name_or_id(manager, event, SillyDefaults.Configurator.BannedPage.
+        user = await get_user_name_or_id(manager, user, SillyDefaults.Configurator.BannedPage.
                                          UNBAN_USER_ID_INPUT_PROMPT)
     except Exception as e:
-        await manager.show_message(event.user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(e))
+        await manager.show_message(user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(e))
         return
 
     try:
-        await manager.unban(user.id)
+        await manager.users.unban(user.id)
         uinfo = str(user.id) if not user.nickname else "{} ({})".format(user.nickname, user.id)
-        await manager.show_message(event.user, SillyDefaults.Configurator.BannedPage
+        await manager.show_message(user, SillyDefaults.Configurator.BannedPage
                                    .UNBAN_SUCCESS_MESSAGE_TEMPLATE.format(uinfo))
 
     except Exception as e:
-        await manager.show_message(event.user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE
+        await manager.show_message(user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE
                                    .format(e))
         return
 
 
-async def _on_amnesty_button_click(manager: SillyManager, event: SillyEvent):
-    confirmed = await manager.get_yes_no_answer(event.user, SillyDefaults.Configurator.BannedPage.AMNESTY_DIALOG_TEXT)
+async def _on_amnesty_button_click(manager: SillyManager, user: SillyUser):
+    confirmed = await manager.get_yes_no_answer(user, SillyDefaults.Configurator.BannedPage.AMNESTY_DIALOG_TEXT)
     if not confirmed:
-        await manager.refresh_page(event.user)
+        await manager.refresh_page(user)
         return
 
     try:
-        manager.amnesty()
-        await manager.show_message(event.user, SillyDefaults.Configurator.BannedPage.AMNESTY_SUCCESS_TEXT)
+        manager.users.amnesty()
+        await manager.show_message(user, SillyDefaults.Configurator.BannedPage.AMNESTY_SUCCESS_TEXT)
     except Exception as e:
-        await manager.show_message(event.user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(e))
+        await manager.show_message(user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(e))
 
 
 banned_page = SillyPage(name=SillyDefaults.Configurator.BannedPage.NAME,

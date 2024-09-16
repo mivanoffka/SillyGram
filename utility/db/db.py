@@ -12,12 +12,12 @@ SQL_LITE_PATH_TEMPLATE = 'sqlite:///{}'
 RELATIVE_DB_PATH = "{}.db"
 
 
-class SillyDB():
+class SillyDB:
     __engine: Engine
     __session_maker: sessionmaker
     __name: str
 
-    def get_session(self):
+    def _get_session(self):
         return self.__session_maker()
 
     def __init__(self, name, declarative_base):

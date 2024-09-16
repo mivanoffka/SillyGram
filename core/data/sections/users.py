@@ -1,156 +1,155 @@
-from typing import Optional
+from __future__ import annotations
 
-from utility import SillyDbSection
-from aiogram.types import User as AiogramUser
-from core.data.types import User, Admin, Ban
-from core.data.user import SillyUser
 from datetime import datetime, timedelta
+from typing import TYPE_CHECKING, Tuple, Optional, List, Dict
 
-from ...exceptions import SillyUserNotRegisteredError
+from utility import SillyDbSection, SillyDB
+from ..types import User, Admin, Ban
+
+if TYPE_CHECKING:
+    from core.management.manager import SillyManager
+    
+from ..user import SillyUser
 
 
 class Users(SillyDbSection):
+    _users_data: Users
+    _manager: SillyManager
 
-    def indicate(self, aiogram_user: AiogramUser) -> SillyUser:
+    def __init__(self, db: SillyDB, manager: SillyManager):
+        super().__init__(db)
+        self._manager = manager
+
+    # region System
+
+    def _create_silly_user(self, user_id: int):
+        return SillyUser(user_id=user_id, manager=self._manager)
+
+    def _validate(self, nickname_or_id: int | str) -> int:
         with self._get_session() as session:
-            user = session.query(User).filter_by(id=aiogram_user.id).first()
-            if not user:
-                user = User(id=aiogram_user.id,
-                            nickname=aiogram_user.username,
-                            first_name=aiogram_user.first_name,
-                            last_name=aiogram_user.last_name,
-                            language_code=aiogram_user.language_code,
-                            registered_at=datetime.now(),
-                            last_seen_at=datetime.now())
-
-                session.add(user)
-
+            id_to_return: Optional[int] = None
+            if isinstance(nickname_or_id, int):
+                id_to_return = session.query(User).filter_by(id=nickname_or_id).first().id
+            elif isinstance(nickname_or_id, str):
+                id_to_return = session.query(User).filter_by(nickname=nickname_or_id).first().id
             else:
-                user.nickname = aiogram_user.username
-                user.first_name = aiogram_user.first_name
-                user.last_name = aiogram_user.last_name
-                user.language_code = aiogram_user.language_code
-                user.last_seen_at = datetime.now()
+                raise TypeError()
 
-            session.commit()
+            if not id_to_return:
+                raise KeyError()
 
-            return SillyUser(id=user.id, nickname=user.nickname,
-                             first_name=user.first_name, last_name=user.last_name, language_code=user.language_code,
-                             registered_at=user.registered_at, last_seen_at=user.last_seen_at)
+            return id_to_return
 
-    def get(self, name_or_id: int | str) -> SillyUser | None:
+    # endregion
+
+    # region Attributes
+
+    def get_nick_name(self, nickname_or_id: int | str) -> str:
         with self._get_session() as session:
-            if isinstance(name_or_id, int):
-                return session.query(User).filter_by(id=name_or_id).first()
-            else:
-                return session.query(User).filter_by(nickname=name_or_id).first()
+            return session.query(User).filter_by(id=self._validate(nickname_or_id)).first().nickname
+
+    def get_first_name(self, nickname_or_id: int | str) -> str:
+        with self._get_session() as session:
+            return session.query(User).filter_by(id=self._validate(nickname_or_id)).first().first_name
+
+    def get_last_name(self, nickname_or_id: int | str) -> str:
+        with self._get_session() as session:
+            return session.query(User).filter_by(id=self._validate(nickname_or_id)).first().last_name
+
+    def get_registration_date(self, nickname_or_id: int | str) -> datetime:
+        with self._get_session() as session:
+            return session.query(User).filter_by(id=self._validate(nickname_or_id)).first().registered_at
+
+    def get_last_visit_date(self, nickname_or_id: int | str) -> datetime:
+        with self._get_session() as session:
+            return session.query(User).filter_by(id=self._validate(nickname_or_id)).first().last_visited
+
+    def get_language_code(self, nickname_or_id: int | str) -> str:
+        with self._get_session() as session:
+            return session.query(User).filter_by(id=self._validate(nickname_or_id)).first().language_code
+
+    def is_banned(self, nickname_or_id: int | str) -> bool:
+        with self._get_session() as session:
+            return bool(session.query(Ban).filter_by(id=self._validate(nickname_or_id)).all())
+
+    def is_admin(self, nickname_or_id: int | str) -> bool:
+        with self._get_session() as session:
+            return bool(session.query(Admin).filter_by(id=self._validate(nickname_or_id)).all())
+
+    def get_ban_expiration_date(self, nickname_or_id: int | str) -> Optional[datetime]:
+        with self._get_session() as session:
+            ban = session.query(Ban).filter_by(id=self._validate(nickname_or_id)).first()
+            return ban.expires if ban else None
+
+    # endregion
+
+    # region Common
+
+    def get(self, nickname_or_id: int | str) -> SillyUser:
+        return self._create_silly_user(self._validate(nickname_or_id))
 
     def get_all(self) -> tuple[SillyUser, ...]:
         with self._get_session() as session:
-            return session.query(User)
+            return tuple(self._create_silly_user(user.id) for user in session.query(User).all())
 
-    def get_target_message_id(self, user_id: int) -> int | None:
+    # endregion
+
+    # region Admins
+
+    def get_all_admins(self) -> tuple[SillyUser, ...]:
         with self._get_session() as session:
-            return session.query(User).filter_by(id=user_id).first().target_message_id
+            return tuple(self._create_silly_user(user.id) for user in session.query(Admin).all())
 
-    def set_target_message_id(self, user_id: int, message_id: int):
-        with self._get_session() as session:
-            user = session.query(User).filter_by(id=user_id).first()
-            user.target_message_id = message_id
-            session.commit()
-
-    def get_current_page_name(self, user_id: int) -> str | None:
-        with self._get_session() as session:
-            return session.query(User).filter_by(id=user_id).first().current_page_name
-
-    def set_current_page_name(self, user_id: int, page_name: str):
+    def promote(self, nickname_or_id: int | str):
+        user_id = self._validate(nickname_or_id)
         with self._get_session() as session:
             user = session.query(User).filter_by(id=user_id).first()
-            user.current_page_name = page_name
-            session.commit()
-
-    def is_admin(self, user_id: int) -> bool:
-        with self._get_session() as session:
-            return bool(session.query(Admin).filter_by(id=user_id).first())
-
-    def promote(self, user_id: int):
-        with self._get_session() as session:
-            user = session.query(User).filter_by(id=user_id).first()
-            if not user:
-                raise SillyUserNotRegisteredError(f"User {user_id} is not registered")
-
             admin = session.query(Admin).filter_by(id=user_id).first()
             if not admin:
                 admin = Admin(id=user_id)
                 session.add(admin)
                 session.commit()
 
-    def demote(self, user_id: int):
+    def demote(self, nickname_or_id: int | str):
+        user_id = self._validate(nickname_or_id)
         with self._get_session() as session:
             user = session.query(User).filter_by(id=user_id).first()
-            if not user:
-                raise SillyUserNotRegisteredError(f"User {user_id} is not registered")
-
             admin = session.query(Admin).filter_by(id=user_id).first()
             if admin:
                 session.delete(admin)
                 session.commit()
 
-    def is_banned(self, user_id: int) -> bool:
+    # endregion
+
+    # region Banned
+
+    def get_all_banned(self) -> tuple[SillyUser, ...]:
         with self._get_session() as session:
-            user = session.query(User).filter_by(id=user_id).first()
-            if not user:
-                raise SillyUserNotRegisteredError(f"User {user_id} is not registered")
+            return tuple(self._create_silly_user(user.id) for user in session.query(Ban).all())
 
-            bans = session.query(Ban).filter_by(user_id=user_id).all()
-            for ban in bans:
-                if ban.expires > datetime.now() or ban.expires is None:
-                    return True
-
-            return False
-
-    def get_ban_list(self):
-        with self._get_session() as session:
-            bans = session.query(Ban).filter_by(is_banned=True).all()
-            bans_list = ((ban.user_id, ban.expires) for ban in bans)
-
-            return bans_list
-
-    def ban(self, user_id: int, expires: Optional[datetime] = None, lasts: Optional[timedelta] = None) -> datetime:
-        if lasts and expires:
-            raise ValueError()
-
-        if lasts:
-            expires = datetime.now() + lasts
+    def ban(self, nickname_or_id: int | str, duration: timedelta):
+        user_id = self._validate(nickname_or_id)
+        expires = datetime.now() + duration
 
         with self._get_session() as session:
-            user = session.query(User).filter_by(id=user_id).first()
-            if not user:
-                raise SillyUserNotRegisteredError(f"User {user_id} is not registered")
-
             ban = Ban(user_id=user_id, starts=datetime.now(), expires=expires)
             session.add(ban)
             session.commit()
 
             return expires
 
-        return None
+    def unban(self, nickname_or_id: int | str):
+        user_id = self._validate(nickname_or_id)
 
-    def unban(self, user_id: int):
         with self._get_session() as session:
-            user = session.query(User).filter_by(id=user_id).first()
-            if not user:
-                raise SillyUserNotRegisteredError(f"User {user_id} is not registered")
-
-            bans = session.query(Ban).filter(Ban.expires >= datetime.now()).all()
-            for ban in bans:
+            ban = session.query(Ban).filter_by(user_id=user_id).first()
+            if ban:
                 session.delete(ban)
-            session.commit()
+                session.commit()
 
     def unban_all(self):
         with self._get_session() as session:
             session.query(Ban).delete()
             session.commit()
 
-
-
+    # endregion

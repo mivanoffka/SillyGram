@@ -9,8 +9,6 @@ from utility import localize, SillyLogger
 from ..data import SillyDefaults, Data, SillyUser
 from typing import *
 
-from .event import SillyEvent
-
 
 class SillyManager:
     _aiogram_bot: AiogramBot
@@ -22,29 +20,10 @@ class SillyManager:
     def registry(self):
         return self._data.registry
 
-    def amnesty(self):
-        return self._data.users.unban_all()
+    @property
+    def users(self):
+        return self._data.users
 
-    def get_user(self, name_or_id: int | str) -> SillyUser:
-        return self._data.users.get(name_or_id)
-
-    async def promote(self, user_id):
-        self._data.users.promote(user_id)
-
-    async def demote(self, user_id):
-        self._data.users.demote(user_id)
-
-    async def ban(self, user_id: int, duration: timedelta):
-        return self._data.users.ban(user_id, lasts=duration)
-
-    async def unban(self, user_id):
-        self._data.users.unban(user_id)
-
-    async def is_banned(self, user_id):
-        return self._data.users.is_banned(user_id)
-
-    async def is_admin(self, user_id):
-        return self._data.users.is_admin(user_id)
 
     # region High-level messaging methods
 
@@ -58,10 +37,10 @@ class SillyManager:
         else:
             await self._edit_target_message(user, localize(page.text, user.language_code),
                                             page.keyboard(user.language_code))
-        self._data.users.set_current_page_name(user.id, page_name)
+        self._data.set_current_page_name(user.id, page_name)
 
     async def refresh_page(self, user: SillyUser):
-        page = self._data.pages.get(self._data.users.get_current_page_name(user.id))
+        page = self._data.pages.get(self._data.get_current_page_name(user.id))
         await self._edit_target_message(user, localize(page.text, user.language_code),
                                         page.keyboard(user.language_code))
 
@@ -120,7 +99,7 @@ class SillyManager:
         await self._edit_target_message(user, localize(text, user.language_code), keyboard)
 
     async def show_banner(self, user: SillyUser, text: str | Dict[str | Sequence[str], str]):
-        current_page_name = self._data.users.get_current_page_name(user.id)
+        current_page_name = self._data.get_current_page_name(user.id)
 
         await self._delete_target_message(user)
         await self._aiogram_bot.send_message(user.id, localize(text, user.language_code))
@@ -183,7 +162,7 @@ class SillyManager:
     # region Low-level messaging methods
 
     async def _edit_target_message(self, user: SillyUser, text: str, keyboard: InlineKeyboardMarkup):
-        target_message_id = self._data.users.get_target_message_id(user.id)
+        target_message_id = self._data.get_target_message_id(user.id)
 
         if target_message_id is None:
             await self._send_new_target_message(user, text, keyboard)
@@ -200,7 +179,7 @@ class SillyManager:
             await self._send_separation_messages(user)
 
         message: AiogramMessage = await self._aiogram_bot.send_message(user.id, text, reply_markup=keyboard)
-        self._data.users.set_target_message_id(user.id, message.message_id)
+        self._data.set_target_message_id(user.id, message.message_id)
 
     async def _send_separation_messages(self, user: SillyUser):
         for i in range(0, 5):
@@ -208,7 +187,7 @@ class SillyManager:
             await asyncio.sleep(0.15)
 
     async def _replace_target_message(self, user: SillyUser, text: str, keyboard: InlineKeyboardMarkup):
-        target_message_id = self._data.users.get_target_message_id(user.id)
+        target_message_id = self._data.get_target_message_id(user.id)
         if target_message_id is not None:
             try:
                 await self._aiogram_bot.delete_message(user.id, target_message_id)
@@ -218,7 +197,7 @@ class SillyManager:
         await self._send_new_target_message(user, text, keyboard)
 
     async def _delete_target_message(self, user: SillyUser):
-        target_message_id = self._data.users.get_target_message_id(user.id)
+        target_message_id = self._data.get_target_message_id(user.id)
         if target_message_id is None:
             return
 
@@ -233,12 +212,12 @@ class SillyManager:
 
     @staticmethod
     def admin_only(handler: Callable):
-        async def wrapper(manager: SillyManager, event: SillyEvent):
+        async def wrapper(manager: SillyManager, user: SillyUser):
             print("a")
-            if not manager._data.users.is_admin(event.user.id):
-                await manager.show_message(event.user, manager._data.settings.labels.admin_only)
+            if not manager._data.users.is_admin(user.id):
+                await manager.show_message(user, manager._data.settings.labels.admin_only)
             else:
-                await handler(manager, event)
+                await handler(manager, user)
 
         return wrapper
 

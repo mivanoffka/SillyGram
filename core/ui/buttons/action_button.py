@@ -5,12 +5,13 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from core.management.manager import SillyManager
-    from core.management.event import SillyEvent
 
 from ...data.settings_and_defaults import SillyDefaults
 
 from aiogram.types import InlineKeyboardButton
 from typing import List, Callable, Awaitable, Dict, Sequence
+
+from ...data import SillyUser
 
 from .sillybutton import SillyButton
 from utility import localize
@@ -20,7 +21,7 @@ _button_ids: List[int] = list()
 
 class ActionButton(SillyButton):
     _id: int
-    _on_click: Callable[[SillyManager, SillyEvent], Awaitable[None]]
+    _on_click: Callable[[SillyManager, SillyUser], Awaitable[None]]
 
     # region Properties etc.
 
@@ -33,7 +34,7 @@ class ActionButton(SillyButton):
         return SillyDefaults.CallbackData.BUTTON_TEMPLATE.format(self._id)
 
     @property
-    def on_click(self) -> Callable[[SillyManager, SillyEvent], Awaitable[None]]:
+    def on_click(self) -> Callable[[SillyManager, SillyUser], Awaitable[None]]:
         return self._on_click_wrapper
 
     # endregion
@@ -53,15 +54,15 @@ class ActionButton(SillyButton):
         self._id = max_id + 1
         _button_ids.append(self._id)
 
-    async def _on_click_wrapper(self, manager: SillyManager, event: SillyEvent):
+    async def _on_click_wrapper(self, manager: SillyManager, user: SillyUser):
         if self._on_click is not None:
-            await self._on_click(manager, event)
+            await self._on_click(manager, user)
 
     # endregion
 
     def __init__(self,
                  text: str | Dict[str | Sequence[str], str],
-                 on_click: Callable[[SillyManager, SillyEvent], Awaitable[None]] = None):
+                 on_click: Callable[[SillyManager, SillyUser], Awaitable[None]] = None):
         super().__init__(text)
         self._generate_id()
         self._on_click = on_click

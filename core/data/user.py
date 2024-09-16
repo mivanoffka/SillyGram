@@ -1,40 +1,135 @@
-from datetime import datetime
+from __future__ import annotations
+
+from datetime import datetime, timedelta
+from typing import TYPE_CHECKING, Optional, Dict, Sequence, Any
+
+from ..registry import PersonalRegistry
+
+if TYPE_CHECKING:
+    from core.management.manager import SillyManager
 
 
 class SillyUser:
+    _manager: SillyManager
+    _id: int
+    _registry: _UserRegistry
+
+    @property
+    def registry(self) -> _UserRegistry:
+        return self._registry
+
+    class _UserRegistry:
+        _disk: PersonalRegistry
+        _session: PersonalRegistry
+
+        @property
+        def disk(self) -> PersonalRegistry:
+            return self._disk
+
+        @property
+        def session(self) -> PersonalRegistry:
+            return self._session
+
+        def __init__(self, disk: PersonalRegistry, session: PersonalRegistry) -> None:
+            self._disk = disk
+            self._session = session
+
+
+    # region Attributes
+
     @property
     def id(self) -> int:
         return self._id
 
     @property
     def nickname(self) -> str:
-        return self._nickname
-
-    @property
-    def first_name(self) -> str:
-        return self._first_name
+        return self._manager.users.get_nickname(self._id)
 
     @property
     def last_name(self) -> str:
-        return self._last_name
+        return self._manager.users.get_last_name(self._id)
+
+    @property
+    def first_name(self) -> str:
+        return self._manager.users.get_first_name(self._id)
 
     @property
     def language_code(self) -> str:
-        return self._language_code
+        return self._manager.users.get_language_code(self._id)
 
     @property
-    def registered_at(self) -> datetime:
-        return self._registered_at
+    def registration_date(self) -> datetime:
+        return self._manager.users.get_registration_date(self._id)
 
     @property
-    def last_seen_at(self) -> datetime:
-        return self._last_seen_at
+    def last_visit_date(self) -> datetime:
+        return self._manager.users.get_last_visit_date(self._id)
 
-    def __init__(self, id, nickname, first_name, last_name, language_code, registered_at, last_seen_at) -> None:
-        self._id = id
-        self._nickname = nickname
-        self._first_name = first_name
-        self._last_name = last_name
-        self._language_code = language_code
-        self._registered_at = registered_at
-        self._last_seen_at = last_seen_at
+    @property
+    def is_banned(self) -> bool:
+        return self._manager.users.is_banned(self._id)
+
+    @property
+    def is_admin(self) -> bool:
+        return self._manager.users.is_admin(self._id)
+
+    @property
+    def ban_expiration_date(self) -> Optional[datetime]:
+        return self._manager.users.get_ban_expiration_date(self._id)
+
+    # endregion
+
+    # region Status actions
+
+    def ban(self, duration: timedelta):
+        self._manager.users.ban(self._id, duration)
+
+    def unban(self, duration: timedelta):
+        self._manager.users.unban(self._id, duration)
+
+    def promote(self):
+        self._manager.users.promote(self._id)
+
+    def demote(self):
+        self._manager.users.demote(self._id)
+
+    # endregion
+
+    # region Messenger actions
+
+    async def show_notification(self, text: str | Dict[str | Sequence[str], str]):
+        await self._manager.show_notification(self, text)
+
+    async def show_interruption(self, text: str | Dict[str | Sequence[str], str]):
+        await self._manager.show_interruption(self, text)
+
+    async def show_banner(self, text: str | Dict[str | Sequence[str], str]):
+        await self._manager.show_banner(self, text)
+
+    async def show_message(self, text: str | Dict[str | Sequence[str], str]):
+        await self._manager.show_message(self, text)
+
+    async def goto_page(self, page_name: Any, new_target_message=False):
+        await self._manager.goto_page(self, page_name, new_target_message)
+
+    async def refresh_page(self):
+        await self._manager.refresh_page(self)
+
+    async def get_input(self, prompt: str | Dict[str | Sequence[str], str]) -> str | None:
+        return await self._manager.get_input(self, prompt)
+
+    async def show_dialog(self, question: str | Dict[str | Sequence[str], str],
+                          *dialog_options: str | Dict[str | Sequence[str], str]) -> int | None:
+        return await self._manager.show_dialog(self, question, *dialog_options)
+
+    async def get_yes_no(self, question: str | Dict[str | Sequence[str], str]):
+        return await self._manager.get_yes_no_answer(self, question)
+
+    # endregion
+
+    def __init__(self, manager: SillyManager, user_id: int):
+        self._manager = manager
+        self._registry = self._UserRegistry(PersonalRegistry(user_id, manager.registry.disk),
+                                            PersonalRegistry(user_id, manager.registry.session))
+        self._id = user_id
+
