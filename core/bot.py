@@ -8,8 +8,9 @@ from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery
 from aiogram.methods import DeleteWebhook
 
-from .data import SillySettings, SillyUser
-from .management import SillyManager
+from .data import SillySettings
+from .user import SillyUser
+from .manager import SillyManager
 from .data import Data, SillyDefaults
 from .ui import SillyPage, ActionButton
 

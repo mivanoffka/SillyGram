@@ -1,6 +1,7 @@
 from typing import Optional
 
-from ..data import SillyDefaults, SillyUser
+from ..data import SillyDefaults
+from ..user import SillyUser
 
 
 async def get_user_name_or_id(manager, user, prompt: Optional[str]) -> SillyUser:

@@ -1,6 +1,6 @@
 import asyncio
 from abc import abstractmethod
-from ..management import SillyManager
+from ..manager import SillyManager
 
 
 class SillyRegularActivity:

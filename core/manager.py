@@ -6,7 +6,8 @@ from aiogram.types import InlineKeyboardMarkup, Message as AiogramMessage, Inlin
 
 from silly_config import PATH
 from utility import localize, SillyLogger
-from ..data import SillyDefaults, Data, SillyUser
+from core.data import SillyDefaults, Data
+from .user import SillyUser
 from typing import *
 
 
@@ -23,7 +24,6 @@ class SillyManager:
     @property
     def users(self):
         return self._data.users
-
 
     # region High-level messaging methods
 

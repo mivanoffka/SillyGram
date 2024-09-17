@@ -1,11 +1,11 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Dict, List, Sequence
+from typing import TYPE_CHECKING, Dict, Sequence
 
 #from utility import SillyText
 
 if TYPE_CHECKING:
-    from core.management.manager import SillyManager
-    from core.data import SillyUser
+    from ...manager import SillyManager
+    from ...user import SillyUser
 
 from .action_button import ActionButton
 

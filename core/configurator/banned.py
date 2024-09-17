@@ -2,8 +2,9 @@ from datetime import timedelta
 from typing import Optional
 
 from ..ui import ActionButton, SillyPage, NavigationButton
-from ..data import SillyDefaults, SillyUser
-from ..management import SillyManager
+from ..data import SillyDefaults
+from ..user import SillyUser
+from ..manager import SillyManager
 
 from .utility import get_user_name_or_id
 

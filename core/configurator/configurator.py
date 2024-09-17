@@ -1,6 +1,6 @@
 from ..ui import ActionButton, SillyPage, NavigationButton
 from ..data import SillyDefaults
-from ..management import SillyManager
+from ..manager import SillyManager
 
 
 configuration_page = SillyPage(name=SillyDefaults.Names.CONFIGURE_PAGE,

@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 DECLARATIVE_BASE = declarative_base()
 
 
-class User(DECLARATIVE_BASE):
+class UserORM(DECLARATIVE_BASE):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
@@ -20,15 +20,15 @@ class User(DECLARATIVE_BASE):
     registered_at = Column(DateTime, nullable=True)
     last_seen_at = Column(DateTime, nullable=True)
 
-    local_values = relationship("RegistryValue", back_populates="user")
+    local_values = relationship("RegistryValueORM", back_populates="user")
 
 
-class Admin(DECLARATIVE_BASE):
+class AdminORM(DECLARATIVE_BASE):
     __tablename__ = 'admins'
     id = Column(Integer, ForeignKey('users.id'), primary_key=True)
 
 
-class Ban(DECLARATIVE_BASE):
+class BanORM(DECLARATIVE_BASE):
     __tablename__ = 'bans'
 
     id = Column(Integer, primary_key=True)
@@ -38,16 +38,16 @@ class Ban(DECLARATIVE_BASE):
     expires = Column(DateTime, nullable=True)
 
 
-class RegistryKey(DECLARATIVE_BASE):
+class RegistryKeyORM(DECLARATIVE_BASE):
     __tablename__ = 'registry_keys'
 
     id = Column(Integer, primary_key=True)
     key = Column(String, nullable=False)
     global_value = Column(String, nullable=True)
-    local_values = relationship("RegistryValue", back_populates="key")
+    local_values = relationship("RegistryValueORM", back_populates="key")
 
 
-class RegistryValue(DECLARATIVE_BASE):
+class RegistryValueORM(DECLARATIVE_BASE):
     __tablename__ = 'registry_values'
 
     id = Column(Integer, primary_key=True)
@@ -56,8 +56,8 @@ class RegistryValue(DECLARATIVE_BASE):
 
     value = Column(String, nullable=True)
 
-    key = relationship("RegistryKey", back_populates="local_values")
-    user = relationship("User", back_populates="local_values")
+    key = relationship("RegistryKeyORM", back_populates="local_values")
+    user = relationship("UserORM", back_populates="local_values")
 
 
 

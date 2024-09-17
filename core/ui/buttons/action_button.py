@@ -4,14 +4,13 @@ from typing import TYPE_CHECKING
 #from utility import SillyText
 
 if TYPE_CHECKING:
-    from core.management.manager import SillyManager
+    from ...manager import SillyManager
+    from ...user import SillyUser
 
 from ...data.settings_and_defaults import SillyDefaults
 
 from aiogram.types import InlineKeyboardButton
 from typing import List, Callable, Awaitable, Dict, Sequence
-
-from ...data import SillyUser
 
 from .sillybutton import SillyButton
 from utility import localize

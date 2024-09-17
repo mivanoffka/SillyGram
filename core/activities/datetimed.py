@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from ..management import SillyManager
+    from ..manager import SillyManager
 
 from collections.abc import Sequence
 from typing import Optional, Callable, Awaitable, List

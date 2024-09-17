@@ -1,6 +1,7 @@
 from ..ui import ActionButton, SillyPage, NavigationButton
-from ..data import SillyDefaults, SillyUser
-from ..management import SillyManager
+from ..data import SillyDefaults
+from ..user import SillyUser
+from ..manager import SillyManager
 
 
 async def _on_promote_button_click(manager: SillyManager, user: SillyUser):

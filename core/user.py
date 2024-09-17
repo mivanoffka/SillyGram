@@ -3,10 +3,10 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Optional, Dict, Sequence, Any
 
-from ..registry import PersonalRegistry
+from core.data.registry import PersonalRegistry
 
 if TYPE_CHECKING:
-    from core.management.manager import SillyManager
+    from .manager import SillyManager
 
 
 class SillyUser:
