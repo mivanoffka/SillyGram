@@ -34,6 +34,8 @@ class SillyDefaults:
         RESET_BUTTON_TEXT = "Reset data"
         REGISTRY_BUTTON_TEXT = "Registry"
 
+        DATETIME_FORMAT = "%d.%m.%Y-%H:%M"
+
         BACK_BUTTON_TEXT = "Back"
         USER_ID_INPUT_PROMPT = "Please enter the user name of ID"
         ERROR_MESSAGE_TEMPLATE = "An error has occurred.\n\n{}"
@@ -95,6 +97,10 @@ class SillyDefaults:
             UNBAN_BUTTON_TEXT = "Unban"
             AMNESTY_BUTTON_TEXT = "Amnesty"
             LIST_BUTTON_TEXT = "List"
+
+            LIST_MESSAGE_TEMPLATE = "Banned users list:\n\n{}"
+            NO_BANNED_USERS_MESSAGE = "There are no banned users."
+            BANNED_USER_LINE_TEMPLATE = "User {} is banned until {}."
 
             DAYS_PARSING_ERROR_TEXT = "Invalid input format."
 

@@ -6,15 +6,17 @@ from ..data import SillyDefaults
 from ..user import SillyUser
 from ..manager import SillyManager
 
-from .utility import get_user_name_or_id
-
 
 async def _on_banned_button_click(manager: SillyManager, user: SillyUser):
-    user: SillyUser
+    user_to_ban: SillyUser
+    input_str = "?"
     try:
-        user = await get_user_name_or_id(manager, user, SillyDefaults.Configurator.BannedPage.BAN_USER_ID_INPUT_PROMPT)
+        input_str = await manager.get_input(user, SillyDefaults.Configurator.USER_ID_INPUT_PROMPT)
+        user_to_ban = manager.users.get(input_str)
     except Exception as e:
-        await manager.show_message(user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(e))
+        await manager.show_message(user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(
+            SillyDefaults.Configurator.USER_NOT_REGISTERED_ERROR_TEMPLATE.format(input_str)
+        ))
         return
 
     option = await manager.show_dialog(user, SillyDefaults.Configurator.BannedPage.BAN_DURATION_DIALOG_TEXT,
@@ -55,31 +57,34 @@ async def _on_banned_button_click(manager: SillyManager, user: SillyUser):
             multiplier = 9999
         case 6:
             await manager.refresh_page(user)
+            return;
 
     try:
         duration *= multiplier
-        expires = await manager.users.ban(user.id, timedelta(hours=int(duration)))
+        expires = manager.users.ban(user_to_ban.id, timedelta(hours=int(duration)))
 
-        uinfo = str(user.id) if not user.nickname else "{} ({})".format(user.nickname, user.id)
+        uinfo = str(user_to_ban.id) if not user_to_ban.nickname else "{} ({})".format(user_to_ban.nickname, user_to_ban.id)
         await manager.show_message(user, SillyDefaults.Configurator.BannedPage
-                                   .TEMPORAL_BAN_SUCCESS_MESSAGE_TEMPLATE.format(uinfo, expires))
-        return
+                                   .TEMPORAL_BAN_SUCCESS_MESSAGE_TEMPLATE.format(uinfo, expires.strftime(SillyDefaults.Configurator.DATETIME_FORMAT)))
     except Exception as e:
         await manager.show_message(user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(e))
 
 
 async def _on_unban_button_click(manager: SillyManager, user: SillyUser):
-    user: SillyUser
+    user_to_unban: SillyUser
+    input_str = "?"
     try:
-        user = await get_user_name_or_id(manager, user, SillyDefaults.Configurator.BannedPage.
-                                         UNBAN_USER_ID_INPUT_PROMPT)
+        input_str = await manager.get_input(user, SillyDefaults.Configurator.USER_ID_INPUT_PROMPT)
+        user_to_unban = manager.users.get(input_str)
     except Exception as e:
-        await manager.show_message(user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(e))
+        await manager.show_message(user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(
+            SillyDefaults.Configurator.USER_NOT_REGISTERED_ERROR_TEMPLATE.format(input_str)
+        ))
         return
 
     try:
-        await manager.users.unban(user.id)
-        uinfo = str(user.id) if not user.nickname else "{} ({})".format(user.nickname, user.id)
+        manager.users.unban(user_to_unban.id)
+        uinfo = str(user_to_unban.id) if not user_to_unban.nickname else "{} ({})".format(user_to_unban.nickname, user_to_unban.id)
         await manager.show_message(user, SillyDefaults.Configurator.BannedPage
                                    .UNBAN_SUCCESS_MESSAGE_TEMPLATE.format(uinfo))
 
@@ -96,10 +101,25 @@ async def _on_amnesty_button_click(manager: SillyManager, user: SillyUser):
         return
 
     try:
-        manager.users.amnesty()
+        manager.users.unban_all()
         await manager.show_message(user, SillyDefaults.Configurator.BannedPage.AMNESTY_SUCCESS_TEXT)
     except Exception as e:
         await manager.show_message(user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(e))
+
+
+async def _on_list_button_click(manager: SillyManager, user: SillyUser):
+    banned_users_list = manager.users.get_all_banned()
+    message_text = SillyDefaults.Configurator.BannedPage.NO_BANNED_USERS_MESSAGE
+    if banned_users_list:
+        lines = ""
+        for banned_user in banned_users_list:
+
+            uinfo = str(banned_user.id) if not banned_user.nickname else "{} ({})".format(banned_user.nickname, banned_user.id)
+            lines += (SillyDefaults.Configurator.BannedPage.BANNED_USER_LINE_TEMPLATE.
+                      format(uinfo, banned_user.ban_expiration_date.strftime(SillyDefaults.Configurator.DATETIME_FORMAT)))
+        message_text = SillyDefaults.Configurator.BannedPage.LIST_MESSAGE_TEMPLATE.format(lines)
+
+    await user.show_message(message_text)
 
 
 banned_page = SillyPage(name=SillyDefaults.Configurator.BannedPage.NAME,
@@ -113,6 +133,7 @@ banned_page = SillyPage(name=SillyDefaults.Configurator.BannedPage.NAME,
                                           _on_amnesty_button_click),),
                             (NavigationButton(SillyDefaults.Configurator.BACK_BUTTON_TEXT,
                                               SillyDefaults.Names.CONFIGURE_PAGE),
-                             ActionButton(SillyDefaults.Configurator.BannedPage.LIST_BUTTON_TEXT))
+                             ActionButton(SillyDefaults.Configurator.BannedPage.LIST_BUTTON_TEXT,
+                                          _on_list_button_click))
 
                         ))

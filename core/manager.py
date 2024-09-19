@@ -61,6 +61,7 @@ class SillyManager:
             row.append(InlineKeyboardButton(text=localize(text, user.language_code), callback_data=f"OPTION_{i}"))
 
             if c >= 3:
+                c = 0
                 buttons.append(row)
                 row = []
 

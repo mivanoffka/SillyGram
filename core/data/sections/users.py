@@ -23,7 +23,11 @@ class Users(SillyDbSection):
     # region System
 
     def _create_silly_user(self, user_id: int):
-        return SillyUser(user_id=user_id, manager=self._manager)
+        with self._get_session() as session:
+            user = session.query(UserORM).filter_by(id=user_id).first()
+            if not user:
+                raise KeyError()
+            return SillyUser(user_id=user_id, manager=self._manager)
 
     def _validate(self, nickname_or_id: int | str) -> int:
         with self._get_session() as session:
@@ -132,8 +136,12 @@ class Users(SillyDbSection):
         expires = datetime.now() + duration
 
         with self._get_session() as session:
-            ban = BanORM(user_id=user_id, starts=datetime.now(), expires=expires)
-            session.add(ban)
+            ban = session.query(BanORM).filter_by(id=user_id).first()
+            if not ban:
+                ban = BanORM(id=user_id, starts=datetime.now(), expires=expires)
+                session.add(ban)
+            elif expires > ban.expires:
+                ban.expires = expires
             session.commit()
 
             return expires
@@ -142,7 +150,7 @@ class Users(SillyDbSection):
         user_id = self._validate(nickname_or_id)
 
         with self._get_session() as session:
-            ban = session.query(BanORM).filter_by(user_id=user_id).first()
+            ban = session.query(BanORM).filter_by(id=user_id).first()
             if ban:
                 session.delete(ban)
                 session.commit()

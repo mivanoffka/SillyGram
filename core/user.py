@@ -43,7 +43,7 @@ class SillyUser:
 
     @property
     def nickname(self) -> str:
-        return self._manager.users.get_nickname(self._id)
+        return self._manager.users.get_nick_name(self._id)
 
     @property
     def last_name(self) -> str:

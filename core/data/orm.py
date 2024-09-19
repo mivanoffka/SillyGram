@@ -31,8 +31,7 @@ class AdminORM(DECLARATIVE_BASE):
 class BanORM(DECLARATIVE_BASE):
     __tablename__ = 'bans'
 
-    id = Column(Integer, primary_key=True)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    id = Column(Integer, ForeignKey('users.id'), primary_key=True)
 
     starts = Column(DateTime, nullable=False)
     expires = Column(DateTime, nullable=True)

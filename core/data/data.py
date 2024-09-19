@@ -68,7 +68,6 @@ class Data(SillyDB):
             session.commit()
             return id_to_return
 
-
     def get_target_message_id(self, user_id: int) -> int | None:
         with self._get_session() as session:
             return session.query(UserORM).filter_by(id=user_id).first().target_message_id
