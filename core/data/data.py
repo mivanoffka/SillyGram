@@ -1,14 +1,16 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 
+from sqlalchemy import desc
+
 if TYPE_CHECKING:
     from core.manager import SillyManager
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from utility import SillyDB
 from .sections import IO, Pages, Users
-from .orm import DECLARATIVE_BASE, UserORM
+from .orm import DECLARATIVE_BASE, UserORM, RecentUserORM, StatisticsUnitORM
 from ..ui import SillyPage
 from .settings_and_defaults import SillySettings
 from core.data.registry import SillyRegistry
@@ -64,6 +66,11 @@ class Data(SillyDB):
                 user.language_code = aiogram_user.language_code
                 user.last_seen_at = datetime.now()
 
+            recent_user = session.query(RecentUserORM).filter_by(id=aiogram_user.id).first()
+            if not recent_user:
+                recent_user = RecentUserORM(id=aiogram_user.id)
+                session.add(recent_user)
+
             id_to_return = user.id
             session.commit()
             return id_to_return
@@ -90,6 +97,32 @@ class Data(SillyDB):
 
     def init_users(self, manager: SillyManager):
         self._users = Users(self, manager)
+
+    def summarize_statistics(self):
+        with self._get_session() as session:
+
+
+            current_time = datetime.now().replace(microsecond=0, minute=0, second=0)
+            current_hour = session.query(StatisticsUnitORM).filter_by(ends_at=None).first()
+            active_users_count = session.query(RecentUserORM).count()
+            total_users_count = session.query(UserORM).count()
+
+            if current_hour:
+                if current_time > current_hour.starts_at:
+                    current_hour.ends_at = current_hour.starts_at + timedelta(hours=1)
+                    current_hour.active_users_count = active_users_count
+                    current_hour.total_users_count = total_users_count
+
+                    new_hour = StatisticsUnitORM(starts_at=current_time)
+                    session.add(new_hour)
+                    session.query(RecentUserORM).delete()
+
+            else:
+                new_hour = StatisticsUnitORM(starts_at=current_time)
+                session.add(new_hour)
+                session.query(RecentUserORM).delete()
+
+            session.commit()
 
     def __init__(self, settings: SillySettings, *pages: SillyPage):
         super().__init__("sillygram", DECLARATIVE_BASE)

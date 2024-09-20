@@ -23,7 +23,8 @@ class SillyDateTimeActivity(SillyRegularActivity):
         if self._last_check_date != current.date():
             self._executed_today.clear()
         self._last_check_date = current.date()
-        return self._matches_time(current) and self._matches_date(current)
+        result = self._matches_time(current) and self._matches_date(current)
+        return result
 
     def _matches_time(self, date_time: datetime) -> bool:
         for allowed_time in self._times:

@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from datetime import time, timedelta
 from typing import *
 
 from aiogram import Bot as AiogramBot, Dispatcher, F
@@ -14,7 +15,7 @@ from .manager import SillyManager
 from .data import Data, SillyDefaults
 from .ui import SillyPage, ActionButton
 
-from .activities import SillyRegularActivity
+from .activities import SillyRegularActivity, SillyDateTimeActivity
 from .configurator import configurator
 
 
@@ -31,6 +32,7 @@ class SillyBot:
 
     # region Startup & shutdown
     async def _on_aiogram_startup(self):
+        self._data.summarize_statistics()
         if self._startup_activity:
             asyncio.create_task(self._startup_activity(self._manager))
         if self._regular_activities:
@@ -269,5 +271,14 @@ class SillyBot:
         self._dispatcher.shutdown.register(self._on_aiogram_shutdown)
         self._manager = SillyManager(self._aiogram_bot, self._data)
         self._data.init_users(self._manager)
-        self._regular_activities = regular_activities
+
+        async def summarize_statistics(manager: SillyManager):
+            self._data.summarize_statistics()
+
+        stats_activity = SillyDateTimeActivity(summarize_statistics,
+                                               times=tuple(time(hour=h) for h in range(24)),
+                                               max_time_delta=timedelta(minutes=1))
+
+        self._regular_activities = (*regular_activities, stats_activity)
+
         self._setup_handlers()

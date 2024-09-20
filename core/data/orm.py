@@ -32,8 +32,6 @@ class BanORM(DECLARATIVE_BASE):
     __tablename__ = 'bans'
 
     id = Column(Integer, ForeignKey('users.id'), primary_key=True)
-
-    starts = Column(DateTime, nullable=False)
     expires = Column(DateTime, nullable=True)
 
 
@@ -58,5 +56,21 @@ class RegistryValueORM(DECLARATIVE_BASE):
     key = relationship("RegistryKeyORM", back_populates="local_values")
     user = relationship("UserORM", back_populates="local_values")
 
+
+class StatisticsUnitORM(DECLARATIVE_BASE):
+    __tablename__ = "statistics"
+
+    id = Column(Integer, primary_key=True)
+
+    active_users_count = Column(Integer, nullable=True)
+    total_users_count = Column(Integer, nullable=True)
+
+    starts_at = Column(DateTime, nullable=False)
+    ends_at = Column(DateTime, nullable=True)
+
+class RecentUserORM(DECLARATIVE_BASE):
+    __tablename__ = 'recent_users'
+
+    id = Column(Integer, ForeignKey('users.id'), primary_key=True)
 
 

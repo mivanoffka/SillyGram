@@ -138,7 +138,7 @@ class Users(SillyDbSection):
         with self._get_session() as session:
             ban = session.query(BanORM).filter_by(id=user_id).first()
             if not ban:
-                ban = BanORM(id=user_id, starts=datetime.now(), expires=expires)
+                ban = BanORM(id=user_id, expires=expires)
                 session.add(ban)
             elif expires > ban.expires:
                 ban.expires = expires

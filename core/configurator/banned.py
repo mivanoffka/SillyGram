@@ -6,6 +6,7 @@ from ..data import SillyDefaults
 from ..user import SillyUser
 from ..manager import SillyManager
 
+
 @SillyManager.admin_only
 async def _on_banned_button_click(manager: SillyManager, user: SillyUser):
     user_to_ban: SillyUser
@@ -69,6 +70,7 @@ async def _on_banned_button_click(manager: SillyManager, user: SillyUser):
     except Exception as e:
         await manager.show_message(user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(e))
 
+
 @SillyManager.admin_only
 async def _on_unban_button_click(manager: SillyManager, user: SillyUser):
     user_to_unban: SillyUser
@@ -93,6 +95,7 @@ async def _on_unban_button_click(manager: SillyManager, user: SillyUser):
                                    .format(e))
         return
 
+
 @SillyManager.admin_only
 async def _on_amnesty_button_click(manager: SillyManager, user: SillyUser):
     confirmed = await manager.get_yes_no_answer(user, SillyDefaults.Configurator.BannedPage.AMNESTY_DIALOG_TEXT)
@@ -105,6 +108,7 @@ async def _on_amnesty_button_click(manager: SillyManager, user: SillyUser):
         await manager.show_message(user, SillyDefaults.Configurator.BannedPage.AMNESTY_SUCCESS_TEXT)
     except Exception as e:
         await manager.show_message(user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(e))
+
 
 @SillyManager.admin_only
 async def _on_list_button_click(manager: SillyManager, user: SillyUser):
