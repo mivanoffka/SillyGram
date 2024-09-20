@@ -48,6 +48,10 @@ class SillyDefaults:
             TEXT = "Admins page"
             PROMOTE_BUTTON_TEXT = "Promote"
             DEMOTE_BUTTON_TEXT = "Demote"
+            LIST_BUTTON_TEXT = "List"
+            LIST_MESSAGE_TEMPLATE = "Admins list:\n\n{}"
+            LIST_MESSAGE_EMPTY = "There are no admins"
+
 
             PROMOTION_USER_ID_INPUT_PROMPT = "Please enter the ID of the user you want to promote."
             DEMOTION_USER_ID_INPUT_PROMPT = "Please enter the ID of the user you want to demote."
@@ -70,6 +74,7 @@ class SillyDefaults:
         class BannedPage:
             NAME = "BANNED"
             TEXT = "Banned page"
+            LIST_MESSAGE_TEMPLATE = "Banned users list:\n\n{}"
 
             BAN_USER_ID_INPUT_PROMPT = "Please enter the ID of the user you want to ban."
             BAN_DATE_INPUT_PROMPT = "Now enter the blocking duration in days (non integral values are allowed)"
