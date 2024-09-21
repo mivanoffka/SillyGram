@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from calendar import weekday
 from typing import TYPE_CHECKING
 
 from sqlalchemy import desc
@@ -10,7 +12,7 @@ from datetime import datetime, timedelta
 
 from utility import SillyDB
 from .sections import IO, Pages, Users
-from .orm import DECLARATIVE_BASE, UserORM, RecentUserORM, StatisticsUnitORM
+from .orm import *
 from ..ui import SillyPage
 from .settings_and_defaults import SillySettings
 from core.data.registry import SillyRegistry
@@ -66,14 +68,19 @@ class Data(SillyDB):
                 user.language_code = aiogram_user.language_code
                 user.last_seen_at = datetime.now()
 
-            recent_user = session.query(RecentUserORM).filter_by(id=aiogram_user.id).first()
-            if not recent_user:
-                recent_user = RecentUserORM(id=aiogram_user.id)
-                session.add(recent_user)
+            self._save_as_recent_user(session, user.id)
 
             id_to_return = user.id
             session.commit()
             return id_to_return
+
+    def _save_as_recent_user(self, session, user_id: int):
+        types = (HourlyUserORM, DailyUserORM, MonthlyUserORM, YearlyUserORM)
+        for user_orm in types:
+            recent_user = session.query(user_orm).filter_by(id=user_id).first()
+            if not recent_user:
+                recent_user = user_orm(id=user_id)
+                session.add(recent_user)
 
     def get_target_message_id(self, user_id: int) -> int | None:
         with self._get_session() as session:
@@ -98,29 +105,42 @@ class Data(SillyDB):
     def init_users(self, manager: SillyManager):
         self._users = Users(self, manager)
 
-    def summarize_statistics(self):
+    async def summarize_hourly_statistics(self, manager: SillyManager):
+        t = datetime.now().replace(microsecond=0, minute=0, second=0)
+        self._summarize(StatisticsHourORM, HourlyUserORM, t)
+
+    async def summarize_daily_statistics(self, manager: SillyManager):
+        t = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+        self._summarize(StatisticsDayORM, DailyUserORM, t)
+
+    async def summarize_monthly_statistics(self, manager: SillyManager):
+        t = datetime.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        self._summarize(StatisticsMonthORM, MonthlyUserORM, t)
+
+    async def summarize_yearly_statistics(self, manager: SillyManager):
+        t = datetime.now().replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+        self._summarize(StatisticsYearORM, YearlyUserORM, t)
+
+    def _summarize(self, statistics_unit: type, recent_user: type, t: datetime):
         with self._get_session() as session:
-
-
-            current_time = datetime.now().replace(microsecond=0, minute=0, second=0)
-            current_hour = session.query(StatisticsUnitORM).filter_by(ends_at=None).first()
-            active_users_count = session.query(RecentUserORM).count()
+            current_unit = session.query(statistics_unit).filter_by(ends_at=None).first()
+            active_users_count = session.query(recent_user).count()
             total_users_count = session.query(UserORM).count()
 
-            if current_hour:
-                if current_time > current_hour.starts_at:
-                    current_hour.ends_at = current_hour.starts_at + timedelta(hours=1)
-                    current_hour.active_users_count = active_users_count
-                    current_hour.total_users_count = total_users_count
+            if current_unit:
+                if t > current_unit.starts_at:
+                    current_unit.ends_at = current_unit.starts_at + timedelta(hours=1)
+                    current_unit.active_users_count = active_users_count
+                    current_unit.total_users_count = total_users_count
 
-                    new_hour = StatisticsUnitORM(starts_at=current_time)
-                    session.add(new_hour)
-                    session.query(RecentUserORM).delete()
+                    new_unit = statistics_unit(starts_at=t)
+                    session.add(new_unit)
+                    session.query(recent_user).delete()
 
             else:
-                new_hour = StatisticsUnitORM(starts_at=current_time)
-                session.add(new_hour)
-                session.query(RecentUserORM).delete()
+                new_unit = statistics_unit(starts_at=t)
+                session.add(new_unit)
+                session.query(recent_user).delete()
 
             session.commit()
 

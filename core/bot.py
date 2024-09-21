@@ -32,7 +32,11 @@ class SillyBot:
 
     # region Startup & shutdown
     async def _on_aiogram_startup(self):
-        self._data.summarize_statistics()
+        await self._data.summarize_hourly_statistics(self._manager)
+        await self._data.summarize_daily_statistics(self._manager)
+        await self._data.summarize_monthly_statistics(self._manager)
+        await self._data.summarize_yearly_statistics(self._manager)
+
         if self._startup_activity:
             asyncio.create_task(self._startup_activity(self._manager))
         if self._regular_activities:
@@ -272,13 +276,25 @@ class SillyBot:
         self._manager = SillyManager(self._aiogram_bot, self._data)
         self._data.init_users(self._manager)
 
-        async def summarize_statistics(manager: SillyManager):
-            self._data.summarize_statistics()
+        hourly_stats_activity = SillyDateTimeActivity(self._data.summarize_hourly_statistics,
+                                                      times=tuple(time(hour=h) for h in range(24)),
+                                                      max_time_delta=timedelta(minutes=1))
 
-        stats_activity = SillyDateTimeActivity(summarize_statistics,
-                                               times=tuple(time(hour=h) for h in range(24)),
-                                               max_time_delta=timedelta(minutes=1))
+        daily_stats_activity = SillyDateTimeActivity(self._data.summarize_daily_statistics,
+                                                      times=time(hour=0),
+                                                      max_time_delta=timedelta(minutes=1))
 
-        self._regular_activities = (*regular_activities, stats_activity)
+        monthly_stats_activity = SillyDateTimeActivity(self._data.summarize_monthly_statistics,
+                                                       times=time(hour=0),
+                                                       monthdays=1)
+
+        yearly_stats_activity = SillyDateTimeActivity(self._data.summarize_yearly_statistics,
+                                                      times=time(hour=0),
+                                                      monthdays=1,
+                                                      months=1)
+
+        stats_activities = (hourly_stats_activity, daily_stats_activity, monthly_stats_activity, yearly_stats_activity)
+
+        self._regular_activities = (*regular_activities, *stats_activities)
 
         self._setup_handlers()

@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, MetaData, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
 DECLARATIVE_BASE = declarative_base()
@@ -57,8 +57,10 @@ class RegistryValueORM(DECLARATIVE_BASE):
     user = relationship("UserORM", back_populates="local_values")
 
 
-class StatisticsUnitORM(DECLARATIVE_BASE):
-    __tablename__ = "statistics"
+# region Statistics
+
+class StatisticsHourORM(DECLARATIVE_BASE):
+    __tablename__ = "statistics_hour"
 
     id = Column(Integer, primary_key=True)
 
@@ -68,9 +70,68 @@ class StatisticsUnitORM(DECLARATIVE_BASE):
     starts_at = Column(DateTime, nullable=False)
     ends_at = Column(DateTime, nullable=True)
 
-class RecentUserORM(DECLARATIVE_BASE):
-    __tablename__ = 'recent_users'
 
+class StatisticsDayORM(DECLARATIVE_BASE):
+    __tablename__ = "statistics_day"
+
+    id = Column(Integer, primary_key=True)
+
+    active_users_count = Column(Integer, nullable=True)
+    total_users_count = Column(Integer, nullable=True)
+
+    starts_at = Column(DateTime, nullable=False)
+    ends_at = Column(DateTime, nullable=True)
+
+class StatisticsWeekORM(DECLARATIVE_BASE):
+    __tablename__ = "statistics_week"
+
+    id = Column(Integer, primary_key=True)
+
+    active_users_count = Column(Integer, nullable=True)
+    total_users_count = Column(Integer, nullable=True)
+
+    starts_at = Column(DateTime, nullable=False)
+    ends_at = Column(DateTime, nullable=True)
+
+class StatisticsMonthORM(DECLARATIVE_BASE):
+    __tablename__ = "statistics_month"
+
+    id = Column(Integer, primary_key=True)
+
+    active_users_count = Column(Integer, nullable=True)
+    total_users_count = Column(Integer, nullable=True)
+
+    starts_at = Column(DateTime, nullable=False)
+    ends_at = Column(DateTime, nullable=True)
+
+class StatisticsYearORM(DECLARATIVE_BASE):
+    __tablename__ = "statistics_year"
+
+    id = Column(Integer, primary_key=True)
+
+    active_users_count = Column(Integer, nullable=True)
+    total_users_count = Column(Integer, nullable=True)
+
+    starts_at = Column(DateTime, nullable=False)
+    ends_at = Column(DateTime, nullable=True)
+
+
+
+class HourlyUserORM(DECLARATIVE_BASE):
+    __tablename__ = 'hourly_users'
     id = Column(Integer, ForeignKey('users.id'), primary_key=True)
 
+class DailyUserORM(DECLARATIVE_BASE):
+    __tablename__ = 'daily_users'
+    id = Column(Integer, ForeignKey('users.id'), primary_key=True)
+
+class MonthlyUserORM(DECLARATIVE_BASE):
+    __tablename__ = 'monthly_users'
+    id = Column(Integer, ForeignKey('users.id'), primary_key=True)
+
+class YearlyUserORM(DECLARATIVE_BASE):
+    __tablename__ = 'yearly_users'
+    id = Column(Integer, ForeignKey('users.id'), primary_key=True)
+
+# endregion
 
