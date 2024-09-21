@@ -44,6 +44,9 @@ class SessionRegistry(Registrable):
     def _reset_values(self):
         self._registry.clear()
 
+    def get_keys(self) -> tuple[str, ...]:
+        return tuple(self._keys.keys())
+
     def __init__(self):
         super().__init__()
         self._registry = {}

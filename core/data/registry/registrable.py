@@ -24,6 +24,10 @@ class Registrable:
         self._reset_keys()
         self._reset_values()
 
+    def reset_user(self, user_id: int):
+        for key in self.get_keys():
+            self._set_default(key, user_id)
+
     @abstractmethod
     def _reset_values(self):
         raise NotImplementedError()
@@ -44,6 +48,10 @@ class Registrable:
 
     @abstractmethod
     def _is_user_value_not_default(self, key: str, user_id: int):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def get_keys(self) -> tuple[str, ...]:
         raise NotImplementedError()
 
     def set_value(self,  key: str | Tuple[str, int], value: Optional[str]):

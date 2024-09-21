@@ -9,6 +9,8 @@ U1 = 1
 U2 = 2
 V1 = "V1"
 V2 = "V2"
+K1 = "K1"
+K2 = "K2"
 
 
 class RegistryTests(unittest.TestCase):
@@ -162,6 +164,42 @@ class RegistryTests(unittest.TestCase):
             exception = True
 
         self.assertTrue(exception, True)
+
+    def test_user_reset_0(self):
+        self._registry.establish_key(K1, K1)
+        self._registry.establish_key(K2, K1)
+
+        self._registry.set_value((K1, U1), V1)
+        self._registry.set_value((K2, U1), V2)
+
+        v = self._registry.get_value((K1, U1))
+
+        self.assertTrue(v, V1)
+
+    def test_user_reset_1(self):
+        self._registry.establish_key(K1, K1)
+        self._registry.establish_key(K2, K1)
+
+        self._registry.set_value((K1, U1), V1)
+        self._registry.set_value((K2, U1), V2)
+
+        self._registry.reset_user(U1)
+        v = self._registry.get_value((K1, U1))
+
+        self.assertTrue(v, K1)
+
+    def test_user_reset_2(self):
+        self._registry.establish_key(K1, K1)
+        self._registry.establish_key(K2, K1)
+
+        self._registry.set_value((K1, U1), V1)
+        self._registry.set_value((K2, U1), V2)
+
+        self._registry.reset_user(U1)
+        v = self._registry.get_value((K2, U1))
+
+        self.assertTrue(v, K2)
+
 
 
 

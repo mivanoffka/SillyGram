@@ -32,9 +32,12 @@ class DiskRegistry(Registrable, SillyDbSection):
                     session.delete(registry_value)
                 session.commit()
 
-    def _set_default(self, key: str, user: id):
+    def _set_default(self, key: str, user_id: int):
         with self._get_session() as session:
-            registry_value = session.query(RegistryValueORM).filter_by(key=key, user_id=user).first()
+            registry_key = session.query(RegistryKeyORM).filter_by(key=key).first()
+            if not registry_key:
+                return
+            registry_value = session.query(RegistryValueORM).filter_by(key_id=registry_key.id, user_id=user_id).first()
             if registry_value:
                 session.delete(registry_value)
                 session.commit()
@@ -85,6 +88,11 @@ class DiskRegistry(Registrable, SillyDbSection):
         with self._get_session() as session:
             session.query(RegistryValueORM).delete()
             session.commit()
+
+    def get_keys(self) -> tuple[str, ...]:
+        with self._get_session() as session:
+            registry_keys = session.query(RegistryKeyORM).all()
+            return tuple(registry_key.key for registry_key in registry_keys)
 
     def __init__(self, db: SillyDB) -> None:
         SillyDbSection.__init__(self, db)
