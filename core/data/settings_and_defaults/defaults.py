@@ -33,6 +33,7 @@ class SillyDefaults:
         HOME_BUTTON_TEXT = "Home"
         RESET_BUTTON_TEXT = "Reset data"
         REGISTRY_BUTTON_TEXT = "Registry"
+        NOT_IMPLEMENTED_TEXT = "This will be implemented in future versions of SillyGram!"
 
         DATETIME_FORMAT = "%d.%m.%Y-%H:%M"
 

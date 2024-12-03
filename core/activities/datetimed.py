@@ -27,7 +27,7 @@ class SillyDateTimeActivity(SillyRegularActivity):
         return result
 
     def _matches_time(self, date_time: datetime) -> bool:
-        for allowed_time in self._times:
+        for allowed_time in reversed(self._times):
             if allowed_time in self._executed_today:
                 continue
             if date_time.time() >= allowed_time:
@@ -44,6 +44,7 @@ class SillyDateTimeActivity(SillyRegularActivity):
                 else:
                     self._executed_today.append(allowed_time)
                     return True
+                break
 
         return False
 
