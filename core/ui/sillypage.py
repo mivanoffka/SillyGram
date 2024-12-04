@@ -1,13 +1,11 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, Dict, List
+from typing import TYPE_CHECKING, Dict
 
 from aiogram.types import InlineKeyboardMarkup
 
 from . import SillyButton
-
-# #from utility import SillyText
 
 if TYPE_CHECKING:
     pass
@@ -22,12 +20,15 @@ class SillyPage:
     _is_start: bool = False
 
     @property
-    def text(self) -> str | Dict[str | List[str], str]:
+    def text(self) -> str | Dict[str | Sequence[str], str]:
         return self._text
 
     def keyboard(self, language_code: str) -> InlineKeyboardMarkup:
         return InlineKeyboardMarkup(
-            inline_keyboard=[[button.aiogramify(language_code) for button in row] for row in self._buttons]
+            inline_keyboard=[
+                [button.aiogramify(language_code) for button in row]
+                for row in self._buttons
+            ]
         )
 
     @property
@@ -46,11 +47,14 @@ class SillyPage:
     def name(self) -> str:
         return self._name
 
-    def __init__(self, name: str,
-                 text: str | Dict[str | Sequence[str], str],
-                 buttons: SillyButton | Sequence[SillyButton] | Sequence[Sequence[SillyButton]],
-                 is_home: bool = False,
-                 is_start: bool = False):
+    def __init__(
+        self,
+        name: str,
+        text: str | Dict[str | Sequence[str], str],
+        buttons: SillyButton | Sequence[SillyButton] | Sequence[Sequence[SillyButton]],
+        is_home: bool = False,
+        is_start: bool = False,
+    ):
 
         buttons_edited = []
         row = []
@@ -79,4 +83,3 @@ class SillyPage:
 
         self._is_home = is_home
         self._is_start = is_start
-

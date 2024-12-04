@@ -8,7 +8,7 @@ from utility import SillyDbSection, SillyDB
 if TYPE_CHECKING:
     from ...manager import SillyManager
 
-from ..orm import *
+from ..orm import StatisticsDayORM, HourlyUserORM, StatisticsHourORM, StatisticsMonthORM, StatisticsYearORM, DailyUserORM, MonthlyUserORM, YearlyUserORM, UserORM
 
 
 class Stats(SillyDbSection):
@@ -51,6 +51,12 @@ class Stats(SillyDbSection):
                 session.query(recent_user).delete()
 
             session.commit()
+
+    # def get_report(self) -> str:
+    #     text = "Users' statistics"
+
+    # def get_sub_report(self, statistics_unit: type) -> str:
+    #     with self.
 
     def __init__(self, db: SillyDB):
         super().__init__(db)

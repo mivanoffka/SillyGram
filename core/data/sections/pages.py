@@ -10,7 +10,7 @@ class Pages:
     def names(self) -> Tuple[str, ...]:
         return tuple(self._pages.keys())
 
-    def get(self, name: Any) -> Optional[SillyPage]:
+    def get(self, name: Any) -> SillyPage:
         if name in self.names:
             return self._pages[name]
 

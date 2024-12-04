@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run example",
+            "type": "shell",
+            "command": "source ${workspaceFolder}/.venv/bin/activate && echo 'Launching bot...' && echo '' && sh run_example.sh",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }
+    ]
+}

@@ -8,7 +8,7 @@ from silly_config import PATH
 from utility import localize, SillyLogger
 from core.data import SillyDefaults, Data
 from .user import SillyUser
-from typing import *
+from typing import Any, Dict, Sequence, Callable, Optional, List
 
 
 class SillyManager:
@@ -145,8 +145,8 @@ class SillyManager:
 
     # region Other
 
-    async def start_broadcast(self, text: str | Dict[str | Sequence[str], str], user_ids: list[int] = None):
-        async def _task(_text: str | Dict[str | Sequence[str], str], _user_ids: list[int] = None):
+    async def start_broadcast(self, text: str | Dict[str | Sequence[str], str], user_ids: Optional[List[int]] = None):
+        async def _task(_text: str | Dict[str | Sequence[str], str], _user_ids: Optional[List[int]] = None):
             all_users = self._data.users.get_all()
             users = all_users if user_ids is None else (user for user in all_users if user.id in user_ids)
 

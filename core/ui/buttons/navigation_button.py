@@ -1,8 +1,6 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Dict, Sequence
 
-#from utility import SillyText
-
 if TYPE_CHECKING:
     from ...manager import SillyManager
     from ...user import SillyUser
@@ -19,7 +17,3 @@ class NavigationButton(ActionButton):
     def __init__(self, text: str | Dict[str | Sequence[str], str], page_name: str):
         super().__init__(text, self._show_page)
         self._page_name = page_name
-
-
-
-

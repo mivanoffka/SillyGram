@@ -1,7 +1,7 @@
 import asyncio
 import logging
 from datetime import time, timedelta
-from typing import *
+from typing import Optional, Sequence, Callable, Awaitable, Any
 
 from aiogram import Bot as AiogramBot, Dispatcher, F
 from aiogram.client.default import DefaultBotProperties

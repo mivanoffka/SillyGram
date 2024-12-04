@@ -34,7 +34,6 @@ class SillyUser:
             self._disk = disk
             self._session = session
 
-
     # region Attributes
 
     @property
@@ -115,11 +114,16 @@ class SillyUser:
     async def refresh_page(self):
         await self._manager.refresh_page(self)
 
-    async def get_input(self, prompt: str | Dict[str | Sequence[str], str]) -> str | None:
+    async def get_input(
+        self, prompt: str | Dict[str | Sequence[str], str]
+    ) -> str | None:
         return await self._manager.get_input(self, prompt)
 
-    async def show_dialog(self, question: str | Dict[str | Sequence[str], str],
-                          *dialog_options: str | Dict[str | Sequence[str], str]) -> int | None:
+    async def show_dialog(
+        self,
+        question: str | Dict[str | Sequence[str], str],
+        *dialog_options: str | Dict[str | Sequence[str], str],
+    ) -> int | None:
         return await self._manager.show_dialog(self, question, *dialog_options)
 
     async def get_yes_no(self, question: str | Dict[str | Sequence[str], str]):
@@ -129,7 +133,8 @@ class SillyUser:
 
     def __init__(self, manager: SillyManager, user_id: int):
         self._manager = manager
-        self._registry = self._UserRegistry(PersonalRegistry(user_id, manager.registry.disk),
-                                            PersonalRegistry(user_id, manager.registry.session))
+        self._registry = self._UserRegistry(
+            PersonalRegistry(user_id, manager.registry.disk),
+            PersonalRegistry(user_id, manager.registry.session),
+        )
         self._id = user_id
-

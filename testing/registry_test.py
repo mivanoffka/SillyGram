@@ -19,7 +19,7 @@ class RegistryTests(unittest.TestCase):
     @abstractmethod
     def setUp(self):
         raise NotImplementedError()
-    
+
     def test_initial_state_global(self):
         exception: bool = False
 
@@ -27,7 +27,7 @@ class RegistryTests(unittest.TestCase):
             self._registry.get_value(K)
         except Exception as e:
             exception = True
-            
+
         self.assertTrue(exception, True)
 
     def test_initial_state_local(self):

@@ -9,7 +9,7 @@ import colorlog
 class SillyLogger:
     _log_to_console: bool
 
-    def __init__(self, path: str, log_to_console: bool = False):
+    def __init__(self, path: str | Path, log_to_console: bool = False):
         self._log_to_console = log_to_console
         self.folder_name = Path(path) if Path(path).is_absolute() else PATH / path
         self._archive_old_logs()
