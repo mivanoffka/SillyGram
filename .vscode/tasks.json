@@ -4,7 +4,17 @@
         {
             "label": "Run example",
             "type": "shell",
-            "command": "source ${workspaceFolder}/.venv/bin/activate && echo 'Launching bot...' && echo '' && sh run_example.sh",
+            "command": "${command:osPlatform}",
+            "args": [],
+            "windows": {
+                "command": "call ${workspaceFolder}\\.venv\\Scripts\\activate && echo Launching bot... && run_example.bat"
+            },
+            "linux": {
+                "command": "source ${workspaceFolder}/.venv/bin/activate && echo 'Launching bot...' && sh run_example.sh"
+            },
+            "osx": {
+                "command": "source ${workspaceFolder}/.venv/bin/activate && echo 'Launching bot...' && sh run_example.sh"
+            },
             "group": {
                 "kind": "build",
                 "isDefault": true

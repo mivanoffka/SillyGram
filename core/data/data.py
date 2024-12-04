@@ -8,7 +8,7 @@ from sqlalchemy import desc
 if TYPE_CHECKING:
     from core.manager import SillyManager
 
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from utility import SillyDB
 from .sections import IO, Pages, Users, Stats

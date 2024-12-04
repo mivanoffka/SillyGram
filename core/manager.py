@@ -25,6 +25,10 @@ class SillyManager:
     def users(self):
         return self._data.users
 
+    @property
+    def stats(self):
+        return self._data.stats.get_report()
+
     # region High-level messaging methods
 
     # region Target message
