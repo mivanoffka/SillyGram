@@ -21,7 +21,7 @@ LOG_TO_CONSOLE = True
 pages = (home_page, start_page, widgets_page)
 activities = (SillyDateTimeActivity(activity=increment, times=time(hour=21, minute=20), max_time_delta=timedelta(hours=1)),)
 
-silly_bot: SillyBot = SillyBot("5910265430:AAGIvYFTQE_nbtKe2NXwLt--QVHRuRNMEhM", pages=pages, regular_activities=activities,
+silly_bot: SillyBot = SillyBot(TOKEN, pages=pages, regular_activities=activities,
                                settings=SillySettings(log_to_console=LOG_TO_CONSOLE),
                                startup_activity=on_start)
 
