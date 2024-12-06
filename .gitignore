@@ -175,3 +175,4 @@ cython_debug/
 #.idea/
 run_example.sh
 run_example.bat
+run_example.py
