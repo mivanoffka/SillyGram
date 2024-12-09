@@ -2,7 +2,7 @@ from typing import Tuple
 
 from .registrable import Registrable
 from utility import SillyDbSection, SillyDB
-from core.data.orm import *
+from core.data.orm import RegistryKeyORM, RegistryValueORM
 
 
 class DiskRegistry(Registrable, SillyDbSection):

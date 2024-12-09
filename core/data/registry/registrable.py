@@ -9,7 +9,7 @@ class Registrable:
         self._remove_key_entrances(key)
 
     @abstractmethod
-    def _set_default(self, key: str, user: id):
+    def _set_default(self, key: str, user_id: int):
         raise NotImplementedError()
 
     @abstractmethod

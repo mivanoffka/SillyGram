@@ -1,4 +1,4 @@
-from typing import Optional, Dict, Tuple
+from typing import Dict, Tuple
 from .registrable import Registrable
 
 
@@ -17,8 +17,8 @@ class SessionRegistry(Registrable):
         for registry_key in to_pop:
             self._registry.pop(registry_key)
 
-    def _set_default(self, key: str, user: int):
-        self._registry.pop((key, user))
+    def _set_default(self, key: str, user_id: int):
+        self._registry.pop((key, user_id))
 
     def _remove_key(self, key: str):
         self._keys.pop(key)
@@ -51,6 +51,3 @@ class SessionRegistry(Registrable):
         super().__init__()
         self._registry = {}
         self._keys = {}
-
-
-

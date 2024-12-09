@@ -107,7 +107,6 @@ class Users(SillyDbSection):
     def promote(self, nickname_or_id: int | str):
         user_id = self._validate(nickname_or_id)
         with self._get_session() as session:
-            user = session.query(UserORM).filter_by(id=user_id).first()
             admin = session.query(AdminORM).filter_by(id=user_id).first()
             if not admin:
                 admin = AdminORM(id=user_id)
@@ -117,7 +116,6 @@ class Users(SillyDbSection):
     def demote(self, nickname_or_id: int | str):
         user_id = self._validate(nickname_or_id)
         with self._get_session() as session:
-            user = session.query(UserORM).filter_by(id=user_id).first()
             admin = session.query(AdminORM).filter_by(id=user_id).first()
             if admin:
                 session.delete(admin)

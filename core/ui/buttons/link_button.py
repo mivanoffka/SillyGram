@@ -2,7 +2,7 @@ from typing import Dict, Any, Sequence
 
 from aiogram.types import InlineKeyboardButton
 
-from utility import localize
+from utility import SillyText
 from .sillybutton import SillyButton
 
 
@@ -11,9 +11,9 @@ class LinkButton(SillyButton):
 
     def aiogramify(self, language_code: str) -> Any:
         return InlineKeyboardButton(
-            text=localize(self._text, language_code), url=self._uri
+            text=self._text.localize(language_code), url=self._uri
         )
 
-    def __init__(self, text: str | Dict[str | Sequence[str], str], uri: str):
+    def __init__(self, text: SillyText, uri: str):
         super().__init__(text)
         self._uri = uri

@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
 from aiogram.types import InlineKeyboardMarkup
+
+from utility import SillyText
 
 from . import SillyButton
 
@@ -12,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class SillyPage:
-    _text: str | Dict[str | Sequence[str], str]
+    _text: SillyText
     _name: str
     _buttons: Sequence[Sequence[SillyButton]]
 
@@ -20,7 +22,7 @@ class SillyPage:
     _is_start: bool = False
 
     @property
-    def text(self) -> str | Dict[str | Sequence[str], str]:
+    def text(self) -> SillyText:
         return self._text
 
     def keyboard(self, language_code: str) -> InlineKeyboardMarkup:
@@ -50,7 +52,7 @@ class SillyPage:
     def __init__(
         self,
         name: str,
-        text: str | Dict[str | Sequence[str], str],
+        text: SillyText,
         buttons: SillyButton | Sequence[SillyButton] | Sequence[Sequence[SillyButton]],
         is_home: bool = False,
         is_start: bool = False,

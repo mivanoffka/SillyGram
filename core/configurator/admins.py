@@ -83,6 +83,6 @@ admins_page = SillyPage(name=SillyDefaults.Configurator.AdminsPage.NAME,
                              ActionButton(SillyDefaults.Configurator.AdminsPage.LIST_BUTTON_TEXT,
                                           _on_list_button_click),
                              ),
-                            NavigationButton(SillyDefaults.Configurator.BACK_BUTTON_TEXT,
-                                             SillyDefaults.Names.CONFIGURE_PAGE)
+                            (NavigationButton(SillyDefaults.Configurator.BACK_BUTTON_TEXT,
+                                             SillyDefaults.Names.CONFIGURE_PAGE),)
                         ))

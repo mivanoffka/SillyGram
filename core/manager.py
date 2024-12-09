@@ -5,7 +5,7 @@ from aiogram import Bot as AiogramBot
 from aiogram.types import InlineKeyboardMarkup, Message as AiogramMessage, InlineKeyboardButton
 
 from silly_config import PATH
-from utility import localize, SillyLogger
+from utility import SillyText, SillyLogger
 from core.data import SillyDefaults, Data
 from .user import SillyUser
 from typing import Any, Dict, Sequence, Callable, Optional, List
@@ -27,7 +27,7 @@ class SillyManager:
 
     @property
     def stats(self):
-        return self._data.stats.get_report()
+        return SillyText(self._data.stats.get_report())
 
     # region High-level messaging methods
 
@@ -36,33 +36,33 @@ class SillyManager:
     async def goto_page(self, user: SillyUser, page_name: Any, new_target_message=False):
         page = self._data.pages.get(page_name)
         if new_target_message:
-            await self._send_new_target_message(user, localize(page.text, user.language_code),
+            await self._send_new_target_message(user, page.text.localize(user.language_code),
                                                 page.keyboard(user.language_code))
         else:
-            await self._edit_target_message(user, localize(page.text, user.language_code),
+            await self._edit_target_message(user, page.text.localize(user.language_code),
                                             page.keyboard(user.language_code))
         self._data.set_current_page_name(user.id, page_name)
 
     async def refresh_page(self, user: SillyUser):
         page = self._data.pages.get(self._data.get_current_page_name(user.id))
-        await self._edit_target_message(user, localize(page.text, user.language_code),
+        await self._edit_target_message(user, page.text.localize(user.language_code),
                                         page.keyboard(user.language_code))
 
-    async def show_message(self, user: SillyUser, text: str | Dict[str | Sequence[str], str]):
+    async def show_message(self, user: SillyUser, text: SillyText):
         keyboard = InlineKeyboardMarkup(
-            inline_keyboard=[[InlineKeyboardButton(text=self._data.settings.labels.go_back,
+            inline_keyboard=[[InlineKeyboardButton(text=self._data.settings.labels.go_back.localize(user.language_code),
                                                    callback_data=SillyDefaults.CallbackData.BACK)]]
         )
-        await self._edit_target_message(user, localize(text, user.language_code), keyboard)
+        await self._edit_target_message(user, text.localize(user.language_code), keyboard)
 
-    async def show_dialog(self, user: SillyUser, question: str | Dict[str | Sequence[str], str],
-                          *dialog_options: str | Dict[str | Sequence[str], str]) -> int | None:
+    async def show_dialog(self, user: SillyUser, question: SillyText,
+                          *dialog_options: SillyText) -> int | None:
         buttons = []
         row = []
         c = 0
         for i, text in enumerate(dialog_options):
             c += 1
-            row.append(InlineKeyboardButton(text=localize(text, user.language_code), callback_data=f"OPTION_{i}"))
+            row.append(InlineKeyboardButton(text=text.localize(user.language_code), callback_data=f"OPTION_{i}"))
 
             if c >= 3:
                 c = 0
@@ -73,7 +73,7 @@ class SillyManager:
             buttons.append(row)
 
         keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
-        await self._edit_target_message(user, localize(question, user.language_code), keyboard=keyboard)
+        await self._edit_target_message(user, question.localize(user.language_code), keyboard=keyboard)
 
         async def wait_for_result():
             option = None
@@ -89,43 +89,43 @@ class SillyManager:
 
     # region Additional messages
 
-    async def show_notification(self, user: SillyUser, text: str | Dict[str | Sequence[str], str]):
+    async def show_notification(self, user: SillyUser, text: SillyText):
         keyboard = InlineKeyboardMarkup(
-            inline_keyboard=[[InlineKeyboardButton(text=self._data.settings.labels.close,
+            inline_keyboard=[[InlineKeyboardButton(text=self._data.settings.labels.close.localize(user.language_code),
                                                    callback_data=SillyDefaults.CallbackData.CLOSE)]]
         )
-        await self._aiogram_bot.send_message(user.id, localize(text, user.language_code), reply_markup=keyboard)
+        await self._aiogram_bot.send_message(user.id, text.localize(user.language_code), reply_markup=keyboard)
 
-    async def show_interruption(self, user: SillyUser, text: str | Dict[str | Sequence[str], str]):
+    async def show_interruption(self, user: SillyUser, text: SillyText):
         keyboard = InlineKeyboardMarkup(
-            inline_keyboard=[[InlineKeyboardButton(text=self._data.settings.labels.go_on,
+            inline_keyboard=[[InlineKeyboardButton(text=self._data.settings.labels.go_on.localize(user.language_code),
                                                    callback_data=SillyDefaults.CallbackData.CONTINUE)]]
         )
-        await self._edit_target_message(user, localize(text, user.language_code), keyboard)
+        await self._edit_target_message(user, text.localize(user.language_code), keyboard)
 
-    async def show_banner(self, user: SillyUser, text: str | Dict[str | Sequence[str], str]):
+    async def show_banner(self, user: SillyUser, text: SillyText):
         current_page_name = self._data.get_current_page_name(user.id)
 
         await self._delete_target_message(user)
-        await self._aiogram_bot.send_message(user.id, localize(text, user.language_code))
+        await self._aiogram_bot.send_message(user.id, text.localize(user.language_code))
 
         page = self._data.pages.get(current_page_name)
 
-        await self._send_new_target_message(user, localize(page.text, user.language_code),
+        await self._send_new_target_message(user, text.localize(user.language_code),
                                             keyboard=page.keyboard(user.language_code), separate=False)
 
     # endregion
 
     # region User input
 
-    async def get_input(self, user: SillyUser, prompt: str | Dict[str | Sequence[str], str]) -> str | None:
+    async def get_input(self, user: SillyUser, prompt: SillyText) -> str | None:
         async def task():
             keyboard = InlineKeyboardMarkup(
-                inline_keyboard=[[InlineKeyboardButton(text=self._data.settings.labels.cancel,
+                inline_keyboard=[[InlineKeyboardButton(text=self._data.settings.labels.cancel.localize(user.language_code),
                                                        callback_data=SillyDefaults.CallbackData.CANCEL)]]
             )
 
-            await self._edit_target_message(user, localize(prompt, user.language_code), keyboard)
+            await self._edit_target_message(user, prompt.localize(user.language_code), keyboard)
             self._data.io.start_listening(user.id)
 
             text = None
@@ -139,7 +139,7 @@ class SillyManager:
 
     async def get_yes_no_answer(self,
                                 user: SillyUser,
-                                question: str | Dict[str | Sequence[str], str]) -> bool:
+                                question: SillyText) -> bool:
         option = await self.show_dialog(user, question,
                                         self._data.settings.labels.no,
                                         self._data.settings.labels.yes)
@@ -149,13 +149,13 @@ class SillyManager:
 
     # region Other
 
-    async def start_broadcast(self, text: str | Dict[str | Sequence[str], str], user_ids: Optional[List[int]] = None):
-        async def _task(_text: str | Dict[str | Sequence[str], str], _user_ids: Optional[List[int]] = None):
+    async def start_broadcast(self, text: SillyText, user_ids: Optional[List[int]] = None):
+        async def _task(_text: SillyText, _user_ids: Optional[List[int]] = None):
             all_users = self._data.users.get_all()
             users = all_users if user_ids is None else (user for user in all_users if user.id in user_ids)
 
             for user in users:
-                await self.show_interruption(user, localize(_text, user.language_code))
+                await self.show_interruption(user, _text)
                 await asyncio.sleep(0.5)
 
         await asyncio.get_event_loop().create_task(_task(text, user_ids))
@@ -188,7 +188,7 @@ class SillyManager:
 
     async def _send_separation_messages(self, user: SillyUser):
         for i in range(0, 5):
-            await self._aiogram_bot.send_message(user.id, text=self._data.settings.labels.emoji_separator)
+            await self._aiogram_bot.send_message(user.id, text=self._data.settings.labels.emoji_separator.localize(user.language_code))
             await asyncio.sleep(0.15)
 
     async def _replace_target_message(self, user: SillyUser, text: str, keyboard: InlineKeyboardMarkup):

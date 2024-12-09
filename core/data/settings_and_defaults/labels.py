@@ -1,20 +1,19 @@
 from typing import Optional
+from utility import SillyText
 
 
 class SillyLabels:
-    _go_back: str = "Go back"
-    _close: str = "Close"
-    _cancel: str = "Cancel"
-    _go_on: str = "Go on"
-    _yes: str = "Yes"
-    _no: str = "No"
-    _emoji_separator: str = "✨"
-    _admin_only: str = "Access denied."
-    _id_not_recognized: str = "Unable to recognize ID."
-    _promotion_success: str = "User {} was successfully promoted."
-    _demotion_success: str = "User {} was successfully demoted."
-
-
+    _go_back = SillyText("Go back")
+    _close = SillyText("Close")
+    _cancel = SillyText("Cancel")
+    _go_on = SillyText("Go on")
+    _yes = SillyText("Yes")
+    _no = SillyText("No")
+    _emoji_separator = SillyText("✨")
+    _admin_only = SillyText("Access denied.")
+    _id_not_recognized = SillyText("Unable to recognize ID.")
+    _promotion_success = SillyText("User {} was successfully promoted.")
+    _demotion_success = SillyText("User {} was successfully demoted.")
 
     @property
     def go_back(self):
@@ -48,20 +47,24 @@ class SillyLabels:
     def admin_only(self):
         return self._admin_only
 
-    def __init__(self,
-                 go_back: Optional[str] = None,
-                 close: Optional[str] = None,
-                 go_on: Optional[str] = None,
-                 cancel: Optional[str] = None,
-                 yes: Optional[str] = None,
-                 no: Optional[str] = None,
-                 emoji_separator: Optional[str] = None,
-                 admin_only: Optional[str] = None):
-        self._go_back: str = go_back if go_back else self._go_back
-        self._close: str = close if close else self._close
-        self._cancel: str = cancel if cancel else self._cancel
-        self._yes: str = yes if yes else self._yes
-        self._no: str = no if no else self._no
-        self._emoji_separator: str = emoji_separator if emoji_separator else self._emoji_separator
-        self._go_on: str = go_on if go_on else self._go_on
-        self._cancel: str = admin_only if admin_only else self._cancel
+    def __init__(
+        self,
+        go_back: Optional[SillyText] = None,
+        close: Optional[SillyText] = None,
+        go_on: Optional[SillyText] = None,
+        cancel: Optional[SillyText] = None,
+        yes: Optional[SillyText] = None,
+        no: Optional[SillyText] = None,
+        emoji_separator: Optional[SillyText] = None,
+        admin_only: Optional[SillyText] = None,
+    ):
+        self._go_back = go_back if go_back else self._go_back
+        self._close = close if close else self._close
+        self._cancel = cancel if cancel else self._cancel
+        self._yes = yes if yes else self._yes
+        self._no = no if no else self._no
+        self._emoji_separator = (
+            emoji_separator if emoji_separator else self._emoji_separator
+        )
+        self._go_on = go_on if go_on else self._go_on
+        self._cancel = admin_only if admin_only else self._cancel

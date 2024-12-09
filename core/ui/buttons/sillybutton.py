@@ -1,15 +1,17 @@
-from typing import Dict, Sequence, Any
+from typing import Any
+
+from utility import SillyText
 
 
 class SillyButton:
-    _text: str | Dict[str | Sequence[str], str]
+    _text: SillyText
 
     @property
-    def text(self) -> str | Dict[str | Sequence[str], str]:
+    def text(self) -> SillyText:
         return self._text
 
     def aiogramify(self, language_code: str) -> Any:
         raise NotImplementedError()
 
-    def __init__(self, text: str | Dict[str | Sequence[str], str]):
+    def __init__(self, text: SillyText):
         self._text = text

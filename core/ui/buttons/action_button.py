@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
+from utility import SillyText
+
 if TYPE_CHECKING:
     from ...manager import SillyManager
     from ...user import SillyUser
@@ -8,10 +10,9 @@ if TYPE_CHECKING:
 from ...data.settings_and_defaults import SillyDefaults
 
 from aiogram.types import InlineKeyboardButton
-from typing import List, Callable, Awaitable, Dict, Sequence
+from typing import List, Callable, Awaitable
 
 from .sillybutton import SillyButton
-from utility import localize
 
 _button_ids: List[int] = list()
 
@@ -23,7 +24,7 @@ class ActionButton(SillyButton):
     # region Properties etc.
 
     @property
-    def text(self) -> str | Dict[str | Sequence[str], str]:
+    def text(self) -> SillyText:
         return self._text
 
     @property
@@ -40,7 +41,7 @@ class ActionButton(SillyButton):
 
     def aiogramify(self, language_code) -> InlineKeyboardButton:
         return InlineKeyboardButton(
-            text=localize(self._text, language_code), callback_data=self.identity
+            text=self._text.localize(language_code), callback_data=self.identity
         )
 
     def _generate_id(self):
@@ -61,7 +62,7 @@ class ActionButton(SillyButton):
 
     def __init__(
         self,
-        text: str | Dict[str | Sequence[str], str],
+        text: SillyText,
         on_click: Optional[Callable[[SillyManager, SillyUser], Awaitable[None]]] = None,
     ):
         super().__init__(text)

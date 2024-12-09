@@ -1,9 +1,6 @@
 from __future__ import annotations
 
-from array import typecodes
 from datetime import datetime, timedelta
-import textwrap
-from turtle import st
 from typing import TYPE_CHECKING
 
 from utility import SillyDbSection, SillyDB
@@ -117,23 +114,6 @@ class Stats(SillyDbSection):
                 text += f"\n   This {_STATS_NOUN_LABELS[pair[0]]}: {active_users_count}"
 
         return text
-
-        # text = "Active users count:"
-        # pairs = (
-        #     (StatisticsHourORM, HourlyUserORM),
-        #     (StatisticsDayORM, DailyUserORM),
-        #     (StatisticsMonthORM, MonthlyUserORM),
-        #     (StatisticsYearORM, YearlyUserORM),
-        # )
-        # for pair in pairs:
-        #     text += self._get_active_users_sub_report(*pair)
-        # with self._get_session() as session:
-        #     total_users_count = session.query(UserORM).count()
-        #     text += f"\n\nTotal users count: {total_users_count}\n"
-
-        # for pair in pairs:
-        #     text += self._get_total_users_sub_report(*pair)
-        # return text
 
     def _get_active_users_sub_report(
         self, statistics_unit: type, recent_user: type

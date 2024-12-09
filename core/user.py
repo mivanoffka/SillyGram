@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
-from typing import TYPE_CHECKING, Optional, Dict, Sequence, Any
+from typing import TYPE_CHECKING, Optional, Any
 
 from core.data.registry import PersonalRegistry
+from utility import SillyText
 
 if TYPE_CHECKING:
     from .manager import SillyManager
@@ -84,7 +85,7 @@ class SillyUser:
         self._manager.users.ban(self._id, duration)
 
     def unban(self, duration: timedelta):
-        self._manager.users.unban(self._id, duration)
+        self._manager.users.unban(self._id)
 
     def promote(self):
         self._manager.users.promote(self._id)
@@ -96,16 +97,16 @@ class SillyUser:
 
     # region Messenger actions
 
-    async def show_notification(self, text: str | Dict[str | Sequence[str], str]):
+    async def show_notification(self, text: SillyText):
         await self._manager.show_notification(self, text)
 
-    async def show_interruption(self, text: str | Dict[str | Sequence[str], str]):
+    async def show_interruption(self, text: SillyText):
         await self._manager.show_interruption(self, text)
 
-    async def show_banner(self, text: str | Dict[str | Sequence[str], str]):
+    async def show_banner(self, text: SillyText):
         await self._manager.show_banner(self, text)
 
-    async def show_message(self, text: str | Dict[str | Sequence[str], str]):
+    async def show_message(self, text: SillyText):
         await self._manager.show_message(self, text)
 
     async def goto_page(self, page_name: Any, new_target_message=False):
@@ -115,18 +116,18 @@ class SillyUser:
         await self._manager.refresh_page(self)
 
     async def get_input(
-        self, prompt: str | Dict[str | Sequence[str], str]
+        self, prompt: SillyText
     ) -> str | None:
         return await self._manager.get_input(self, prompt)
 
     async def show_dialog(
         self,
-        question: str | Dict[str | Sequence[str], str],
-        *dialog_options: str | Dict[str | Sequence[str], str],
+        question: SillyText,
+        *dialog_options: SillyText,
     ) -> int | None:
         return await self._manager.show_dialog(self, question, *dialog_options)
 
-    async def get_yes_no(self, question: str | Dict[str | Sequence[str], str]):
+    async def get_yes_no(self, question: SillyText):
         return await self._manager.get_yes_no_answer(self, question)
 
     # endregion
