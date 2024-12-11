@@ -1,6 +1,6 @@
 import unittest
 from core.data.registry.session import Registrable
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 
 K = "K"
 V = "V"
@@ -13,7 +13,7 @@ K1 = "K1"
 K2 = "K2"
 
 
-class RegistryTests(unittest.TestCase):
+class RegistryTests(unittest.TestCase, ABC):
     _registry: Registrable
 
     @abstractmethod
@@ -199,6 +199,10 @@ class RegistryTests(unittest.TestCase):
         v = self._registry.get_value((K2, U1))
 
         self.assertTrue(v, K2)
+
+    def test_null(self):
+        self._registry.establish_key(K1, None)
+        self.assertEqual(self._registry.get_value(K1), None)
 
 
 

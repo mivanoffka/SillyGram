@@ -1,137 +1,126 @@
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy import ForeignKey
+from datetime import datetime
 
-DECLARATIVE_BASE = declarative_base()
 
+class DECLARATIVE_BASE(DeclarativeBase):
+    pass
 
 class UserORM(DECLARATIVE_BASE):
     __tablename__ = 'users'
 
-    id = Column(Integer, primary_key=True)
-    target_message_id = Column(Integer, nullable=True)
-    current_page_name = Column(String, nullable=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    target_message_id: Mapped[int | None] = mapped_column(nullable=True)
+    current_page_name: Mapped[str | None] = mapped_column(nullable=True)
 
-    nickname = Column(String, nullable=True)
-    first_name = Column(String, nullable=True)
-    last_name = Column(String, nullable=True)
-    language_code = Column(String, nullable=True)
+    nickname: Mapped[str | None] = mapped_column(nullable=True)
+    first_name: Mapped[str | None] = mapped_column(nullable=True)
+    last_name: Mapped[str | None] = mapped_column(nullable=True)
+    language_code: Mapped[str | None] = mapped_column(nullable=True)
 
-    registered_at = Column(DateTime, nullable=True)
-    last_seen_at = Column(DateTime, nullable=True)
+    registered_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    last_seen_at: Mapped[datetime | None] = mapped_column(nullable=True)
 
-    local_values = relationship("RegistryValueORM", back_populates="user")
-
+    local_values: Mapped[list["RegistryValueORM"]] = relationship(
+        "RegistryValueORM", back_populates="user"
+    )
 
 class AdminORM(DECLARATIVE_BASE):
     __tablename__ = 'admins'
-    id = Column(Integer, ForeignKey('users.id'), primary_key=True)
-
+    
+    id: Mapped[int] = mapped_column(ForeignKey('users.id'), primary_key=True)
 
 class BanORM(DECLARATIVE_BASE):
     __tablename__ = 'bans'
 
-    id = Column(Integer, ForeignKey('users.id'), primary_key=True)
-    expires = Column(DateTime, nullable=True)
-
+    id: Mapped[int] = mapped_column(ForeignKey('users.id'), primary_key=True)
+    expires: Mapped[datetime | None] = mapped_column(nullable=True)
 
 class RegistryKeyORM(DECLARATIVE_BASE):
     __tablename__ = 'registry_keys'
 
-    id = Column(Integer, primary_key=True)
-    key = Column(String, nullable=False)
-    global_value = Column(String, nullable=True)
-    local_values = relationship("RegistryValueORM", back_populates="key")
-
+    id: Mapped[int] = mapped_column(primary_key=True)
+    key: Mapped[str] = mapped_column(nullable=False)
+    global_value: Mapped[str | None] = mapped_column(nullable=True)
+    
+    local_values: Mapped[list["RegistryValueORM"]] = relationship(
+        "RegistryValueORM", back_populates="key"
+    )
 
 class RegistryValueORM(DECLARATIVE_BASE):
     __tablename__ = 'registry_values'
 
-    id = Column(Integer, primary_key=True)
-    key_id = Column(Integer, ForeignKey('registry_keys.id'), nullable=False)
-    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    key_id: Mapped[int] = mapped_column(ForeignKey('registry_keys.id'), nullable=False)
+    user_id: Mapped[int] = mapped_column(ForeignKey('users.id'), nullable=False)
+    value: Mapped[str | None] = mapped_column(nullable=True)
 
-    value = Column(String, nullable=True)
+    key: Mapped["RegistryKeyORM"] = relationship("RegistryKeyORM", back_populates="local_values")
+    user: Mapped["UserORM"] = relationship("UserORM", back_populates="local_values")
 
-    key = relationship("RegistryKeyORM", back_populates="local_values")
-    user = relationship("UserORM", back_populates="local_values")
-
+# region Statistics
 
 # region Statistics
 
 class StatisticsHourORM(DECLARATIVE_BASE):
     __tablename__ = "statistics_hour"
 
-    id = Column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
 
-    active_users_count = Column(Integer, nullable=True)
-    total_users_count = Column(Integer, nullable=True)
+    active_users_count: Mapped[int | None] = mapped_column(nullable=True)
+    total_users_count: Mapped[int | None] = mapped_column(nullable=True)
 
-    starts_at = Column(DateTime, nullable=False)
-    ends_at = Column(DateTime, nullable=True)
+    starts_at: Mapped[datetime] = mapped_column(nullable=False)
+    ends_at: Mapped[datetime | None] = mapped_column(nullable=True)
 
 
 class StatisticsDayORM(DECLARATIVE_BASE):
     __tablename__ = "statistics_day"
 
-    id = Column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
 
-    active_users_count = Column(Integer, nullable=True)
-    total_users_count = Column(Integer, nullable=True)
+    active_users_count: Mapped[int | None] = mapped_column(nullable=True)
+    total_users_count: Mapped[int | None] = mapped_column(nullable=True)
 
-    starts_at = Column(DateTime, nullable=False)
-    ends_at = Column(DateTime, nullable=True)
-
-class StatisticsWeekORM(DECLARATIVE_BASE):
-    __tablename__ = "statistics_week"
-
-    id = Column(Integer, primary_key=True)
-
-    active_users_count = Column(Integer, nullable=True)
-    total_users_count = Column(Integer, nullable=True)
-
-    starts_at = Column(DateTime, nullable=False)
-    ends_at = Column(DateTime, nullable=True)
+    starts_at: Mapped[datetime] = mapped_column(nullable=False)
+    ends_at: Mapped[datetime | None] = mapped_column(nullable=True)
 
 class StatisticsMonthORM(DECLARATIVE_BASE):
     __tablename__ = "statistics_month"
 
-    id = Column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
 
-    active_users_count = Column(Integer, nullable=True)
-    total_users_count = Column(Integer, nullable=True)
+    active_users_count: Mapped[int | None] = mapped_column(nullable=True)
+    total_users_count: Mapped[int | None] = mapped_column(nullable=True)
 
-    starts_at = Column(DateTime, nullable=False)
-    ends_at = Column(DateTime, nullable=True)
+    starts_at: Mapped[datetime] = mapped_column(nullable=False)
+    ends_at: Mapped[datetime | None] = mapped_column(nullable=True)
 
 class StatisticsYearORM(DECLARATIVE_BASE):
     __tablename__ = "statistics_year"
 
-    id = Column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
 
-    active_users_count = Column(Integer, nullable=True)
-    total_users_count = Column(Integer, nullable=True)
+    active_users_count: Mapped[int | None] = mapped_column(nullable=True)
+    total_users_count: Mapped[int | None] = mapped_column(nullable=True)
 
-    starts_at = Column(DateTime, nullable=False)
-    ends_at = Column(DateTime, nullable=True)
-
-
-
-class HourlyUserORM(DECLARATIVE_BASE):
-    __tablename__ = 'hourly_users'
-    id = Column(Integer, ForeignKey('users.id'), primary_key=True)
-
-class DailyUserORM(DECLARATIVE_BASE):
-    __tablename__ = 'daily_users'
-    id = Column(Integer, ForeignKey('users.id'), primary_key=True)
-
-class MonthlyUserORM(DECLARATIVE_BASE):
-    __tablename__ = 'monthly_users'
-    id = Column(Integer, ForeignKey('users.id'), primary_key=True)
-
-class YearlyUserORM(DECLARATIVE_BASE):
-    __tablename__ = 'yearly_users'
-    id = Column(Integer, ForeignKey('users.id'), primary_key=True)
+    starts_at: Mapped[datetime] = mapped_column(nullable=False)
+    ends_at: Mapped[datetime | None] = mapped_column(nullable=True)
 
 # endregion
 
+class HourlyUserORM(DECLARATIVE_BASE):
+    __tablename__ = 'hourly_users'
+    id: Mapped[int] = mapped_column(ForeignKey('users.id'), primary_key=True)
+
+class DailyUserORM(DECLARATIVE_BASE):
+    __tablename__ = 'daily_users'
+    id: Mapped[int] = mapped_column(ForeignKey('users.id'), primary_key=True)
+
+class MonthlyUserORM(DECLARATIVE_BASE):
+    __tablename__ = 'monthly_users'
+    id: Mapped[int] = mapped_column(ForeignKey('users.id'), primary_key=True)
+
+class YearlyUserORM(DECLARATIVE_BASE):
+    __tablename__ = 'yearly_users'
+    id: Mapped[int] = mapped_column(ForeignKey('users.id'), primary_key=True)

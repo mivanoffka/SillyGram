@@ -8,15 +8,3 @@ class DiskTests(RegistryTests):
     def setUp(self):
         self._registry = DiskRegistry(SillyDB("test", DECLARATIVE_BASE))
         self._registry.reset()
-
-
-
-
-
-
-
-
-
-
-
-

@@ -1,9 +1,5 @@
 from __future__ import annotations
-
-from calendar import weekday
 from typing import TYPE_CHECKING
-
-from sqlalchemy import desc
 
 if TYPE_CHECKING:
     from core.manager import SillyManager
@@ -74,7 +70,7 @@ class Data(SillyDB):
                 user.language_code = aiogram_user.language_code
                 user.last_seen_at = datetime.now()
 
-            self._save_as_recent_user(session, user.id)
+            self._save_as_recent_user(session, user.id) 
 
             id_to_return = user.id
             session.commit()

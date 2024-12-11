@@ -14,9 +14,10 @@ from datetime import time, date, datetime, timedelta
 class SillyDateTimeActivity(SillyRegularActivity):
     _executed_today: List[time]
     _last_check_date: date
+    _assigned_activity: Callable[[SillyManager], Awaitable[None]]
 
     async def _activity(self, manager: SillyManager):
-        raise NotImplementedError()
+        await self._assigned_activity(manager)
 
     async def _condition(self, manager):
         current = datetime.now()
@@ -66,7 +67,7 @@ class SillyDateTimeActivity(SillyRegularActivity):
                  max_time_delta: Optional[timedelta] = None):
 
         self._executed_today = []
-        self._activity = activity
+        self._assigned_activity = activity
         self._last_check_date = datetime.now().date()
 
         self._times = times if isinstance(times, Sequence) else (times, )

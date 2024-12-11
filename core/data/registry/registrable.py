@@ -3,7 +3,6 @@ from typing import Optional, Tuple
 
 
 class Registrable:
-
     def establish_key(self, key: str, default_value: Optional[str] = None):
         self._set_global_value(key, default_value)
         self._remove_key_entrances(key)
@@ -39,7 +38,12 @@ class Registrable:
     def get_value(self, key: str | Tuple[str, int]):
         if isinstance(key, str):
             return self._get_global_value(key)
-        elif isinstance(key, tuple) and isinstance(key[0], str) and isinstance(key[1], int) and len(key) == 2:
+        elif (
+            isinstance(key, tuple)
+            and isinstance(key[0], str)
+            and isinstance(key[1], int)
+            and len(key) == 2
+        ):
             if self._is_user_value_not_default(key[0], key[1]):
                 return self._get_local_value(key)
             return self._get_global_value(key[0])
@@ -54,10 +58,15 @@ class Registrable:
     def get_keys(self) -> tuple[str, ...]:
         raise NotImplementedError()
 
-    def set_value(self,  key: str | Tuple[str, int], value: Optional[str]):
+    def set_value(self, key: str | Tuple[str, int], value: Optional[str]):
         if isinstance(key, str):
             self._set_global_value(key, value)
-        elif isinstance(key, tuple) and isinstance(key[0], str) and isinstance(key[1], int) and len(key) == 2:
+        elif (
+            isinstance(key, tuple)
+            and isinstance(key[0], str)
+            and isinstance(key[1], int)
+            and len(key) == 2
+        ):
             if value:
                 self._set_local_value(key, value)
             else:
@@ -89,7 +98,12 @@ class Registrable:
     def __iadd__(self, other: str | Tuple[str, int]):
         if isinstance(other, str):
             self.establish_key(other)
-        if isinstance(other, tuple) and len(other) == 2 and isinstance(other[0], str) and isinstance(other[1], str):
+        if (
+            isinstance(other, tuple)
+            and len(other) == 2
+            and isinstance(other[0], str)
+            and isinstance(other[1], str)
+        ):
             self.establish_key(other[0], other[1])
 
     def __isub__(self, other: str):
@@ -100,4 +114,3 @@ class Registrable:
 
     def __setitem__(self, key: str | Tuple[str, int], value):
         self.set_value(key, value)
-
