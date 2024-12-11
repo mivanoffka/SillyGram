@@ -203,7 +203,7 @@ class SillyManager:
                 text = self._data.io.pop_text(user.id)
                 await asyncio.sleep(0.2)
 
-            return text
+            return text if text != SillyDefaults.CallbackData.INPUT_CANCEL_MARKER else None
 
         return await asyncio.get_event_loop().create_task(task())
 

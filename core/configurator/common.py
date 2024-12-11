@@ -5,13 +5,13 @@ from ..user import SillyUser
 from ..data import SillyDefaults
 
 
-async def get_user(manager: SillyManager, user: SillyUser):
-    user_to_promote: Optional[SillyUser]
+async def get_user(manager: SillyManager, user: SillyUser) -> Optional[SillyUser]:
+    user_to_promote: Optional[SillyUser] = None
     input_str = "?"
     try:
         input_str = await manager.get_input(user, SillyDefaults.Configurator.USER_ID_INPUT_PROMPT)
         if not input_str:
-            raise Exception(input_str)
+            return None
         user_to_promote = manager.users.get(input_str)
 
         if not user_to_promote:

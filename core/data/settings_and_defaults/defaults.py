@@ -18,6 +18,7 @@ class SillyDefaults:
 
         HOME_COMMAND = "home"
         START_COMMAND = "start"
+        INPUT_CANCEL_MARKER = "$INPUT_CANCELLED$"
 
     @dataclass(frozen=True)
     class Names:

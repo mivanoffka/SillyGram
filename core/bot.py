@@ -239,6 +239,7 @@ class SillyBot:
         if user.is_banned:
             return
 
+        self._data.io.push_text(callback.from_user.id, SillyDefaults.CallbackData.INPUT_CANCEL_MARKER)
         self._data.io.stop_listening(callback.from_user.id)
         await self._manager.refresh_page(user)
 

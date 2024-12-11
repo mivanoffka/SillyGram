@@ -1,4 +1,5 @@
 from datetime import timedelta
+import logging
 from typing import Optional
 
 from ..ui import ActionButton, SillyPage, NavigationButton
@@ -95,7 +96,7 @@ async def _on_banned_button_click(manager: SillyManager, user: SillyUser):
 @SillyManager.admin_only
 async def _on_unban_button_click(manager: SillyManager, user: SillyUser):
     user_to_unban = await get_user(manager, user)
-    if not user_to_unban:
+    if user_to_unban is None:
         return
 
     try:

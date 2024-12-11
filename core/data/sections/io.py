@@ -21,6 +21,9 @@ class IO:
             return None
         return self._dialog_results.pop(user_id)
 
+    def is_listening(self, user_id: int):
+        return user_id in self._users_to_listen
+
     def start_listening(self, user_id: int):
         if user_id not in self._users_to_listen:
             self._users_to_listen.append(user_id)
