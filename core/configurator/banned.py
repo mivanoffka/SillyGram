@@ -12,20 +12,8 @@ from .common import get_user
 @SillyManager.admin_only
 async def _on_banned_button_click(manager: SillyManager, user: SillyUser):
     user_to_ban: Optional[SillyUser]
-    input_str = "?"
-    try:
-        user_to_ban = await get_user(manager, user)
-        if not user_to_ban:
-            raise Exception()
-    except Exception:
-        await manager.show_message(
-            user,
-            SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(
-                SillyDefaults.Configurator.USER_NOT_REGISTERED_ERROR_TEMPLATE.format(
-                    input_str
-                )
-            ),
-        )
+    user_to_ban = await get_user(manager, user)
+    if not user_to_ban:
         return
 
     option = await manager.show_dialog(
@@ -42,16 +30,15 @@ async def _on_banned_button_click(manager: SillyManager, user: SillyUser):
 
     duration = 24
     multiplier = -1
-    match option:
-        case 0:
+    if option == 0:
             multiplier = 1
-        case 1:
+    if option == 1:
             multiplier = 7
-        case 2:
+    if option == 2:
             multiplier = 30
-        case 3:
+    if option == 3:
             multiplier = 365
-        case 4:
+    if option == 4:
             input_text = await manager.get_input(
                 user, SillyDefaults.Configurator.BannedPage.BAN_DATE_INPUT_PROMPT
             )
@@ -73,9 +60,9 @@ async def _on_banned_button_click(manager: SillyManager, user: SillyUser):
                     ),
                 )
                 return
-        case 5:
+    if option == 5:
             multiplier = 9999
-        case 6:
+    if option == 6:
             await manager.refresh_page(user)
             return
 
@@ -108,10 +95,10 @@ async def _on_banned_button_click(manager: SillyManager, user: SillyUser):
 @SillyManager.admin_only
 async def _on_unban_button_click(manager: SillyManager, user: SillyUser):
     user_to_unban = await get_user(manager, user)
+    if not user_to_unban:
+        return
 
     try:
-        if not user_to_unban:
-            raise Exception(SillyDefaults.Configurator.USER_NOT_REGISTERED_ERROR_TEMPLATE.format(user_to_unban))
         manager.users.unban(user_to_unban.id)
         uinfo = (
             str(user_to_unban.id)

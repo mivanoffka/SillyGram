@@ -123,6 +123,7 @@ class SillyBot:
     def _register_command(self, command: str, handler: Any):
         async def aiogram_handler(message: Message):
             user = self._manager.users.get(self._data.indicate(message.from_user))
+            
             if user.is_banned:
                 return
 
@@ -138,13 +139,14 @@ class SillyBot:
 
     def _register_callback(self, callback_identity: str, handler: Any):
         async def aiogram_handler(callback: CallbackQuery):
+            await callback.answer()
+
             user = self._manager.users.get(self._data.indicate(callback.from_user))
+    
             if user.is_banned:
-                await callback.answer()
                 return
 
             result = await handler(self._manager, user)
-            await callback.answer()
             return result
 
         self._dispatcher.callback_query.register(aiogram_handler, F.data.startswith(callback_identity))
@@ -186,20 +188,18 @@ class SillyBot:
 
     async def _on_dialog_option_clicked(self, callback: CallbackQuery):
         await callback.answer()
+
         user = self._manager.users.get(self._data.indicate(callback.from_user))
         if user.is_banned:
-            await callback.answer()
             return
 
         option = int(callback.data.replace(SillyDefaults.CallbackData.OPTION_TEMPLATE, ""))
         self._data.io.push_dialog_result(callback.from_user.id, option)
-        await callback.answer()
 
     async def _on_close_button_clicked(self, callback: CallbackQuery):
         await callback.answer()
         user = self._manager.users.get(self._data.indicate(callback.from_user))
         if user.is_banned:
-            await callback.answer()
             return
 
         try:
@@ -207,13 +207,11 @@ class SillyBot:
         except Exception:
             ...
 
-        await callback.answer()
 
     async def _on_continue_button_clicked(self, callback: CallbackQuery):
         await callback.answer()
         user = self._manager.users.get(self._data.indicate(callback.from_user))
         if user.is_banned:
-            await callback.answer()
             return
 
         target_message_id = self._data.get_target_message_id(user.id)
@@ -226,28 +224,23 @@ class SillyBot:
         await self._manager.goto_page(user,
                                       self._data.get_current_page_name(callback.from_user.id),
                                       new_target_message=True)
-        await callback.answer()
 
     async def _on_return_button_clicked(self, callback: CallbackQuery):
         await callback.answer()
         user = self._manager.users.get(self._data.indicate(callback.from_user))
         if user.is_banned:
-            await callback.answer()
             return
 
         await self._manager.refresh_page(user)
-        await callback.answer()
 
     async def _on_cancel_button_clicked(self, callback: CallbackQuery):
         await callback.answer()
         user = self._manager.users.get(self._data.indicate(callback.from_user))
         if user.is_banned:
-            await callback.answer()
             return
 
         self._data.io.stop_listening(callback.from_user.id)
         await self._manager.refresh_page(user)
-        await callback.answer()
 
     # endregion
 

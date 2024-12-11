@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
+from tkinter import E
 from typing import TYPE_CHECKING, Optional
 
 from utility import SillyDbSection, SillyDB
@@ -33,7 +34,7 @@ class Users(SillyDbSection):
         with self._get_session() as session:
             id_to_return: Optional[int] = None
             if isinstance(nickname_or_id, int):
-                id_to_return = session.query(UserORM).filter_by(id=nickname_or_id).first().id
+                id_to_return = session.query(UserORM).filter_by(id=nickname_or_id).first().id 
             elif isinstance(nickname_or_id, str):
                 id_to_return = session.query(UserORM).filter_by(nickname=nickname_or_id).first().id
             else:
@@ -89,8 +90,11 @@ class Users(SillyDbSection):
 
     # region Common
 
-    def get(self, nickname_or_id: int | str) -> SillyUser:
-        return self._create_silly_user(self._validate(nickname_or_id))
+    def get(self, nickname_or_id: int | str) -> Optional[SillyUser]:
+        try:
+            return self._create_silly_user(self._validate(nickname_or_id))
+        except Exception:
+            return None
 
     def get_all(self) -> tuple[SillyUser, ...]:
         with self._get_session() as session:

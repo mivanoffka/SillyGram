@@ -59,7 +59,7 @@ class SillyDefaults:
             DEMOTION_USER_ID_INPUT_PROMPT = SillyText("Please enter the ID of the user you want to demote.")
 
             PROMOTION_SUCCESS_MESSAGE_TEMPLATE = SillyText("User {} has been successfully promoted.")
-            DEMOTION_SUCCESS_MESSAGE_TEMPLATE = SillyText("User {} has been successfully promoted.")
+            DEMOTION_SUCCESS_MESSAGE_TEMPLATE = SillyText("User {} has been successfully demoted.")
 
             PROMOTION_CONFIRMATION_PROMPT = SillyText("Are you sure you want to promote user {}?\n\n"
                                              "This will grant them administrator permission, "
