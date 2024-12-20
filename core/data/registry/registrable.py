@@ -80,15 +80,15 @@ class Registrable:
         raise NotImplementedError()
 
     @abstractmethod
-    def _get_global_value(self, key: str) -> str:
+    def _get_global_value(self, key: str) -> Optional[str]:
         raise NotImplementedError()
 
     @abstractmethod
-    def _get_local_value(self, key: Tuple[str, int]) -> str:
+    def _get_local_value(self, key: Tuple[str, int]) -> Optional[str]:
         raise NotImplementedError()
 
     @abstractmethod
-    def _set_global_value(self, key: str, value: str):
+    def _set_global_value(self, key: str, value: Optional[str]):
         raise NotImplementedError()
 
     @abstractmethod

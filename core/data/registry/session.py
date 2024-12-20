@@ -1,11 +1,11 @@
-from typing import Dict, Tuple
+from typing import Dict, Optional, Tuple
 from .registrable import Registrable
 
 
 class SessionRegistry(Registrable):
 
-    _keys: Dict[str, str]
-    _registry: Dict[Tuple[str, int], str]
+    _keys: Dict[str, Optional[str]]
+    _registry: Dict[Tuple[str, int], Optional[str]]
 
     def _remove_key_entrances(self, key: str):
         to_pop = []
@@ -23,7 +23,7 @@ class SessionRegistry(Registrable):
     def _remove_key(self, key: str):
         self._keys.pop(key)
 
-    def _get_global_value(self, key: str) -> str:
+    def _get_global_value(self, key: str) -> Optional[str]:
         return self._keys[key]
 
     def _get_local_value(self, key: Tuple[str, int]):
@@ -32,7 +32,7 @@ class SessionRegistry(Registrable):
     def _is_user_value_not_default(self, key: str, user_id: int):
         return (key, user_id) in self._registry.keys()
 
-    def _set_global_value(self, key: str, value: str):
+    def _set_global_value(self, key: str, value: Optional[str]):
         self._keys[key] = value
 
     def _set_local_value(self, key: Tuple[str, int], value: str):

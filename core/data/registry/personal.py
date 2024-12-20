@@ -1,3 +1,4 @@
+from typing import Optional
 from .registry import Registrable
 
 
@@ -11,10 +12,10 @@ class PersonalRegistry:
     def set_value(self, key: str, value: str):
         self._registry.set_value(self._key(key), value)
 
-    def get_value(self, key: str) -> str:
+    def get_value(self, key: str) -> Optional[str]:
         return self._registry.get_value(self._key(key))
 
-    def __getitem__(self, key: str) -> str:
+    def __getitem__(self, key: str) -> Optional[str]:
         return self._registry.get_value(self._key(key))
 
     def __setitem__(self, key: str, value: str):

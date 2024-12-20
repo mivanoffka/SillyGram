@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Optional, Tuple
 
 from .registrable import Registrable
 from utility import SillyDbSection, SillyDB
@@ -58,7 +58,7 @@ class DiskRegistry(Registrable, SillyDbSection):
             else:
                 raise KeyError(f"Key {key} not found")
 
-    def _set_global_value(self, key: str, value: str):
+    def _set_global_value(self, key: str, value: Optional[str]):
         with self._get_session() as session:
             registry_key: RegistryKeyORM = session.query(RegistryKeyORM).filter_by(key=key).first()
             if registry_key:

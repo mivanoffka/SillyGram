@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
-from tkinter import E
 from typing import TYPE_CHECKING, Optional
 
 from utility import SillyDbSection, SillyDB
@@ -14,7 +13,6 @@ from ...user import SillyUser
 
 
 class Users(SillyDbSection):
-    _users_data: Users
     _manager: SillyManager
 
     def __init__(self, db: SillyDB, manager: SillyManager):

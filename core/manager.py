@@ -26,7 +26,7 @@ class SillyManager:
         return self._data.registry
 
     @property
-    def users(self):
+    def users(self): 
         return self._data.users
 
     @property
