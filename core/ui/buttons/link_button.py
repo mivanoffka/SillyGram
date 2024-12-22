@@ -1,4 +1,4 @@
-from typing import Dict, Any, Sequence
+from typing import Any
 
 from aiogram.types import InlineKeyboardButton
 
@@ -6,7 +6,7 @@ from utility import SillyText
 from .sillybutton import SillyButton
 
 
-class LinkButton(SillyButton):
+class LinkSillyButton(SillyButton):
     _uri: str
 
     def aiogramify(self, language_code: str) -> Any:

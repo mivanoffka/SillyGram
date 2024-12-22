@@ -5,11 +5,11 @@ if TYPE_CHECKING:
     from ...manager import SillyManager
     from ...user import SillyUser
 
-from .action_button import ActionButton
+from .action_button import ActionSillyButton
 from utility import SillyText
 
 
-class NavigationButton(ActionButton):
+class NavigationSillyButton(ActionSillyButton):
     _page_name: str
 
     async def _show_page(self, manager: SillyManager, user: SillyUser):

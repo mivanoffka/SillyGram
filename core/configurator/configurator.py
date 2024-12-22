@@ -1,4 +1,4 @@
-from ..ui import ActionButton, SillyPage, NavigationButton
+from ..ui import ActionSillyButton, SillyPage, NavigationSillyButton
 from ..data import SillyDefaults
 from ..manager import SillyManager
 from ..user import SillyUser
@@ -19,22 +19,22 @@ configuration_page = SillyPage(
     text=SillyDefaults.Configurator.ROOT_PAGE_TEXT,
     buttons=(
         (
-            ActionButton(
+            ActionSillyButton(
                 SillyDefaults.Configurator.STATS_BUTTON_TEXT, _on_stats_button_clicked
             ),
         ),
         (
-            NavigationButton(
+            NavigationSillyButton(
                 SillyDefaults.Configurator.ADMINS_BUTTON_TEXT,
                 SillyDefaults.Configurator.AdminsPage.NAME,
             ),
-            NavigationButton(
+            NavigationSillyButton(
                 SillyDefaults.Configurator.BANNED_BUTTON_TEXT,
                 SillyDefaults.Configurator.BannedPage.NAME,
             ),
         ),
         (
-            NavigationButton(
+            NavigationSillyButton(
                 SillyDefaults.Configurator.HOME_BUTTON_TEXT,
                 SillyDefaults.Names.HOME_PAGE,
             ),

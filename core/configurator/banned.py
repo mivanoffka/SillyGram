@@ -2,7 +2,7 @@ from datetime import timedelta
 import logging
 from typing import Optional
 
-from ..ui import ActionButton, SillyPage, NavigationButton
+from ..ui import ActionSillyButton, SillyPage, NavigationSillyButton
 from ..data import SillyDefaults
 from ..user import SillyUser
 from ..manager import SillyManager
@@ -179,25 +179,25 @@ banned_page = SillyPage(
     text=SillyDefaults.Configurator.BannedPage.TEXT,
     buttons=(
         (
-            ActionButton(
+            ActionSillyButton(
                 SillyDefaults.Configurator.BannedPage.BAN_BUTTON_TEXT,
                 _on_banned_button_click,
             ),
-            ActionButton(
+            ActionSillyButton(
                 SillyDefaults.Configurator.BannedPage.UNBAN_BUTTON_TEXT,
                 _on_unban_button_click,
             ),
-            ActionButton(
+            ActionSillyButton(
                 SillyDefaults.Configurator.BannedPage.AMNESTY_BUTTON_TEXT,
                 _on_amnesty_button_click,
             ),
         ),
         (
-            NavigationButton(
+            NavigationSillyButton(
                 SillyDefaults.Configurator.BACK_BUTTON_TEXT,
                 SillyDefaults.Names.CONFIGURE_PAGE,
             ),
-            ActionButton(
+            ActionSillyButton(
                 SillyDefaults.Configurator.BannedPage.LIST_BUTTON_TEXT,
                 _on_list_button_click,
             ),

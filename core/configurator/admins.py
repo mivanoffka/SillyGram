@@ -1,4 +1,4 @@
-from ..ui import ActionButton, SillyPage, NavigationButton
+from ..ui import ActionSillyButton, SillyPage, NavigationSillyButton
 from ..data import SillyDefaults
 from ..user import SillyUser
 from ..manager import SillyManager
@@ -109,21 +109,21 @@ admins_page = SillyPage(
     text=SillyDefaults.Configurator.AdminsPage.TEXT,
     buttons=(
         (
-            ActionButton(
+            ActionSillyButton(
                 SillyDefaults.Configurator.AdminsPage.PROMOTE_BUTTON_TEXT,
                 _on_promote_button_click,
             ),
-            ActionButton(
+            ActionSillyButton(
                 SillyDefaults.Configurator.AdminsPage.DEMOTE_BUTTON_TEXT,
                 _on_demote_button_click,
             ),
-            ActionButton(
+            ActionSillyButton(
                 SillyDefaults.Configurator.AdminsPage.LIST_BUTTON_TEXT,
                 _on_list_button_click,
             ),
         ),
         (
-            NavigationButton(
+            NavigationSillyButton(
                 SillyDefaults.Configurator.BACK_BUTTON_TEXT,
                 SillyDefaults.Names.CONFIGURE_PAGE,
             ),

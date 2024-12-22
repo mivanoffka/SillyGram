@@ -13,7 +13,7 @@ from .data import SillySettings
 from .user import SillyUser
 from .manager import SillyManager
 from .data import Data, SillyDefaults
-from .ui import SillyPage, ActionButton
+from .ui import SillyPage, ActionSillyButton
 
 from .activities import SillyRegularActivity, SillyDateTimeActivity
 from .configurator import configurator
@@ -38,13 +38,13 @@ class SillyBot:
         await self._data.stats.summarize_yearly_statistics(self._manager)
 
         if self._startup_activity:
-            asyncio.create_task(self._startup_activity(self._manager)) # type: ignore
+            asyncio.create_task(self._startup_activity(self._manager))  # type: ignore
         if self._regular_activities:
             asyncio.create_task(self._scheduling_loop())
 
     async def _on_aiogram_shutdown(self):
         if self._shutdown_activity:
-            asyncio.create_task(self._shutdown_activity(self._manager)) # type: ignore
+            asyncio.create_task(self._shutdown_activity(self._manager))  # type: ignore
 
     async def _scheduling_loop(self, time_delta: int = 20):
         while True:
@@ -122,7 +122,7 @@ class SillyBot:
                     buttons.append(button)
 
         for button in buttons:
-            if isinstance(button, ActionButton):
+            if isinstance(button, ActionSillyButton):
                 self._register_callback(button.identity, button.on_click)
 
     def _register_command(self, command: str, handler: Any):
@@ -184,7 +184,7 @@ class SillyBot:
         if not message.from_user:
             return
         user = self._manager.users.get(self._data.indicate(message.from_user))
-        
+
         if not user:
             return
         if user.is_banned:
@@ -195,12 +195,14 @@ class SillyBot:
         except Exception:
             ...
 
-        self._data.io.push_text(message.from_user.id, message.text if message.text else "")
+        self._data.io.push_text(
+            message.from_user.id, message.text if message.text else ""
+        )
 
     async def _on_other_input(self, message: Message):
         if not message.from_user:
             return
-        
+
         user = self._manager.users.get(self._data.indicate(message.from_user))
 
         if not user:
@@ -311,17 +313,20 @@ class SillyBot:
         pages: Sequence[SillyPage],
         settings: Optional[SillySettings] = None,
         regular_activities: Optional[Sequence[SillyRegularActivity]] = None,
-        startup_activity: Optional[Callable[[SillyManager], Awaitable[None]]] = None,
-        shutdown_activity: Optional[Callable[[SillyManager], Awaitable[None]]] = None,
+        on_startup: Optional[Callable[[SillyManager], Awaitable[None]]] = None,
+        on_shutdown: Optional[Callable[[SillyManager], Awaitable[None]]] = None,
     ):
         """
         :param token: telegram-API token received from BotFather.
         :param pages: sequence of page objects to include. Names must be unique.
         :param settings: silly-bot settings. None means default settings.
+        :param regular_activities: sequence of activities to run periodically.
+        :param on_startup: method to run on bot startup.
+        :param on_shutdown: method to run on bot shutdown.
         """
         pages = (*pages, *configurator)
-        self._startup_activity = startup_activity
-        self._shutdown_activity = shutdown_activity
+        self._startup_activity = on_startup
+        self._shutdown_activity = on_shutdown
         self._data = Data(settings if settings is not None else SillySettings(), *pages)
         self._aiogram_bot = AiogramBot(
             token=token, default=DefaultBotProperties(parse_mode="HTML")
@@ -364,6 +369,10 @@ class SillyBot:
             yearly_stats_activity,
         )
 
-        self._regular_activities = (*regular_activities, *stats_activities) if regular_activities else stats_activities
+        self._regular_activities = (
+            (*regular_activities, *stats_activities)
+            if regular_activities
+            else stats_activities
+        )
 
         self._setup_handlers()

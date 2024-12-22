@@ -17,7 +17,7 @@ from .sillybutton import SillyButton
 _button_ids: List[int] = list()
 
 
-class ActionButton(SillyButton):
+class ActionSillyButton(SillyButton):
     _id: int
     _on_click: Optional[Callable[[SillyManager, SillyUser], Awaitable[None]]]
 
