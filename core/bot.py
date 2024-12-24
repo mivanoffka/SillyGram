@@ -20,6 +20,12 @@ from .configurator import configurator
 
 
 class SillyBot:
+    """
+    Core class for a SillyGram bot.
+    Create an instance of this class with all neccessary settings
+    and use the 'launch' method to start the bot.
+    """
+
     _aiogram_bot: AiogramBot
     _dispatcher: Dispatcher
 
@@ -45,13 +51,6 @@ class SillyBot:
     async def _on_aiogram_shutdown(self):
         if self._shutdown_activity:
             asyncio.create_task(self._shutdown_activity(self._manager))  # type: ignore
-
-    async def _scheduling_loop(self, time_delta: int = 20):
-        while True:
-            logging.info("Checking for regular activities to run...")
-            for scheduled_activity in self._regular_activities:
-                await scheduled_activity.execute(self._manager)
-            await asyncio.sleep(time_delta)
 
     def launch(self):
         """
@@ -307,36 +306,18 @@ class SillyBot:
 
     # endregion
 
-    def __init__(
-        self,
-        token: str,
-        pages: Sequence[SillyPage],
-        settings: Optional[SillySettings] = None,
-        regular_activities: Optional[Sequence[SillyRegularActivity]] = None,
-        on_startup: Optional[Callable[[SillyManager], Awaitable[None]]] = None,
-        on_shutdown: Optional[Callable[[SillyManager], Awaitable[None]]] = None,
-    ):
-        """
-        :param token: telegram-API token received from BotFather.
-        :param pages: sequence of page objects to include. Names must be unique.
-        :param settings: silly-bot settings. None means default settings.
-        :param regular_activities: sequence of activities to run periodically.
-        :param on_startup: method to run on bot startup.
-        :param on_shutdown: method to run on bot shutdown.
-        """
-        pages = (*pages, *configurator)
-        self._startup_activity = on_startup
-        self._shutdown_activity = on_shutdown
-        self._data = Data(settings if settings is not None else SillySettings(), *pages)
-        self._aiogram_bot = AiogramBot(
-            token=token, default=DefaultBotProperties(parse_mode="HTML")
-        )
-        self._dispatcher = Dispatcher()
-        self._dispatcher.startup.register(self._on_aiogram_startup)
-        self._dispatcher.shutdown.register(self._on_aiogram_shutdown)
-        self._manager = SillyManager(self._aiogram_bot, self._data)
-        self._data.init_users(self._manager)
+    # region Regular activites
 
+    async def _scheduling_loop(self, time_delta: int = 20):
+        while True:
+            logging.info("Checking for regular activities to run...")
+            for scheduled_activity in self._regular_activities:
+                await scheduled_activity.execute(self._manager)
+            await asyncio.sleep(time_delta)
+
+    def _setup_regular_activities(
+        self, activities: Optional[Sequence[SillyRegularActivity]] = None
+    ):
         hourly_stats_activity = SillyDateTimeActivity(
             self._data.stats.summarize_hourly_statistics,
             times=tuple(time(hour=h) for h in range(24)),
@@ -370,9 +351,39 @@ class SillyBot:
         )
 
         self._regular_activities = (
-            (*regular_activities, *stats_activities)
-            if regular_activities
-            else stats_activities
+            (*activities, *stats_activities) if activities else stats_activities
         )
 
+    # endregion
+    def __init__(
+        self,
+        token: str,
+        pages: Sequence[SillyPage],
+        settings: Optional[SillySettings] = None,
+        regular_activities: Optional[Sequence[SillyRegularActivity]] = None,
+        on_startup: Optional[Callable[[SillyManager], Awaitable[None]]] = None,
+        on_shutdown: Optional[Callable[[SillyManager], Awaitable[None]]] = None,
+    ):
+        """
+        :param token: telegram-API token received from BotFather.
+        :param pages: sequence of page objects to include. Names must be unique.
+        :param settings: silly-bot settings. None means default settings.
+        :param regular_activities: sequence of activities to run periodically.
+        :param on_startup: method to run on bot startup.
+        :param on_shutdown: method to run on bot shutdown.
+        """
+        pages = (*pages, *configurator)
+        self._startup_activity = on_startup
+        self._shutdown_activity = on_shutdown
+        self._data = Data(settings if settings is not None else SillySettings(), *pages)
+        self._aiogram_bot = AiogramBot(
+            token=token, default=DefaultBotProperties(parse_mode="HTML")
+        )
+        self._dispatcher = Dispatcher()
+        self._dispatcher.startup.register(self._on_aiogram_startup)
+        self._dispatcher.shutdown.register(self._on_aiogram_shutdown)
+        self._manager = SillyManager(self._aiogram_bot, self._data)
+        self._data.init_users(self._manager)
+
+        self._setup_regular_activities(regular_activities)
         self._setup_handlers()
