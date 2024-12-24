@@ -3,8 +3,8 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Optional, Any
 
-from core.data.registry import PersonalRegistry
-from utility import SillyText
+from .data.registry import PersonalRegistry
+from .utility import SillyText
 
 if TYPE_CHECKING:
     from .manager import SillyManager

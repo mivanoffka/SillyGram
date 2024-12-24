@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING
 
-from utility import SillyDbSection, SillyDB
+from ...utility import SillyDbSection, SillyDB
 
 if TYPE_CHECKING:
     from ...manager import SillyManager

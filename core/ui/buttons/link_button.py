@@ -2,7 +2,7 @@ from typing import Any
 
 from aiogram.types import InlineKeyboardButton
 
-from utility import SillyText
+from ...utility import SillyText
 from .sillybutton import SillyButton
 
 

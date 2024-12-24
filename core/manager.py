@@ -8,8 +8,8 @@ from aiogram.types import (
 )
 
 from silly_config import PATH
-from utility import SillyText, SillyLogger
-from core.data import SillyDefaults, Data
+from .utility import SillyText, SillyLogger
+from .data import SillyDefaults, Data
 from .user import SillyUser
 from typing import Any, Callable, Optional, List, Tuple
 

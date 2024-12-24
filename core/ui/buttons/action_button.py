@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
-from utility import SillyText
+from ...utility import SillyText
 
 if TYPE_CHECKING:
     from ...manager import SillyManager

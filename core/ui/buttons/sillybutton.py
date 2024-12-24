@@ -1,6 +1,6 @@
 from typing import Any
 
-from utility import SillyText
+from ...utility import SillyText
 
 
 class SillyButton:

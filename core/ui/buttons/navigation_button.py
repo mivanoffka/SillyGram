@@ -6,7 +6,7 @@ if TYPE_CHECKING:
     from ...user import SillyUser
 
 from .action_button import ActionSillyButton
-from utility import SillyText
+from ...utility import SillyText
 
 
 class NavigationSillyButton(ActionSillyButton):

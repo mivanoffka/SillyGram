@@ -6,12 +6,12 @@ if TYPE_CHECKING:
 
 from datetime import datetime
 
-from utility import SillyDB
+from ..utility import SillyDB
 from .sections import IO, Pages, Users, Stats
 from .orm import UserORM, HourlyUserORM, DailyUserORM, MonthlyUserORM, YearlyUserORM, DECLARATIVE_BASE
 from ..ui import SillyPage
 from .settings_and_defaults import SillySettings
-from core.data.registry import SillyRegistry
+from .registry import SillyRegistry
 
 
 from aiogram.types import User as AiogramUser

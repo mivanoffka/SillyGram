@@ -1,8 +1,8 @@
 from typing import Optional, Tuple
 
 from .registrable import Registrable
-from utility import SillyDbSection, SillyDB
-from core.data.orm import RegistryKeyORM, RegistryValueORM
+from ...utility import SillyDbSection, SillyDB
+from ...data.orm import RegistryKeyORM, RegistryValueORM
 
 
 class DiskRegistry(Registrable, SillyDbSection):

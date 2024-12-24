@@ -1,5 +1,5 @@
 from typing import Optional
-from utility import SillyText
+from ...utility import SillyText
 
 
 class SillyLabels:

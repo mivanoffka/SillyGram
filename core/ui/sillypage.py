@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from aiogram.types import InlineKeyboardMarkup
 
-from utility import SillyText
+from ..utility import SillyText
 
 from . import SillyButton
 
