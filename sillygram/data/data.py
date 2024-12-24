@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from core.manager import SillyManager
+    from sillygram.manager import SillyManager
 
 from datetime import datetime
 

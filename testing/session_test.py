@@ -1,4 +1,4 @@
-from core.data.registry.session import SessionRegistry
+from sillygram.data.registry.session import SessionRegistry
 from .registry_test import RegistryTests
 
 

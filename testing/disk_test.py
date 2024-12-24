@@ -1,7 +1,7 @@
-from core.data.registry.disk import DiskRegistry
+from sillygram.data.registry.disk import DiskRegistry
 from .registry_test import RegistryTests, K, V, U1, V1, U2, V2
-from core.utility import SillyDB
-from core.data.orm import DECLARATIVE_BASE
+from sillygram.utility import SillyDB
+from sillygram.data.orm import DECLARATIVE_BASE
 
 
 class DiskTests(RegistryTests):

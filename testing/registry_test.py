@@ -1,5 +1,5 @@
 import unittest
-from core.data.registry.session import Registrable
+from sillygram.data.registry.session import Registrable
 from abc import abstractmethod, ABC
 
 K = "K"
