@@ -1,7 +1,7 @@
 from typing import Optional, Tuple
 
 from .registrable import Registrable
-from ...utility import SillyDbSection, SillyDB
+from ..db import SillyDbSection, SillyDB
 from ...data.orm import RegistryKeyORM, RegistryValueORM
 
 

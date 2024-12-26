@@ -2,8 +2,8 @@ from typing import Any
 
 from aiogram.types import InlineKeyboardButton
 
-from ...utility import SillyText
-from .sillybutton import SillyButton
+from ...text import SillyText
+from .button import SillyButton
 
 
 class LinkSillyButton(SillyButton):

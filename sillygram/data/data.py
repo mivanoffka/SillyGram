@@ -6,7 +6,7 @@ if TYPE_CHECKING:
 
 from datetime import datetime
 
-from ..utility import SillyDB
+from .db import SillyDB
 from .sections import IO, Pages, Users, Stats
 from .orm import UserORM, HourlyUserORM, DailyUserORM, MonthlyUserORM, YearlyUserORM, DECLARATIVE_BASE
 from ..ui import SillyPage

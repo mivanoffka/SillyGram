@@ -7,9 +7,9 @@ from aiogram.types import (
     InlineKeyboardButton,
 )
 
-from .silly_config import PATH
-from .utility import SillyText, SillyLogger
-from .data import SillyDefaults, Data
+from .context import PATH
+from .text import SillyText
+from .data import SillyDefaults, Data, SillyLogger
 from .user import SillyUser
 from typing import Any, Callable, Optional, List, Tuple
 

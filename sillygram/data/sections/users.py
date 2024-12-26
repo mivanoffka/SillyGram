@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Optional
 
-from ...utility import SillyDbSection, SillyDB
+from ..db import SillyDbSection, SillyDB
 from ..orm import UserORM, AdminORM, BanORM
 
 if TYPE_CHECKING:

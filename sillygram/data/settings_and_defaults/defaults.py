@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from ...utility import SillyText
+from ...text import SillyText
 
 
 @dataclass(frozen=True)

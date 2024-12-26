@@ -1,6 +1,8 @@
+from re import S
 from .bot import SillyBot
 from .manager import SillyManager
 from .user import SillyUser
+from .text import SillyText
 
 from .ui import (
     SillyPage,
@@ -9,6 +11,6 @@ from .ui import (
     LinkSillyButton,
     NavigationSillyButton,
 )
+
 from .activities import SillyRegularActivity, SillyDateTimeActivity
-from .utility import SillyText
-from .data import SillySettings
+from .data import SillySettings, SillyLabels
