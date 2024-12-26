@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Run example",
+            "label": "Run sample bot",
             "type": "shell",
             "command": "${command:osPlatform}",
             "args": [],
@@ -20,6 +20,26 @@
                 "isDefault": true
             },
             "problemMatcher": []
-        }
+        },
+        {
+            "label": "Run library tests",
+            "type": "shell",
+            "command": "${command:osPlatform}",
+            "args": [],
+            "windows": {
+                "command": ". ${workspaceFolder}\\.venv\\Scripts\\Activate && pytest ./tests --maxfail=1 --disable-warnings"
+            },
+            "linux": {
+                "command": "source ${workspaceFolder}/.venv/bin/activate && pytest ./tests --maxfail=1 --disable-warnings"
+            },
+            "osx": {
+                "command": "source ${workspaceFolder}/.venv/bin/activate && pytest ./tests --maxfail=1 --disable-warnings"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        }        
     ]
 }
