@@ -1,4 +1,4 @@
-from ...utility import SillyDB
+from ..db import SillyDB
 from .disk import DiskRegistry
 from .session import SessionRegistry
 from .registrable import Registrable

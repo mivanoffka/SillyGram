@@ -1,7 +1,7 @@
 import logging
 import tarfile
 from datetime import datetime, timedelta
-from ..silly_config import PATH
+from ..context import PATH
 from pathlib import Path
 import colorlog
 

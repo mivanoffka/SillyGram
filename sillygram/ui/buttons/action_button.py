@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
-from ...utility import SillyText
+from ...text import SillyText
 
 if TYPE_CHECKING:
     from ...manager import SillyManager
@@ -12,7 +12,7 @@ from ...data.settings_and_defaults import SillyDefaults
 from aiogram.types import InlineKeyboardButton
 from typing import List, Callable, Awaitable
 
-from .sillybutton import SillyButton
+from .button import SillyButton
 
 _button_ids: List[int] = list()
 

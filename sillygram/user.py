@@ -4,10 +4,10 @@ from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Optional, Any
 
 from .data.registry import PersonalRegistry
-from .utility import SillyText
 
 if TYPE_CHECKING:
     from .manager import SillyManager
+    from .text import SillyText
 
 
 class SillyUser:
