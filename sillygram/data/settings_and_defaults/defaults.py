@@ -13,9 +13,6 @@ class SillyDefaults:
         OPTION_TEMPLATE = "OPTION_"
         BUTTON_TEMPLATE = "Button-[{}]"
 
-        HOME_PAGE_NAME = "HOME"
-        START_PAGE_NAME = "START"
-
         HOME_COMMAND = "home"
         START_COMMAND = "start"
         INPUT_CANCEL_MARKER = "$INPUT_CANCELLED$"
@@ -35,7 +32,9 @@ class SillyDefaults:
         HOME_BUTTON_TEXT = SillyText("Home")
         RESET_BUTTON_TEXT = SillyText("Reset data")
         REGISTRY_BUTTON_TEXT = SillyText("Registry")
-        NOT_IMPLEMENTED_TEXT = SillyText("This will be implemented in future versions of SillyGram!")
+        NOT_IMPLEMENTED_TEXT = SillyText(
+            "This will be implemented in future versions of SillyGram!"
+        )
 
         DATETIME_FORMAT = SillyText("%d.%m.%Y-%H:%M")
 
@@ -55,23 +54,34 @@ class SillyDefaults:
             LIST_MESSAGE_TEMPLATE = SillyText("Admins list:\n\n{}")
             LIST_MESSAGE_EMPTY = SillyText("There are no admins")
 
+            PROMOTION_USER_ID_INPUT_PROMPT = SillyText(
+                "Please enter the ID of the user you want to promote."
+            )
+            DEMOTION_USER_ID_INPUT_PROMPT = SillyText(
+                "Please enter the ID of the user you want to demote."
+            )
 
-            PROMOTION_USER_ID_INPUT_PROMPT = SillyText("Please enter the ID of the user you want to promote.")
-            DEMOTION_USER_ID_INPUT_PROMPT = SillyText("Please enter the ID of the user you want to demote.")
+            PROMOTION_SUCCESS_MESSAGE_TEMPLATE = SillyText(
+                "User {} has been successfully promoted."
+            )
+            DEMOTION_SUCCESS_MESSAGE_TEMPLATE = SillyText(
+                "User {} has been successfully demoted."
+            )
 
-            PROMOTION_SUCCESS_MESSAGE_TEMPLATE = SillyText("User {} has been successfully promoted.")
-            DEMOTION_SUCCESS_MESSAGE_TEMPLATE = SillyText("User {} has been successfully demoted.")
+            PROMOTION_CONFIRMATION_PROMPT = SillyText(
+                "Are you sure you want to promote user {}?\n\n"
+                "This will grant them administrator permission, "
+                "which will provide them with the access to the "
+                "SG control panel you are currently using so that "
+                "they could ban and unban users, grant or take away other users "
+                "admin permission (including you as well) and reset all the bot data!"
+            )
 
-            PROMOTION_CONFIRMATION_PROMPT = SillyText("Are you sure you want to promote user {}?\n\n"
-                                             "This will grant them administrator permission, "
-                                             "which will provide them with the access to the "
-                                             "SG control panel you are currently using so that "
-                                             "they could ban and unban users, grant or take away other users "
-                                             "admin permission (including you as well) and reset all the bot data!")
-
-            DEMOTION_CONFIRMATION_PROMPT = SillyText("Are you sure you want to demote user {}?\n\n"
-                                            "This will take away their administration permission "
-                                            "so that they will not be able to access the SG control panel anymore.")
+            DEMOTION_CONFIRMATION_PROMPT = SillyText(
+                "Are you sure you want to demote user {}?\n\n"
+                "This will take away their administration permission "
+                "so that they will not be able to access the SG control panel anymore."
+            )
 
         @dataclass(frozen=True)
         class BannedPage:
@@ -79,10 +89,16 @@ class SillyDefaults:
             TEXT = SillyText("Banned page")
             LIST_MESSAGE_TEMPLATE = SillyText("SillyText(Banned users list:\n\n{}")
 
-            BAN_USER_ID_INPUT_PROMPT = SillyText("Please enter the ID of the user you want to ban.")
-            BAN_DATE_INPUT_PROMPT = SillyText("Now enter the blocking duration in days (non integral values are allowed)")
+            BAN_USER_ID_INPUT_PROMPT = SillyText(
+                "Please enter the ID of the user you want to ban."
+            )
+            BAN_DATE_INPUT_PROMPT = SillyText(
+                "Now enter the blocking duration in days (non integral values are allowed)"
+            )
             BAN_DURATION_DIALOG_TEXT = SillyText("Choose ban duration")
-            AMNESTY_DIALOG_TEXT = SillyText("Are you sure you want to perform amnesty? All the users will be unbanned.")
+            AMNESTY_DIALOG_TEXT = SillyText(
+                "Are you sure you want to perform amnesty? All the users will be unbanned."
+            )
 
             AMNESTY_SUCCESS_TEXT = SillyText("There are no banned users anymore.")
 
@@ -94,10 +110,16 @@ class SillyDefaults:
             PERMANENT_BAN_OPTION = SillyText("Permanent")
             CANCEL_BAN_OPTION = SillyText("Cancel")
 
-            UNBAN_USER_ID_INPUT_PROMPT = SillyText("Please enter the ID of the user you want to unban.")
+            UNBAN_USER_ID_INPUT_PROMPT = SillyText(
+                "Please enter the ID of the user you want to unban."
+            )
 
-            TEMPORAL_BAN_SUCCESS_MESSAGE_TEMPLATE = SillyText("User {} is now banned until {}.")
-            PERMANENT_BAN_SUCCESS_MESSAGE_TEMPLATE = SillyText("User {} is now banned permanently.")
+            TEMPORAL_BAN_SUCCESS_MESSAGE_TEMPLATE = SillyText(
+                "User {} is now banned until {}."
+            )
+            PERMANENT_BAN_SUCCESS_MESSAGE_TEMPLATE = SillyText(
+                "User {} is now banned permanently."
+            )
 
             UNBAN_SUCCESS_MESSAGE_TEMPLATE = SillyText("User {} is not banned anymore.")
 
@@ -126,3 +148,7 @@ class SillyDefaults:
         START = "start"
         HOME = "home"
         CONFIGURE = "configure"
+
+
+SILLY_START_PAGE_POINTER = SillyDefaults.Names.START_PAGE
+SILLY_HOME_PAGE_POINTER = SillyDefaults.Names.HOME_PAGE

@@ -116,6 +116,7 @@ class SillyManager:
                 option = self._data.io.pop_dialog_result(user.id)
                 await asyncio.sleep(0.2)
 
+            await self.refresh_page(user)
             return option
 
         return await asyncio.get_event_loop().create_task(wait_for_result())
@@ -168,7 +169,7 @@ class SillyManager:
 
         await self._send_new_target_message(
             user,
-            text.localize(user.language_code),
+            page.text.localize(user.language_code),
             keyboard=page.keyboard(user.language_code),
             separate=False,
         )

@@ -1,5 +1,4 @@
 import logging
-from pydoc import text
 from typing import Dict, List, Optional, Sequence
 
 
@@ -37,19 +36,6 @@ class SillyText:
 
             for key in self._text.keys():
                 if isinstance(key, str) or isinstance(key, Sequence):
-                    placeholders_count = self._text[key].count("{}")
-
-                    if len(_args) > placeholders_count:
-                        _args = _args[:placeholders_count]
-                        logging.warning(
-                            f"Too many arguments passed to '{self._text[key]}'. Only {_args} will be used."
-                        )
-                    elif len(_args) < placeholders_count:
-                        for _ in range(placeholders_count - len(_args)):
-                            _args.append(self._undefined_content)
-                        logging.warning(f"Not enough arguments passed to '{self._text[key]}'. Missing will be filled with '{self._undefined_content}'.")
-
-
                     text[key] = self._text[key].format(*self._fix_args_count(_args, self._text[key]))
 
             return SillyText(text)

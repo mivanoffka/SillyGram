@@ -7,13 +7,13 @@
             "command": "${command:osPlatform}",
             "args": [],
             "windows": {
-                "command": ". ${workspaceFolder}\\.venv\\Scripts\\Activate ; echo Launching bot... ; &cmd /c run_example.bat"
+                "command": ". ${workspaceFolder}\\.venv\\Scripts\\Activate ; echo Launching bot... ; python -m sample.main"
             },
             "linux": {
-                "command": "source ${workspaceFolder}/.venv/bin/activate && echo 'Launching bot...' && sh run_example.sh"
+                "command": "source ${workspaceFolder}/.venv/bin/activate && echo 'Launching bot...' && python -m sample.main"
             },
             "osx": {
-                "command": "source ${workspaceFolder}/.venv/bin/activate && echo 'Launching bot...' && sh run_example.sh"
+                "command": "source ${workspaceFolder}/.venv/bin/activate && echo 'Launching bot...' && python -m sample.main"
             },
             "group": {
                 "kind": "build",
