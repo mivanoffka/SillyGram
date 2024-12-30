@@ -11,9 +11,10 @@ from ..text import Text
 
 async def on_input_button_clicked(manager: SillyManager, user: SillyUser):
     text = await manager.get_input(user, Text.InputPage.TEXT_INPUT_PROMPT)
-    await manager.show_message(
-        user, Text.InputPage.TEXT_INPUT_RESULT_TEMPLATE.format(text)
-    )
+    if text is not None:
+        await manager.show_message(
+            user, Text.InputPage.TEXT_INPUT_RESULT_TEMPLATE.format(text)
+        )
 
 
 input_page = SillyPage(

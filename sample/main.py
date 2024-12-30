@@ -1,7 +1,3 @@
-from email import message
-import os
-from tkinter.dialog import DIALOG_ICON
-
 from sillygram import SillyBot, SillySettings
 from .pages import home_page, start_page, input_page, message_page, dialog_page
 

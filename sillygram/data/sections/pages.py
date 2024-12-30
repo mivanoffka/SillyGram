@@ -1,4 +1,4 @@
-from typing import Dict, Any, Tuple, Optional
+from typing import Dict, Any, Tuple
 from ..settings_and_defaults import SillyDefaults
 from ...ui import SillyPage
 

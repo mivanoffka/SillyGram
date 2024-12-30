@@ -37,6 +37,7 @@ class SillyBot:
     _shutdown_activity: Optional[Callable[[SillyManager], Awaitable[None]]]
 
     # region Startup & shutdown
+    
     async def _on_aiogram_startup(self):
         await self._data.stats.summarize_hourly_statistics(self._manager)
         await self._data.stats.summarize_daily_statistics(self._manager)
@@ -123,7 +124,9 @@ class SillyBot:
         for button in buttons:
             if isinstance(button, ActionSillyButton):
                 self._register_callback(button.identity, button.on_click)
-
+                
+        self._dispatcher.callback_query.register(self._default_callback_handler)
+    
     def _register_command(self, command: str, handler: Any):
         async def aiogram_handler(message: Message):
             if not message.from_user:
@@ -227,9 +230,12 @@ class SillyBot:
 
         option = 0
         if callback.data:
-            option = int(
-                callback.data.replace(SillyDefaults.CallbackData.OPTION_TEMPLATE, "")
-            )
+            if callback.data == SillyDefaults.CallbackData.CANCEL_OPTION:
+                option = -1
+            else:
+                option = int(
+                    callback.data.replace(SillyDefaults.CallbackData.OPTION_TEMPLATE, "")
+                )
         self._data.io.push_dialog_result(callback.from_user.id, option)
 
     async def _on_close_button_clicked(self, callback: CallbackQuery):
@@ -299,8 +305,20 @@ class SillyBot:
         self._data.io.push_text(
             callback.from_user.id, SillyDefaults.CallbackData.INPUT_CANCEL_MARKER
         )
-        self._data.io.stop_listening(callback.from_user.id)
+        self._data.io.stop_input_listening(callback.from_user.id)
         await self._manager.refresh_page(user)
+        
+    async def _default_callback_handler(self, callback: CallbackQuery):
+            await callback.answer()
+
+            user = self._manager.users.get(self._data.indicate(callback.from_user))
+
+            if user is None:
+                return
+            if user.is_banned:
+                return
+            
+            await self._manager.goto_page(user, SillyDefaults.Names.HOME_PAGE, new_target_message=True)
 
     # endregion
 

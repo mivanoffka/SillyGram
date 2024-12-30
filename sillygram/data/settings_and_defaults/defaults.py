@@ -11,7 +11,10 @@ class SillyDefaults:
         CLOSE = "CLOSE"
         CANCEL = "CANCEL"
         OPTION_TEMPLATE = "OPTION_"
+        CANCEL_OPTION = "OPTION_CANCEL"
         BUTTON_TEMPLATE = "Button-[{}]"
+        
+        DEFAULT = "DEFAULT"
 
         HOME_COMMAND = "home"
         START_COMMAND = "start"

@@ -74,7 +74,6 @@ class Text:
             SillyText({"en": "Red"}),
             SillyText({"en": "Green"}),
             SillyText({"en": "Blue"}),
-            SillyText({"en": "Cancel"})
         )
         CUSTOM_DIALOG_RESULT_TEMPLATE = SillyText(
             {"en": "You have chosen '{}'"}

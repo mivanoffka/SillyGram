@@ -7,11 +7,16 @@ from aiogram.types import (
     InlineKeyboardButton,
 )
 
+from .ui import SillyPage
+
 from .context import PATH
 from .text import SillyText
 from .data import SillyDefaults, Data, SillyLogger
 from .user import SillyUser
 from typing import Any, Callable, Optional, List, Tuple
+
+TIME_DELTA = 0.2
+MAX_TIME = 120
 
 
 class SillyManager:
@@ -25,7 +30,7 @@ class SillyManager:
         return self._data.registry
 
     @property
-    def users(self): 
+    def users(self):
         return self._data.users
 
     @property
@@ -41,28 +46,43 @@ class SillyManager:
         user: SillyUser,
         page_name: Any,
         new_target_message=False,
-        format_args: Optional[Tuple[str, ...]] = None
+        format_args: Optional[Tuple[str, ...]] = None,
     ):
         page = self._data.pages.get(page_name)
         if new_target_message:
             await self._send_new_target_message(
                 user,
-                page.text.format(*format_args if format_args else ()).localize(user.language_code),
+                page.text.format(*format_args if format_args else ()).localize(
+                    user.language_code
+                ),
                 page.keyboard(user.language_code),
             )
         else:
             await self._edit_target_message(
                 user,
-                page.text.format(*format_args if format_args else ()).localize(user.language_code),
+                page.text.format(*format_args if format_args else ()).localize(
+                    user.language_code
+                ),
                 page.keyboard(user.language_code),
             )
         self._data.set_current_page_name(user.id, page_name)
 
-    async def refresh_page(self, user: SillyUser, format_args: Optional[Tuple[str, ...]] = None):
-        page = self._data.pages.get(self._data.get_current_page_name(user.id))
+    async def refresh_page(
+        self, user: SillyUser, format_args: Optional[Tuple[str, ...]] = None
+    ):
+        page: Optional[SillyPage] = None
+        
+        try:
+            page = self._data.pages.get(self._data.get_current_page_name(user.id))
+        except Exception:
+            await self.goto_page(user, SillyDefaults.Names.START_PAGE)
+            return  
+                  
         await self._edit_target_message(
             user,
-            page.text.format(*format_args if format_args else ()).localize(user.language_code),
+            page.text.format(*format_args if format_args else ()).localize(
+                user.language_code
+            ),
             page.keyboard(user.language_code),
         )
 
@@ -84,7 +104,11 @@ class SillyManager:
         )
 
     async def show_dialog(
-        self, user: SillyUser, question: SillyText, *dialog_options: SillyText
+        self,
+        user: SillyUser,
+        question: SillyText,
+        *dialog_options: SillyText,
+        cancelable: bool = False,
     ) -> int | None:
         buttons = []
         row = []
@@ -105,19 +129,41 @@ class SillyManager:
         if row:
             buttons.append(row)
 
+        if cancelable:
+            buttons.append(
+                [
+                    InlineKeyboardButton(
+                        text=self._data.settings.labels.cancel.localize(
+                            user.language_code
+                        ),
+                        callback_data=SillyDefaults.CallbackData.CANCEL_OPTION,
+                    )
+                ]
+            )
+
         keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
         await self._edit_target_message(
             user, question.localize(user.language_code), keyboard=keyboard
         )
 
         async def wait_for_result():
+            self._data.io.start_dialog_listening(user.id)
             option = None
+
+            timer = 0
+
             while option is None:
                 option = self._data.io.pop_dialog_result(user.id)
-                await asyncio.sleep(0.2)
+
+                timer += TIME_DELTA
+                if timer > MAX_TIME:
+                    self._data.io.stop_dialog_listening(user.id)
+                    break
+
+                await asyncio.sleep(TIME_DELTA)
 
             await self.refresh_page(user)
-            return option
+            return option if option != -1 else None
 
         return await asyncio.get_event_loop().create_task(wait_for_result())
 
@@ -196,24 +242,39 @@ class SillyManager:
             await self._edit_target_message(
                 user, prompt.localize(user.language_code), keyboard
             )
-            self._data.io.start_listening(user.id)
+            self._data.io.start_input_listening(user.id)
+
+            timer = 0
 
             text = None
             while text is None:
                 text = self._data.io.pop_text(user.id)
+
+                timer += TIME_DELTA
+                if timer > MAX_TIME:
+                    self._data.io.stop_input_listening(user.id)
+                    break
+
                 await asyncio.sleep(0.2)
 
-            return text if text != SillyDefaults.CallbackData.INPUT_CANCEL_MARKER else None
+            return (
+                text if text != SillyDefaults.CallbackData.INPUT_CANCEL_MARKER else None
+            )
 
         return await asyncio.get_event_loop().create_task(task())
 
-    async def get_yes_no_answer(self, user: SillyUser, question: SillyText) -> bool:
+    async def get_yes_no_answer(
+        self, user: SillyUser, question: SillyText, cancelable: bool = False
+    ) -> Optional[bool]:
         option = await self.show_dialog(
             user,
             question,
             self._data.settings.labels.no,
             self._data.settings.labels.yes,
+            cancelable=cancelable,
         )
+        if option is None:
+            return None
         return True if option else False
 
     # endregion
