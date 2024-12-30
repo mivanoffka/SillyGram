@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional, Sequence, Tuple
 
 if TYPE_CHECKING:
     from sillygram.manager import SillyManager
@@ -8,7 +8,15 @@ from datetime import datetime
 
 from .db import SillyDB
 from .sections import IO, Pages, Users, Stats
-from .orm import UserORM, HourlyUserORM, DailyUserORM, MonthlyUserORM, YearlyUserORM, DECLARATIVE_BASE
+from .orm import (
+    FormatArgORM,
+    UserORM,
+    HourlyUserORM,
+    DailyUserORM,
+    MonthlyUserORM,
+    YearlyUserORM,
+    DECLARATIVE_BASE,
+)
 from ..ui import SillyPage
 from .settings_and_defaults import SillySettings
 from .registry import SillyRegistry
@@ -53,13 +61,15 @@ class Data(SillyDB):
         with self._get_session() as session:
             user = session.query(UserORM).filter_by(id=aiogram_user.id).first()
             if not user:
-                user = UserORM(id=aiogram_user.id,
-                               nickname=aiogram_user.username,
-                               first_name=aiogram_user.first_name,
-                               last_name=aiogram_user.last_name,
-                               language_code=aiogram_user.language_code,
-                               registered_at=datetime.now(),
-                               last_seen_at=datetime.now())
+                user = UserORM(
+                    id=aiogram_user.id,
+                    nickname=aiogram_user.username,
+                    first_name=aiogram_user.first_name,
+                    last_name=aiogram_user.last_name,
+                    language_code=aiogram_user.language_code,
+                    registered_at=datetime.now(),
+                    last_seen_at=datetime.now(),
+                )
 
                 session.add(user)
 
@@ -70,7 +80,7 @@ class Data(SillyDB):
                 user.language_code = aiogram_user.language_code
                 user.last_seen_at = datetime.now()
 
-            self._save_as_recent_user(session, user.id) 
+            self._save_as_recent_user(session, user.id)
 
             id_to_return = user.id
             session.commit()
@@ -86,7 +96,9 @@ class Data(SillyDB):
 
     def get_target_message_id(self, user_id: int) -> int | None:
         with self._get_session() as session:
-            return session.query(UserORM).filter_by(id=user_id).first().target_message_id
+            return (
+                session.query(UserORM).filter_by(id=user_id).first().target_message_id
+            )
 
     def set_target_message_id(self, user_id: int, message_id: int):
         with self._get_session() as session:
@@ -96,13 +108,33 @@ class Data(SillyDB):
 
     def get_current_page_name(self, user_id: int) -> str | None:
         with self._get_session() as session:
-            return session.query(UserORM).filter_by(id=user_id).first().current_page_name
+            return (
+                session.query(UserORM).filter_by(id=user_id).first().current_page_name
+            )
 
     def set_current_page_name(self, user_id: int, page_name: str):
         with self._get_session() as session:
             user = session.query(UserORM).filter_by(id=user_id).first()
             user.current_page_name = page_name
             session.commit()
+
+    def set_format_args(self, user_id: int, format_args: Optional[Sequence[str]]):
+        with self._get_session() as session:
+            existing_args = session.query(FormatArgORM).filter_by(user_id=user_id).all()
+            for arg in existing_args:
+                session.delete(arg)
+
+            if format_args is not None:
+                for arg in format_args:
+                    session.add(FormatArgORM(user_id=user_id, arg=arg))
+            session.commit()
+
+    def get_format_args(self, user_id: int) -> Tuple[str, ...]:
+        with self._get_session() as session:
+            return tuple(
+                arg.arg
+                for arg in session.query(FormatArgORM).filter_by(user_id=user_id).all()
+            )
 
     def init_users(self, manager: SillyManager):
         self._users = Users(self, manager)
@@ -114,4 +146,3 @@ class Data(SillyDB):
         self._settings = settings
         self._registry = SillyRegistry(self)
         self._stats = Stats(self)
-

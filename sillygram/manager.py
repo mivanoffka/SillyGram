@@ -65,19 +65,24 @@ class SillyManager:
                 ),
                 page.keyboard(user.language_code),
             )
+            
+        self._data.set_format_args(user.id, format_args)
         self._data.set_current_page_name(user.id, page_name)
 
     async def refresh_page(
         self, user: SillyUser, format_args: Optional[Tuple[str, ...]] = None
     ):
         page: Optional[SillyPage] = None
-        
+
+        if format_args is None:
+            format_args = self._data.get_format_args(user.id)
+            
         try:
             page = self._data.pages.get(self._data.get_current_page_name(user.id))
         except Exception:
             await self.goto_page(user, SillyDefaults.Names.START_PAGE)
-            return  
-                  
+            return
+
         await self._edit_target_message(
             user,
             page.text.format(*format_args if format_args else ()).localize(
@@ -85,6 +90,8 @@ class SillyManager:
             ),
             page.keyboard(user.language_code),
         )
+        
+        self._data.set_format_args(user.id, format_args)
 
     async def show_message(self, user: SillyUser, text: SillyText):
         keyboard = InlineKeyboardMarkup(
