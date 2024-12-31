@@ -10,7 +10,7 @@ from aiogram.types import Message, CallbackQuery, InaccessibleMessage
 from aiogram.methods import DeleteWebhook
 
 from .data import SillySettings
-from .user import SillyUser
+from .event import SillyEvent
 from .manager import SillyManager
 from .data import Data, SillyDefaults
 from .ui import SillyPage, ActionSillyButton
@@ -143,7 +143,8 @@ class SillyBot:
             except Exception:
                 ...
 
-            return await handler(self._manager, user)
+            event = SillyEvent(user)
+            return await handler(self._manager, event)
 
         self._dispatcher.message.register(aiogram_handler, Command(command))
 
@@ -157,8 +158,9 @@ class SillyBot:
                 return
             if user.is_banned:
                 return
-
-            result = await handler(self._manager, user)
+            
+            event = SillyEvent(user)
+            result = await handler(self._manager, event)
             return result
 
         self._dispatcher.callback_query.register(
@@ -167,20 +169,20 @@ class SillyBot:
 
     # region Default handlers
 
-    async def _on_start(self, manager: SillyManager, user: SillyUser):
+    async def _on_start(self, manager: SillyManager, event: SillyEvent):
         await manager.goto_page(
-            user, SillyDefaults.Names.START_PAGE, new_target_message=True
+            event.user, SillyDefaults.Names.START_PAGE, new_target_message=True
         )
 
-    async def _on_home(self, manager: SillyManager, user: SillyUser):
+    async def _on_home(self, manager: SillyManager, event: SillyEvent):
         await manager.goto_page(
-            user, SillyDefaults.Names.HOME_PAGE, new_target_message=True
+            event.user, SillyDefaults.Names.HOME_PAGE, new_target_message=True
         )
 
     @staticmethod
     @SillyManager.admin_only
-    async def _on_configure(manager: SillyManager, user: SillyUser):
-        await manager.goto_page(user, SillyDefaults.Names.CONFIGURE_PAGE)
+    async def _on_configure(manager: SillyManager, event: SillyEvent):
+        await manager.goto_page(event.user, SillyDefaults.Names.CONFIGURE_PAGE)
 
     async def _on_text_input(self, message: Message):
         if not message.from_user:

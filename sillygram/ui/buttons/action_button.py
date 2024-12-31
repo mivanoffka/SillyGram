@@ -5,7 +5,7 @@ from ...text import SillyText
 
 if TYPE_CHECKING:
     from ...manager import SillyManager
-    from ...user import SillyUser
+    from ...event import SillyEvent
 
 from ...data.settings_and_defaults import SillyDefaults
 
@@ -19,7 +19,7 @@ _button_ids: List[int] = list()
 
 class ActionSillyButton(SillyButton):
     _id: int
-    _on_click: Optional[Callable[[SillyManager, SillyUser], Awaitable[None]]]
+    _on_click: Optional[Callable[[SillyManager, SillyEvent], Awaitable[None]]]
 
     # region Properties etc.
 
@@ -32,7 +32,7 @@ class ActionSillyButton(SillyButton):
         return SillyDefaults.CallbackData.BUTTON_TEMPLATE.format(self._id)
 
     @property
-    def on_click(self) -> Callable[[SillyManager, SillyUser], Awaitable[None]]:
+    def on_click(self) -> Callable[[SillyManager, SillyEvent], Awaitable[None]]:
         return self._on_click_wrapper
 
     # endregion
@@ -54,16 +54,16 @@ class ActionSillyButton(SillyButton):
         self._id = max_id + 1
         _button_ids.append(self._id)
 
-    async def _on_click_wrapper(self, manager: SillyManager, user: SillyUser):
+    async def _on_click_wrapper(self, manager: SillyManager, event: SillyEvent):
         if self._on_click is not None:
-            await self._on_click(manager, user)
+            await self._on_click(manager, event)
 
     # endregion
 
     def __init__(
         self,
         text: SillyText,
-        on_click: Optional[Callable[[SillyManager, SillyUser], Awaitable[None]]] = None,
+        on_click: Optional[Callable[[SillyManager, SillyEvent], Awaitable[None]]] = None,
     ):
         super().__init__(text)
         self._generate_id()

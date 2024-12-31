@@ -1,10 +1,8 @@
-from sillygram.manager import SillyManager
-from sillygram.user import SillyUser
 from ..text import Text
-from sillygram import SillyPage, NavigationSillyButton, ActionSillyButton
+from sillygram import SillyPage, NavigationSillyButton, ActionSillyButton, SillyEvent, SillyManager
 
 
-async def on_format_button_clicked(manager: SillyManager, user: SillyUser):
+async def on_format_button_clicked(manager: SillyManager, event: SillyEvent):
     KEY_NAME = "format_page_visited_count"
     
     if KEY_NAME not in manager.registry.disk.get_keys():
@@ -20,7 +18,7 @@ async def on_format_button_clicked(manager: SillyManager, user: SillyUser):
     if not current_value:
         current_value = "1"
 
-    await manager.goto_page(user, Text.FormatPage.NAME, format_args=(user.nickname, current_value))
+    await manager.goto_page(event.user, Text.FormatPage.NAME, format_args=(event.user.nickname, current_value))
     
 
 home_page = SillyPage(

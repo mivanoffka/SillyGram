@@ -4,27 +4,27 @@ from sillygram import (
     NavigationSillyButton,
     SILLY_HOME_PAGE_POINTER,
     SillyManager,
-    SillyUser,
+    SillyEvent,
     ActionSillyButton,
 )
 
 
-async def on_yes_no_button_clicked(manager: SillyManager, user: SillyUser):
-    answer = await manager.get_yes_no_answer(user, Text.DialogPage.YES_NO_DIALOG_TEXT)
+async def on_yes_no_button_clicked(manager: SillyManager, event: SillyEvent):
+    answer = await manager.get_yes_no_answer(event.user, Text.DialogPage.YES_NO_DIALOG_TEXT)
     if answer is None:
         return
     await manager.show_message(
-        user, Text.DialogPage.YES_NO_DIALOG_RESULT_TEMPLATE.format(answer)
+        event.user, Text.DialogPage.YES_NO_DIALOG_RESULT_TEMPLATE.format(answer)
     )
 
 
-async def on_custom_button_clicked(manager: SillyManager, user: SillyUser):
+async def on_custom_button_clicked(manager: SillyManager, event: SillyEvent):
     answer = await manager.show_dialog(
-        user, Text.DialogPage.CUSTOM_DIALOG_TEXT, *Text.DialogPage.CUSTOM_DIALOG_OPTIONS, cancelable=True
+        event.user, Text.DialogPage.CUSTOM_DIALOG_TEXT, *Text.DialogPage.CUSTOM_DIALOG_OPTIONS, cancelable=True
     )
     if answer is not None:
         await manager.show_message(
-            user,
+            event.user,
             Text.DialogPage.CUSTOM_DIALOG_RESULT_TEMPLATE.format(
                 Text.DialogPage.CUSTOM_DIALOG_OPTIONS[answer]
             ),

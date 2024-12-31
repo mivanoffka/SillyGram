@@ -13,6 +13,7 @@ from .context import PATH
 from .text import SillyText
 from .data import SillyDefaults, Data, SillyLogger
 from .user import SillyUser
+from .event import SillyEvent
 from typing import Any, Callable, Optional, List, Tuple
 
 TIME_DELTA = 0.2
@@ -382,14 +383,14 @@ class SillyManager:
 
     @staticmethod
     def admin_only(handler: Callable):
-        async def wrapper(manager: SillyManager, user: SillyUser):
+        async def wrapper(manager: SillyManager, event: SillyEvent):
             print("a")
-            if not manager._data.users.is_admin(user.id):
+            if not manager._data.users.is_admin(event.user.id):
                 await manager.show_message(
-                    user, manager._data.settings.labels.admin_only
+                    event.user, manager._data.settings.labels.admin_only
                 )
             else:
-                await handler(manager, user)
+                await handler(manager, event.user)
 
         return wrapper
 

@@ -1,13 +1,13 @@
 from ..ui import ActionSillyButton, SillyPage, NavigationSillyButton
 from ..data import SillyDefaults
-from ..user import SillyUser
+from ..event import SillyEvent
 from ..manager import SillyManager
 from .common import get_user
 
 
 @SillyManager.admin_only
-async def _on_promote_button_click(manager: SillyManager, user: SillyUser):
-    user_to_promote = await get_user(manager, user)
+async def _on_promote_button_click(manager: SillyManager, event: SillyEvent):
+    user_to_promote = await get_user(manager, event)
     if not user_to_promote:
         return
 
@@ -17,21 +17,21 @@ async def _on_promote_button_click(manager: SillyManager, user: SillyUser):
         else "{} ({})".format(user_to_promote.nickname, user_to_promote.id)
     )
     confirmation = await manager.get_yes_no_answer(
-        user,
+        event.user,
         SillyDefaults.Configurator.AdminsPage.PROMOTION_CONFIRMATION_PROMPT.format(
             uinfo
         ),
     )
 
     if not confirmation:
-        await manager.refresh_page(user)
+        await manager.refresh_page(event.user)
         return
 
     try:
         manager.users.promote(user_to_promote.id)
 
         await manager.show_message(
-            user,
+            event.user,
             SillyDefaults.Configurator.AdminsPage.PROMOTION_SUCCESS_MESSAGE_TEMPLATE.format(
                 uinfo
             ),
@@ -39,14 +39,14 @@ async def _on_promote_button_click(manager: SillyManager, user: SillyUser):
 
     except Exception as e:
         await manager.show_message(
-            user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(e)
+            event.user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(e)
         )
         return
 
 
 @SillyManager.admin_only
-async def _on_demote_button_click(manager: SillyManager, user: SillyUser):
-    user_to_demote = await get_user(manager, user)
+async def _on_demote_button_click(manager: SillyManager, event: SillyEvent):
+    user_to_demote = await get_user(manager, event)
     if not user_to_demote:
         return
 
@@ -56,21 +56,21 @@ async def _on_demote_button_click(manager: SillyManager, user: SillyUser):
         else "{} ({})".format(user_to_demote.nickname, user_to_demote.id)
     )
     confirmation = await manager.get_yes_no_answer(
-        user,
+        event.user,
         SillyDefaults.Configurator.AdminsPage.DEMOTION_CONFIRMATION_PROMPT.format(
             uinfo
         ),
     )
 
     if not confirmation:
-        await manager.refresh_page(user)
+        await manager.refresh_page(event.user)
         return
 
     try:
         manager.users.demote(user_to_demote.id)
 
         await manager.show_message(
-            user,
+            event.user,
             SillyDefaults.Configurator.AdminsPage.DEMOTION_SUCCESS_MESSAGE_TEMPLATE.format(
                 uinfo
             ),
@@ -78,13 +78,13 @@ async def _on_demote_button_click(manager: SillyManager, user: SillyUser):
 
     except Exception as e:
         await manager.show_message(
-            user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(str(e))
+            event.user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(str(e))
         )
         return
 
 
 @SillyManager.admin_only
-async def _on_list_button_click(manager: SillyManager, user: SillyUser):
+async def _on_list_button_click(manager: SillyManager, event: SillyEvent):
     admins_list = manager.users.get_all_admins()
     message_text = SillyDefaults.Configurator.AdminsPage.LIST_MESSAGE_EMPTY
     if admins_list:
@@ -101,7 +101,7 @@ async def _on_list_button_click(manager: SillyManager, user: SillyUser):
                 admins_list_str
             )
         )
-    await manager.show_message(user, message_text)
+    await manager.show_message(event.user, message_text)
 
 
 admins_page = SillyPage(

@@ -1,17 +1,17 @@
 from ..ui import ActionSillyButton, SillyPage, NavigationSillyButton
 from ..data import SillyDefaults
 from ..manager import SillyManager
-from ..user import SillyUser
+from ..event import SillyEvent
 
 
 @SillyManager.admin_only
-async def _not_implemented(manager: SillyManager, user: SillyUser):
-    await manager.show_message(user, SillyDefaults.Configurator.NOT_IMPLEMENTED_TEXT)
+async def _not_implemented(manager: SillyManager, event: SillyEvent):
+    await manager.show_message(event.user, SillyDefaults.Configurator.NOT_IMPLEMENTED_TEXT)
 
 
 @SillyManager.admin_only
-async def _on_stats_button_clicked(manager: SillyManager, user: SillyUser):
-    await manager.show_message(user, manager.stats)
+async def _on_stats_button_clicked(manager: SillyManager, event: SillyEvent):
+    await manager.show_message(event.user, manager.stats)
 
 
 configuration_page = SillyPage(

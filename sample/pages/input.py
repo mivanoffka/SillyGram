@@ -3,17 +3,17 @@ from sillygram import (
     NavigationSillyButton,
     ActionSillyButton,
     SillyManager,
-    SillyUser,
+    SillyEvent,
     SILLY_HOME_PAGE_POINTER
 )
 from ..text import Text
 
 
-async def on_input_button_clicked(manager: SillyManager, user: SillyUser):
-    text = await manager.get_input(user, Text.InputPage.TEXT_INPUT_PROMPT)
+async def on_input_button_clicked(manager: SillyManager, event: SillyEvent):
+    text = await manager.get_input(event.user, Text.InputPage.TEXT_INPUT_PROMPT)
     if text is not None:
         await manager.show_message(
-            user, Text.InputPage.TEXT_INPUT_RESULT_TEMPLATE.format(text)
+            event.user, Text.InputPage.TEXT_INPUT_RESULT_TEMPLATE.format(text)
         )
 
 

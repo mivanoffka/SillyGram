@@ -3,14 +3,14 @@ from sillygram import (
     NavigationSillyButton,
     ActionSillyButton,
     SillyManager,
-    SillyUser,
+    SillyEvent,
     SILLY_HOME_PAGE_POINTER
 )
 from ..text import Text
 
 
-async def _on_more_info_clicked(manager: SillyManager, user: SillyUser):
-    await manager.show_message(user, Text.FormatPage.MORE_INFO_TEXT)
+async def _on_more_info_clicked(manager: SillyManager, event: SillyEvent):
+    await manager.show_message(event.user, Text.FormatPage.MORE_INFO_TEXT)
 
 format_page = SillyPage(
     name=Text.FormatPage.NAME,

@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ...manager import SillyManager
-    from ...user import SillyUser
-
+    from ...event import SillyEvent
+    
 from .action_button import ActionSillyButton
 from ...text import SillyText
 
@@ -12,8 +12,8 @@ from ...text import SillyText
 class NavigationSillyButton(ActionSillyButton):
     _page_name: str
 
-    async def _show_page(self, manager: SillyManager, user: SillyUser):
-        await manager.goto_page(user, self._page_name)
+    async def _show_page(self, manager: SillyManager, event: SillyEvent):
+        await manager.goto_page(event.user, self._page_name)
 
     def __init__(self, text: SillyText, page_name: str):
         super().__init__(text, self._show_page)
