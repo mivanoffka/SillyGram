@@ -326,7 +326,7 @@ class SillyManager:
                     message_id=target_message_id,
                     reply_markup=keyboard,
                 )
-            except Exception as e:
+            except Exception as e:  # noqa: F841
                 await self._send_new_target_message(user, text, keyboard)
 
     async def _send_new_target_message(
@@ -361,7 +361,7 @@ class SillyManager:
         if target_message_id is not None:
             try:
                 await self._aiogram_bot.delete_message(user.id, target_message_id)
-            except Exception as e:
+            except Exception as e:  # noqa: F841
                 ...
 
         await self._send_new_target_message(user, text, keyboard)
@@ -373,7 +373,7 @@ class SillyManager:
 
         try:
             await self._aiogram_bot.delete_message(user.id, target_message_id)
-        except Exception as e:
+        except Exception as e:  # noqa: F841
             pass
 
     # endregion

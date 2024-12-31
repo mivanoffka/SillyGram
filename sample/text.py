@@ -19,6 +19,7 @@ class Text:
         GOTO_MESSAGE_BUTTON_TEXT = SillyText({"en": "Messenging"})
         GOTO_INPUT_BUTTON_TEXT = SillyText({"en": "Input"})
         GOTO_DIALOG_BUTTON_TEXT = SillyText({"en": "Dialog"})
+        GOTO_FORMAT_BUTTON_TEXT = SillyText({"en": "Format"})
 
     class InputPage:
         NAME = "Input"
@@ -75,8 +76,21 @@ class Text:
             SillyText({"en": "Green"}),
             SillyText({"en": "Blue"}),
         )
-        CUSTOM_DIALOG_RESULT_TEMPLATE = SillyText(
-            {"en": "You have chosen '{}'"}
+        CUSTOM_DIALOG_RESULT_TEMPLATE = SillyText({"en": "You have chosen '{}'"})
+
+    class FormatPage:
+        NAME = "Format"
+        TEXT = SillyText(
+            {
+                "en": "Hello, {}!\n\nThis is the {} time you visit this page.\n\n<blockquote>Your username was not originally a part of the page.\n\nIt was integrated with the help of the .format() method of SillyText.</blockquote>",
+            }
+        )
+
+        MORE_INFO_BUTTON_TEXT = SillyText({"en": "More info"})
+        MORE_INFO_TEXT = SillyText(
+            {
+                "en": "<blockquote>Nothing there...</blockquote>"
+            }
         )
 
     BACK_BUTTON = SillyText({"en": "Back"})
