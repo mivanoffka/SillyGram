@@ -82,14 +82,14 @@ class Text:
         NAME = "Format"
         TEXT = SillyText(
             {
-                "en": "Hello, {}!\n\nThis is the {} time you visit this page.\n\n<blockquote>Your username was not originally a part of the page.\n\nIt was integrated with the help of the .format() method of SillyText.</blockquote>",
+                "en": "Hello, {}!\n\nYou visited this page {} times.\n\n<blockquote>Your username and visit count was not originally a part of the page.\n\nIt was integrated with the help of the .format() method of SillyText.</blockquote>",
             }
         )
 
         MORE_INFO_BUTTON_TEXT = SillyText({"en": "More info"})
         MORE_INFO_TEXT = SillyText(
             {
-                "en": "<blockquote>Nothing there...</blockquote>"
+                "en": "<blockquote>Note than when you close this message, the count of pages visits won't change. That's because showing messages or dialogs doesn't change the page you're currently in.\n\nTo see the updated content, you must explicitly revisit it via NavigationSillyButtons or Manager.show_page() method.<blockquote>",
             }
         )
 

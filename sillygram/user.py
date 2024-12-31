@@ -110,7 +110,7 @@ class SillyUser:
         await self._manager.show_message(self, text)
 
     async def goto_page(self, page_name: Any, new_target_message=False):
-        await self._manager.goto_page(self, page_name, new_target_message)
+        await self._manager.show_page(self, page_name, new_target_message)
 
     async def refresh_page(self):
         await self._manager.refresh_page(self)

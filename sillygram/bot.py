@@ -170,19 +170,19 @@ class SillyBot:
     # region Default handlers
 
     async def _on_start(self, manager: SillyManager, event: SillyEvent):
-        await manager.goto_page(
+        await manager.show_page(
             event.user, SillyDefaults.Names.START_PAGE, new_target_message=True
         )
 
     async def _on_home(self, manager: SillyManager, event: SillyEvent):
-        await manager.goto_page(
+        await manager.show_page(
             event.user, SillyDefaults.Names.HOME_PAGE, new_target_message=True
         )
 
     @staticmethod
     @SillyManager.admin_only
     async def _on_configure(manager: SillyManager, event: SillyEvent):
-        await manager.goto_page(event.user, SillyDefaults.Names.CONFIGURE_PAGE)
+        await manager.show_page(event.user, SillyDefaults.Names.CONFIGURE_PAGE)
 
     async def _on_text_input(self, message: Message):
         if not message.from_user:
@@ -276,7 +276,7 @@ class SillyBot:
             chat_id=user.id, message_id=target_message_id, reply_markup=None
         )
 
-        await self._manager.goto_page(
+        await self._manager.show_page(
             user,
             self._data.get_current_page_name(callback.from_user.id),
             new_target_message=True,
@@ -320,7 +320,7 @@ class SillyBot:
             if user.is_banned:
                 return
             
-            await self._manager.goto_page(user, SillyDefaults.Names.HOME_PAGE, new_target_message=True)
+            await self._manager.show_page(user, SillyDefaults.Names.HOME_PAGE, new_target_message=True)
 
     # endregion
 

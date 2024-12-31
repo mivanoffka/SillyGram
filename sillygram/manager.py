@@ -14,7 +14,7 @@ from .text import SillyText
 from .data import SillyDefaults, Data, SillyLogger
 from .user import SillyUser
 from .event import SillyEvent
-from typing import Any, Callable, Optional, List, Tuple
+from typing import Any, Callable, Dict, Optional, List, Tuple
 
 TIME_DELTA = 0.2
 MAX_TIME = 120
@@ -42,14 +42,17 @@ class SillyManager:
 
     # region Target message
 
-    async def goto_page(
+    async def show_page(
         self,
         user: SillyUser,
         page_name: Any,
         new_target_message=False,
-        format_args: Optional[Tuple[str, ...]] = None,
+        args: Optional[Tuple] = None,
+        kwargs: Optional[Dict[str, Any]] = None,
     ):
         page = self._data.pages.get(page_name)
+        format_args = await page.on_opened(self, SillyEvent(user, *(args or ()), **(kwargs or {})))
+        
         if new_target_message:
             await self._send_new_target_message(
                 user,
@@ -71,18 +74,23 @@ class SillyManager:
         self._data.set_current_page_name(user.id, page_name)
 
     async def refresh_page(
-        self, user: SillyUser, format_args: Optional[Tuple[str, ...]] = None
+        self, user: SillyUser, args: Optional[Tuple] = None, kwargs: Optional[Dict[str, Any]] = None,
+        
     ):
         page: Optional[SillyPage] = None
+        format_args: Optional[Tuple[str, ...]] = None
+        
+        try:
+            page = self._data.pages.get(self._data.get_current_page_name(user.id))
+            if args or kwargs:
+                format_args = await page.on_opened(self, SillyEvent(user, *(args or ()), **(kwargs or {})))
+
+        except Exception:
+            await self.show_page(user, SillyDefaults.Names.START_PAGE)
+            return
 
         if format_args is None:
             format_args = self._data.get_format_args(user.id)
-            
-        try:
-            page = self._data.pages.get(self._data.get_current_page_name(user.id))
-        except Exception:
-            await self.goto_page(user, SillyDefaults.Names.START_PAGE)
-            return
 
         await self._edit_target_message(
             user,

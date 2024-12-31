@@ -1,16 +1,18 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Awaitable, Callable, Optional, Tuple
 
 from aiogram.types import InlineKeyboardMarkup
+
 
 from ..text import SillyText
 
 from . import SillyButton
 
 if TYPE_CHECKING:
-    pass
+    from ..event import SillyEvent
+    from ..manager import SillyManager
 
 
 class SillyPage:
@@ -20,7 +22,9 @@ class SillyPage:
 
     _is_home: bool = False
     _is_start: bool = False
-
+    
+    _on_opened: Callable[[SillyManager, SillyEvent], Awaitable[Optional[Tuple[str, ...]]]]
+    
     @property
     def text(self) -> SillyText:
         return self._text
@@ -48,12 +52,17 @@ class SillyPage:
     @property
     def name(self) -> str:
         return self._name
+    
+    @property
+    def on_opened(self) -> Callable[[SillyManager, SillyEvent], Awaitable[Optional[Tuple[str, ...]]]]:
+        return self._on_opened
 
     def __init__(
         self,
         name: str,
         text: SillyText,
         buttons: SillyButton | Sequence[SillyButton] | Sequence[Sequence[SillyButton]],
+        on_opened: Optional[Callable[[SillyManager, SillyEvent], Awaitable[Optional[Tuple[str, ...]]]]] = None,
         is_home: bool = False,
         is_start: bool = False,
     ):
@@ -85,3 +94,8 @@ class SillyPage:
 
         self._is_home = is_home
         self._is_start = is_start
+        
+        async def format_default(manager: SillyManager, event: SillyEvent):
+            return (*event.args, *event.kwargs.values())
+        
+        self._on_opened = on_opened if on_opened else format_default

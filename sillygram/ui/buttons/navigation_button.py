@@ -13,7 +13,7 @@ class NavigationSillyButton(ActionSillyButton):
     _page_name: str
 
     async def _show_page(self, manager: SillyManager, event: SillyEvent):
-        await manager.goto_page(event.user, self._page_name)
+        await manager.show_page(event.user, self._page_name)
 
     def __init__(self, text: SillyText, page_name: str):
         super().__init__(text, self._show_page)

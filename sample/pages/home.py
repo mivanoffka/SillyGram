@@ -18,7 +18,7 @@ async def on_format_button_clicked(manager: SillyManager, event: SillyEvent):
     if not current_value:
         current_value = "1"
 
-    await manager.goto_page(event.user, Text.FormatPage.NAME, format_args=(event.user.nickname, current_value))
+    await manager.show_page(event.user, Text.FormatPage.NAME, args=(event.user.nickname, current_value))
     
 
 home_page = SillyPage(
