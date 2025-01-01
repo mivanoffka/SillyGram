@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Dict, Tuple
 
 if TYPE_CHECKING:
-    from . import SillyUser
+    from .. import SillyUser
 
 class SillyEvent:
     _user: SillyUser

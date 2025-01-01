@@ -14,6 +14,7 @@ class SillyLabels:
     _id_not_recognized = SillyText("Unable to recognize ID.")
     _promotion_success = SillyText("User {} was successfully promoted.")
     _demotion_success = SillyText("User {} was successfully demoted.")
+    _error = SillyText("An error has occurred.\n<blockquote>{}</blockquote>")
 
     @property
     def go_back(self):
@@ -46,6 +47,10 @@ class SillyLabels:
     @property
     def admin_only(self):
         return self._admin_only
+    
+    @property
+    def error(self):
+        return self._error
 
     def __init__(
         self,
@@ -57,6 +62,7 @@ class SillyLabels:
         no: Optional[SillyText] = None,
         emoji_separator: Optional[SillyText] = None,
         admin_only: Optional[SillyText] = None,
+        error: Optional[SillyText] = None,
     ):
         self._go_back = go_back if go_back else self._go_back
         self._close = close if close else self._close
@@ -68,3 +74,4 @@ class SillyLabels:
         )
         self._go_on = go_on if go_on else self._go_on
         self._cancel = admin_only if admin_only else self._cancel
+        self._error = error if error else self._error

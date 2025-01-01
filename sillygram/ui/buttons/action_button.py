@@ -5,7 +5,7 @@ from ...text import SillyText
 
 if TYPE_CHECKING:
     from ...manager import SillyManager
-    from ...event import SillyEvent
+    from ...events import SillyEvent
 
 from ...data.settings_and_defaults import SillyDefaults
 

@@ -10,7 +10,7 @@ from aiogram.types import Message, CallbackQuery, InaccessibleMessage
 from aiogram.methods import DeleteWebhook
 
 from .data import SillySettings
-from .event import SillyEvent
+from .events import SillyEvent, SillyErrorEvent
 from .manager import SillyManager
 from .data import Data, SillyDefaults
 from .ui import SillyPage, ActionSillyButton
@@ -143,9 +143,12 @@ class SillyBot:
             except Exception:
                 ...
 
-            event = SillyEvent(user)
-            return await handler(self._manager, event)
-
+            try:
+                event = SillyEvent(user)
+                return await handler(self._manager, event)
+            except Exception as e:
+                await self._on_error(self._manager, SillyErrorEvent(user, exception=e))
+                
         self._dispatcher.message.register(aiogram_handler, Command(command))
 
     def _register_callback(self, callback_identity: str, handler: Any):
@@ -159,15 +162,20 @@ class SillyBot:
             if user.is_banned:
                 return
             
-            event = SillyEvent(user)
-            result = await handler(self._manager, event)
-            return result
+            try:
+                event = SillyEvent(user)
+                return await handler(self._manager, event)
+            except Exception as e:
+                await self._on_error(self._manager, SillyErrorEvent(user, exception=e))
 
         self._dispatcher.callback_query.register(
             aiogram_handler, F.data.startswith(callback_identity)
         )
 
     # region Default handlers
+    
+    async def _on_error(self, manager: SillyManager, event: SillyErrorEvent):
+        await manager.show_message(event.user, self._data.settings.labels.error.format(str(event.exception)))
 
     async def _on_start(self, manager: SillyManager, event: SillyEvent):
         await manager.show_page(

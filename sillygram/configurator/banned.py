@@ -4,7 +4,7 @@ from typing import Optional
 from ..ui import ActionSillyButton, SillyPage, NavigationSillyButton
 from ..data import SillyDefaults
 from ..user import SillyUser
-from ..event import SillyEvent
+from ..events import SillyEvent
 from ..manager import SillyManager
 
 from .common import get_user

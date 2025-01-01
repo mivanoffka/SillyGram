@@ -3,7 +3,7 @@ from .bot import SillyBot
 from .manager import SillyManager
 from .user import SillyUser
 from .text import SillyText
-from .event import SillyEvent
+from .events import SillyEvent, SillyErrorEvent
 
 from .ui import (
     SillyPage,
