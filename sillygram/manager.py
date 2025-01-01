@@ -13,7 +13,7 @@ from .context import PATH
 from .text import SillyText
 from .data import SillyDefaults, Data, SillyLogger
 from .user import SillyUser
-from .event import SillyEvent
+from .events import SillyEvent
 from typing import Any, Callable, Dict, Optional, List, Tuple
 
 TIME_DELTA = 0.2
@@ -53,6 +53,13 @@ class SillyManager:
         page = self._data.pages.get(page_name)
         format_args = await page.on_opened(self, SillyEvent(user, *(args or ()), **(kwargs or {})))
         
+        # await self._edit_target_message(
+        #         user,
+        #         page.text.format(*format_args if format_args else ()).localize(
+        #             user.language_code
+        #         ),
+        #         page.keyboard(user.language_code),
+        #     )
         if new_target_message:
             await self._send_new_target_message(
                 user,
@@ -335,8 +342,14 @@ class SillyManager:
                     message_id=target_message_id,
                     reply_markup=keyboard,
                 )
-            except Exception as e:  # noqa: F841
-                await self._send_new_target_message(user, text, keyboard)
+            except Exception as e:
+                # noqa: F841
+                if "message can't be edited" in str(e):
+                    await self._send_new_target_message(user, text, keyboard)
+                elif "message not modified" in str(e):
+                    ...
+                else:
+                    raise
 
     async def _send_new_target_message(
         self,

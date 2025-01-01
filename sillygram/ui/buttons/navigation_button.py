@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from ...manager import SillyManager
-    from ...event import SillyEvent
+    from ...events import SillyEvent
     
 from .action_button import ActionSillyButton
 from ...text import SillyText

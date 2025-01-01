@@ -1,7 +1,7 @@
 from ..ui import ActionSillyButton, SillyPage, NavigationSillyButton
 from ..data import SillyDefaults
 from ..manager import SillyManager
-from ..event import SillyEvent
+from ..events import SillyEvent
 
 
 @SillyManager.admin_only

@@ -11,7 +11,7 @@ from ..text import SillyText
 from . import SillyButton
 
 if TYPE_CHECKING:
-    from ..event import SillyEvent
+    from ..events import SillyEvent
     from ..manager import SillyManager
 
 

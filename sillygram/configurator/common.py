@@ -2,7 +2,7 @@ from typing import Optional
 from ..manager import SillyManager
 from ..user import SillyUser
 from ..data import SillyDefaults
-from ..event import SillyEvent
+from ..events import SillyEvent
 
 
 async def get_user(manager: SillyManager, event: SillyEvent) -> Optional[SillyUser]:
