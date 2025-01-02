@@ -30,7 +30,7 @@ async def _on_promote_button_click(manager: SillyManager, event: SillyEvent):
     try:
         manager.users.promote(user_to_promote.id)
 
-        await manager.show_message(
+        await manager.show_popup(
             event.user,
             SillyDefaults.Configurator.AdminsPage.PROMOTION_SUCCESS_MESSAGE_TEMPLATE.format(
                 uinfo
@@ -38,7 +38,7 @@ async def _on_promote_button_click(manager: SillyManager, event: SillyEvent):
         )
 
     except Exception as e:
-        await manager.show_message(
+        await manager.show_popup(
             event.user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(e)
         )
         return
@@ -69,7 +69,7 @@ async def _on_demote_button_click(manager: SillyManager, event: SillyEvent):
     try:
         manager.users.demote(user_to_demote.id)
 
-        await manager.show_message(
+        await manager.show_popup(
             event.user,
             SillyDefaults.Configurator.AdminsPage.DEMOTION_SUCCESS_MESSAGE_TEMPLATE.format(
                 uinfo
@@ -77,7 +77,7 @@ async def _on_demote_button_click(manager: SillyManager, event: SillyEvent):
         )
 
     except Exception as e:
-        await manager.show_message(
+        await manager.show_popup(
             event.user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(str(e))
         )
         return
@@ -101,7 +101,7 @@ async def _on_list_button_click(manager: SillyManager, event: SillyEvent):
                 admins_list_str
             )
         )
-    await manager.show_message(event.user, message_text)
+    await manager.show_popup(event.user, message_text)
 
 
 admins_page = SillyPage(

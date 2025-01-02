@@ -98,16 +98,16 @@ class SillyUser:
     # region Messenger actions
 
     async def show_notification(self, text: SillyText):
-        await self._manager.show_notification(self, text)
+        await self._manager.show_notice(self, text)
 
     async def show_interruption(self, text: SillyText):
-        await self._manager.show_interruption(self, text)
+        await self._manager.show_notice_banner(self, text)
 
     async def show_banner(self, text: SillyText):
         await self._manager.show_banner(self, text)
 
     async def show_message(self, text: SillyText):
-        await self._manager.show_message(self, text)
+        await self._manager.show_popup(self, text)
 
     async def goto_page(self, page_name: Any, new_target_message=False):
         await self._manager.show_page(self, page_name, new_target_message)

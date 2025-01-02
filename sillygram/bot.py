@@ -175,7 +175,7 @@ class SillyBot:
     # region Default handlers
     
     async def _on_error(self, manager: SillyManager, event: SillyErrorEvent):
-        await manager.show_message(event.user, self._data.settings.labels.error.format(str(event.exception)))
+        await manager.show_popup(event.user, self._data.settings.labels.error.format(str(event.exception)))
 
     async def _on_start(self, manager: SillyManager, event: SillyEvent):
         await manager.show_page(

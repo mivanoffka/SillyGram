@@ -25,7 +25,7 @@ async def get_user(manager: SillyManager, event: SillyEvent) -> Optional[SillyUs
                 raise Exception(input_str)
 
     except Exception as e:
-        await manager.show_message(event.user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(
+        await manager.show_popup(event.user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(
             SillyDefaults.Configurator.USER_NOT_REGISTERED_ERROR_TEMPLATE.format(e)
         ))
         return None

@@ -39,15 +39,15 @@ class Text:
                 "en": "Here you can test message functions of SillyGram",
             }
         )
-        PREFIX_MESSAGE_BUTTON_TEXT = SillyText({"en": "Prefix"})
-        INFIX_MESSAGE_BUTTON_TEXT = SillyText({"en": "Infix"})
-        POSTFIX_MESSAGE_BUTTON_TEXT = SillyText({"en": "Postfix"})
-        MESSAGE_BUTTON_TEXT = SillyText({"en": "Message"})
+        BANNER_MESSAGE_BUTTON_TEXT = SillyText({"en": "Banner"})
+        NOTICE_BANNER_MESSAGE_BUTTON_TEXT = SillyText({"en": "Combined"})
+        NOTICE_MESSAGE_BUTTON_TEXT = SillyText({"en": "Notice"})
+        POPUP_MESSAGE_BUTTON_TEXT = SillyText({"en": "Popup"})
 
-        PREFIX_MESSAGE_TEXT = SillyText({"en": "That's a prefix message!"})
-        INFIX_MESSAGE_TEXT = SillyText({"en": "That's an infix message!"})
-        POSTFIX_MESSAGE_TEXT = SillyText({"en": "That's a postfix message!"})
-        MESSAGE_TEXT = SillyText({"en": "That's a message!"})
+        BANNER_MESSAGE_TEXT = SillyText({"en": "That's a banner message!"})
+        NOTICE_BANNER_MESSAGE_TEXT = SillyText({"en": "That's a combined notice-banner message!"})
+        NOTICE_MESSAGE_TEXT = SillyText({"en": "That's a notice message!"})
+        POPUP_MESSAGE_TEXT = SillyText({"en": "That's a popup message!"})
 
     class DialogPage:
         NAME = "Dialog"

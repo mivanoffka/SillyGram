@@ -13,7 +13,7 @@ async def on_yes_no_button_clicked(manager: SillyManager, event: SillyEvent):
     answer = await manager.get_yes_no_answer(event.user, Text.DialogPage.YES_NO_DIALOG_TEXT)
     if answer is None:
         return
-    await manager.show_message(
+    await manager.show_popup(
         event.user, Text.DialogPage.YES_NO_DIALOG_RESULT_TEMPLATE.format(answer)
     )
 
@@ -23,7 +23,7 @@ async def on_custom_button_clicked(manager: SillyManager, event: SillyEvent):
         event.user, Text.DialogPage.CUSTOM_DIALOG_TEXT, *Text.DialogPage.CUSTOM_DIALOG_OPTIONS, cancelable=True
     )
     if answer is not None:
-        await manager.show_message(
+        await manager.show_popup(
             event.user,
             Text.DialogPage.CUSTOM_DIALOG_RESULT_TEMPLATE.format(
                 Text.DialogPage.CUSTOM_DIALOG_OPTIONS[answer]

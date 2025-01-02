@@ -54,7 +54,7 @@ async def _on_banned_button_click(manager: SillyManager, event: SillyEvent):
                     raise ValueError()
                 multiplier = round(value, 2)
             except Exception:
-                await manager.show_message(
+                await manager.show_popup(
                     event.user,
                     SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(
                         SillyDefaults.Configurator.BannedPage.DAYS_PARSING_ERROR_TEXT
@@ -76,7 +76,7 @@ async def _on_banned_button_click(manager: SillyManager, event: SillyEvent):
             if not user_to_ban.nickname
             else "{} ({})".format(user_to_ban.nickname, user_to_ban.id)
         )
-        await manager.show_message(
+        await manager.show_popup(
             event.user,
             SillyDefaults.Configurator.BannedPage.TEMPORAL_BAN_SUCCESS_MESSAGE_TEMPLATE.format(
                 uinfo,
@@ -88,7 +88,7 @@ async def _on_banned_button_click(manager: SillyManager, event: SillyEvent):
             ),
         )
     except Exception as e:
-        await manager.show_message(
+        await manager.show_popup(
             event.user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(e)
         )
 
@@ -106,7 +106,7 @@ async def _on_unban_button_click(manager: SillyManager, event: SillyEvent):
             if not user_to_unban.nickname
             else "{} ({})".format(user_to_unban.nickname, user_to_unban.id)
         )
-        await manager.show_message(
+        await manager.show_popup(
             event.user,
             SillyDefaults.Configurator.BannedPage.UNBAN_SUCCESS_MESSAGE_TEMPLATE.format(
                 uinfo
@@ -114,7 +114,7 @@ async def _on_unban_button_click(manager: SillyManager, event: SillyEvent):
         )
 
     except Exception as e:
-        await manager.show_message(
+        await manager.show_popup(
             event.user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(e)
         )
         return
@@ -131,11 +131,11 @@ async def _on_amnesty_button_click(manager: SillyManager, event: SillyEvent):
 
     try:
         manager.users.unban_all()
-        await manager.show_message(
+        await manager.show_popup(
             event.user, SillyDefaults.Configurator.BannedPage.AMNESTY_SUCCESS_TEXT
         )
     except Exception as e:
-        await manager.show_message(
+        await manager.show_popup(
             event.user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(e)
         )
 

@@ -109,23 +109,6 @@ class SillyManager:
         
         self._data.set_format_args(user.id, format_args)
 
-    async def show_message(self, user: SillyUser, text: SillyText):
-        keyboard = InlineKeyboardMarkup(
-            inline_keyboard=[
-                [
-                    InlineKeyboardButton(
-                        text=self._data.settings.labels.go_back.localize(
-                            user.language_code
-                        ),
-                        callback_data=SillyDefaults.CallbackData.BACK,
-                    )
-                ]
-            ]
-        )
-        await self._edit_target_message(
-            user, text.localize(user.language_code), keyboard
-        )
-
     async def show_dialog(
         self,
         user: SillyUser,
@@ -193,8 +176,25 @@ class SillyManager:
     # endregion
 
     # region Additional messages
+    
+    async def show_popup(self, user: SillyUser, text: SillyText):
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[
+                [
+                    InlineKeyboardButton(
+                        text=self._data.settings.labels.go_back.localize(
+                            user.language_code
+                        ),
+                        callback_data=SillyDefaults.CallbackData.BACK,
+                    )
+                ]
+            ]
+        )
+        await self._edit_target_message(
+            user, text.localize(user.language_code), keyboard
+        )
 
-    async def show_notification(self, user: SillyUser, text: SillyText):
+    async def show_notice(self, user: SillyUser, text: SillyText):
         keyboard = InlineKeyboardMarkup(
             inline_keyboard=[
                 [
@@ -210,8 +210,23 @@ class SillyManager:
         await self._aiogram_bot.send_message(
             user.id, text.localize(user.language_code), reply_markup=keyboard
         )
+        
+    async def show_banner(self, user: SillyUser, text: SillyText):
+        current_page_name = self._data.get_current_page_name(user.id)
 
-    async def show_interruption(self, user: SillyUser, text: SillyText):
+        await self._delete_target_message(user)
+        await self._aiogram_bot.send_message(user.id, text.localize(user.language_code))
+
+        page = self._data.pages.get(current_page_name)
+
+        await self._send_new_target_message(
+            user,
+            page.text.localize(user.language_code),
+            keyboard=page.keyboard(user.language_code),
+            separate=False,
+        )
+
+    async def show_notice_banner(self, user: SillyUser, text: SillyText):
         keyboard = InlineKeyboardMarkup(
             inline_keyboard=[
                 [
@@ -226,21 +241,6 @@ class SillyManager:
         )
         await self._edit_target_message(
             user, text.localize(user.language_code), keyboard
-        )
-
-    async def show_banner(self, user: SillyUser, text: SillyText):
-        current_page_name = self._data.get_current_page_name(user.id)
-
-        await self._delete_target_message(user)
-        await self._aiogram_bot.send_message(user.id, text.localize(user.language_code))
-
-        page = self._data.pages.get(current_page_name)
-
-        await self._send_new_target_message(
-            user,
-            page.text.localize(user.language_code),
-            keyboard=page.keyboard(user.language_code),
-            separate=False,
         )
 
     # endregion
@@ -316,7 +316,7 @@ class SillyManager:
             )
 
             for user in users:
-                await self.show_interruption(user, _text)
+                await self.show_notice_banner(user, _text)
                 await asyncio.sleep(0.5)
 
         await asyncio.get_event_loop().create_task(_task(text, user_ids))
@@ -407,7 +407,7 @@ class SillyManager:
         async def wrapper(manager: SillyManager, event: SillyEvent):
             print("a")
             if not manager._data.users.is_admin(event.user.id):
-                await manager.show_message(
+                await manager.show_popup(
                     event.user, manager._data.settings.labels.admin_only
                 )
             else:
