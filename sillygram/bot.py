@@ -9,6 +9,8 @@ from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery, InaccessibleMessage
 from aiogram.methods import DeleteWebhook
 
+from sillygram.text import SillyText
+
 from .data import SillySettings
 from .events import SillyEvent, SillyErrorEvent
 from .manager import SillyManager
@@ -106,6 +108,11 @@ class SillyBot:
             self._on_dialog_option_clicked,
             F.data.startswith(SillyDefaults.CallbackData.OPTION_TEMPLATE),
         )
+        
+        # self._dispatcher.callback_query.register(
+        #     self._on_confirm_button_clicked,
+        #     F.data.startswith(SillyDefaults.CallbackData.CONFIRM),
+        # )
 
         self._register_command(SillyDefaults.Commands.HOME, self._on_home)
         self._register_command(SillyDefaults.Commands.START, self._on_start)
@@ -330,6 +337,7 @@ class SillyBot:
             
             await self._manager.show_page(user, SillyDefaults.Names.HOME_PAGE, new_target_message=True)
 
+        
     # endregion
 
     # endregion

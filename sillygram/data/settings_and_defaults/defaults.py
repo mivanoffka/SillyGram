@@ -7,6 +7,7 @@ class SillyDefaults:
     @dataclass(frozen=True)
     class CallbackData:
         CONTINUE = "CONTINUE"
+        CONFIRM = "CONFIRM"
         BACK = "BACK"
         CLOSE = "CLOSE"
         CANCEL = "CANCEL"

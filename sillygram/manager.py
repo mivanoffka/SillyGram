@@ -14,7 +14,7 @@ from .text import SillyText
 from .data import SillyDefaults, Data, SillyLogger
 from .user import SillyUser
 from .events import SillyEvent
-from typing import Any, Callable, Dict, Optional, List, Tuple
+from typing import Any, Callable, Dict, Optional, Tuple
 
 TIME_DELTA = 0.2
 MAX_TIME = 120
@@ -218,29 +218,11 @@ class SillyManager:
         await self._aiogram_bot.send_message(user.id, text.localize(user.language_code))
 
         page = self._data.pages.get(current_page_name)
-
         await self._send_new_target_message(
             user,
             page.text.localize(user.language_code),
             keyboard=page.keyboard(user.language_code),
             separate=False,
-        )
-
-    async def show_notice_banner(self, user: SillyUser, text: SillyText):
-        keyboard = InlineKeyboardMarkup(
-            inline_keyboard=[
-                [
-                    InlineKeyboardButton(
-                        text=self._data.settings.labels.go_on.localize(
-                            user.language_code
-                        ),
-                        callback_data=SillyDefaults.CallbackData.CONTINUE,
-                    )
-                ]
-            ]
-        )
-        await self._edit_target_message(
-            user, text.localize(user.language_code), keyboard
         )
 
     # endregion
@@ -302,26 +284,26 @@ class SillyManager:
 
     # endregion
 
-    # region Other
+    # # region Other
 
-    async def start_broadcast(
-        self, text: SillyText, user_ids: Optional[List[int]] = None
-    ):
-        async def _task(_text: SillyText, _user_ids: Optional[List[int]] = None):
-            all_users = self._data.users.get_all()
-            users = (
-                all_users
-                if user_ids is None
-                else (user for user in all_users if user.id in user_ids)
-            )
+    # async def start_broadcast(
+    #     self, text: SillyText, user_ids: Optional[List[int]] = None
+    # ):
+    #     async def _task(_text: SillyText, _user_ids: Optional[List[int]] = None):
+    #         all_users = self._data.users.get_all()
+    #         users = (
+    #             all_users
+    #             if user_ids is None
+    #             else (user for user in all_users if user.id in user_ids)
+    #         )
 
-            for user in users:
-                await self.show_notice_banner(user, _text)
-                await asyncio.sleep(0.5)
+    #         for user in users:
+    #             await self.show_notice_banner(user, _text)
+    #             await asyncio.sleep(0.5)
 
-        await asyncio.get_event_loop().create_task(_task(text, user_ids))
+    #     await asyncio.get_event_loop().create_task(_task(text, user_ids))
 
-    # endregion
+    # # endregion
 
     # endregion
 
