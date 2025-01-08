@@ -33,27 +33,25 @@ class SillyBot:
 
     _data: Data
     _manager: SillyManager
+
     _regular_activities: Sequence[SillyRegularActivity]
 
-    _startup_activity: Optional[Callable[[SillyManager], Awaitable[None]]]
-    _shutdown_activity: Optional[Callable[[SillyManager], Awaitable[None]]]
-
     # region Startup & shutdown
-    
+
     async def _on_aiogram_startup(self):
         await self._data.stats.summarize_hourly_statistics(self._manager)
         await self._data.stats.summarize_daily_statistics(self._manager)
         await self._data.stats.summarize_monthly_statistics(self._manager)
         await self._data.stats.summarize_yearly_statistics(self._manager)
 
-        if self._startup_activity:
-            asyncio.create_task(self._startup_activity(self._manager))  # type: ignore
+        if self._data.settings.on_startup:
+            asyncio.create_task(self._data.settings.on_startup(self._manager))  # type: ignore
         if self._regular_activities:
             asyncio.create_task(self._scheduling_loop())
 
     async def _on_aiogram_shutdown(self):
-        if self._shutdown_activity:
-            asyncio.create_task(self._shutdown_activity(self._manager))  # type: ignore
+        if self._data.settings.on_shutdown:
+            asyncio.create_task(self._data.settings.on_shutdown(self._manager))  # type: ignore
 
     def launch(self):
         """
@@ -108,7 +106,7 @@ class SillyBot:
             self._on_dialog_option_clicked,
             F.data.startswith(SillyDefaults.CallbackData.OPTION_TEMPLATE),
         )
-        
+
         # self._dispatcher.callback_query.register(
         #     self._on_confirm_button_clicked,
         #     F.data.startswith(SillyDefaults.CallbackData.CONFIRM),
@@ -131,9 +129,9 @@ class SillyBot:
         for button in buttons:
             if isinstance(button, ActionSillyButton):
                 self._register_callback(button.identity, button.on_click)
-                
+
         self._dispatcher.callback_query.register(self._default_callback_handler)
-    
+
     def _register_command(self, command: str, handler: Any):
         async def aiogram_handler(message: Message):
             if not message.from_user:
@@ -155,7 +153,7 @@ class SillyBot:
                 return await handler(self._manager, event)
             except Exception as e:
                 await self._on_error(self._manager, SillyErrorEvent(user, exception=e))
-                
+
         self._dispatcher.message.register(aiogram_handler, Command(command))
 
     def _register_callback(self, callback_identity: str, handler: Any):
@@ -168,7 +166,7 @@ class SillyBot:
                 return
             if user.is_banned:
                 return
-            
+
             try:
                 event = SillyEvent(user)
                 return await handler(self._manager, event)
@@ -180,9 +178,11 @@ class SillyBot:
         )
 
     # region Default handlers
-    
+
     async def _on_error(self, manager: SillyManager, event: SillyErrorEvent):
-        await manager.show_popup(event.user, self._data.settings.labels.error.format(str(event.exception)))
+        await manager.show_popup(
+            event.user, self._data.settings.labels.error.format(str(event.exception))
+        )
 
     async def _on_start(self, manager: SillyManager, event: SillyEvent):
         await manager.show_page(
@@ -251,7 +251,9 @@ class SillyBot:
                 option = -1
             else:
                 option = int(
-                    callback.data.replace(SillyDefaults.CallbackData.OPTION_TEMPLATE, "")
+                    callback.data.replace(
+                        SillyDefaults.CallbackData.OPTION_TEMPLATE, ""
+                    )
                 )
         self._data.io.push_dialog_result(callback.from_user.id, option)
 
@@ -324,20 +326,21 @@ class SillyBot:
         )
         self._data.io.stop_input_listening(callback.from_user.id)
         await self._manager.refresh_page(user)
-        
+
     async def _default_callback_handler(self, callback: CallbackQuery):
-            await callback.answer()
+        await callback.answer()
 
-            user = self._manager.users.get(self._data.indicate(callback.from_user))
+        user = self._manager.users.get(self._data.indicate(callback.from_user))
 
-            if user is None:
-                return
-            if user.is_banned:
-                return
-            
-            await self._manager.show_page(user, SillyDefaults.Names.HOME_PAGE, new_target_message=True)
+        if user is None:
+            return
+        if user.is_banned:
+            return
 
-        
+        await self._manager.show_page(
+            user, SillyDefaults.Names.HOME_PAGE, new_target_message=True
+        )
+
     # endregion
 
     # endregion
@@ -351,9 +354,7 @@ class SillyBot:
                 await scheduled_activity.execute(self._manager)
             await asyncio.sleep(time_delta)
 
-    def _setup_regular_activities(
-        self, activities: Optional[Sequence[SillyRegularActivity]] = None
-    ):
+    def _setup_regular_activities(self):
         hourly_stats_activity = SillyDateTimeActivity(
             self._data.stats.summarize_hourly_statistics,
             times=tuple(time(hour=h) for h in range(24)),
@@ -387,30 +388,26 @@ class SillyBot:
         )
 
         self._regular_activities = (
-            (*activities, *stats_activities) if activities else stats_activities
+            (*self._data.settings.regular_activities, *stats_activities)
+            if self._data.settings.regular_activities
+            else stats_activities
         )
 
     # endregion
+    
     def __init__(
         self,
         token: str,
         pages: Sequence[SillyPage],
         settings: Optional[SillySettings] = None,
-        regular_activities: Optional[Sequence[SillyRegularActivity]] = None,
-        on_startup: Optional[Callable[[SillyManager], Awaitable[None]]] = None,
-        on_shutdown: Optional[Callable[[SillyManager], Awaitable[None]]] = None,
     ):
         """
         :param token: telegram-API token received from BotFather.
         :param pages: sequence of page objects to include. Names must be unique.
         :param settings: silly-bot settings. None means default settings.
-        :param regular_activities: sequence of activities to run periodically.
-        :param on_startup: method to run on bot startup.
-        :param on_shutdown: method to run on bot shutdown.
         """
+        
         pages = (*pages, *configurator)
-        self._startup_activity = on_startup
-        self._shutdown_activity = on_shutdown
         self._data = Data(settings if settings is not None else SillySettings(), *pages)
         self._aiogram_bot = AiogramBot(
             token=token, default=DefaultBotProperties(parse_mode="HTML")
@@ -421,5 +418,5 @@ class SillyBot:
         self._manager = SillyManager(self._aiogram_bot, self._data)
         self._data.init_users(self._manager)
 
-        self._setup_regular_activities(regular_activities)
+        self._setup_regular_activities()
         self._setup_handlers()
