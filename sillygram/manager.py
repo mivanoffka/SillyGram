@@ -47,19 +47,14 @@ class SillyManager:
         user: SillyUser,
         page_name: Any,
         new_target_message=False,
-        args: Optional[Tuple] = None,
-        kwargs: Optional[Dict[str, Any]] = None,
+        f_args: Optional[Tuple] = None,
+        f_kwargs: Optional[Dict[str, Any]] = None,
     ):
         page = self._data.pages.get(page_name)
-        format_args = await page.on_opened(self, SillyEvent(user, *(args or ()), **(kwargs or {})))
-        
-        # await self._edit_target_message(
-        #         user,
-        #         page.text.format(*format_args if format_args else ()).localize(
-        #             user.language_code
-        #         ),
-        #         page.keyboard(user.language_code),
-        #     )
+        format_args = await page.get_format_args(
+            self, SillyEvent(user, *(f_args or ()), **(f_kwargs or {}))
+        )
+
         if new_target_message:
             await self._send_new_target_message(
                 user,
@@ -76,21 +71,25 @@ class SillyManager:
                 ),
                 page.keyboard(user.language_code),
             )
-            
+
         self._data.set_format_args(user.id, format_args)
         self._data.set_current_page_name(user.id, page_name)
 
     async def refresh_page(
-        self, user: SillyUser, args: Optional[Tuple] = None, kwargs: Optional[Dict[str, Any]] = None,
-        
+        self,
+        user: SillyUser,
+        f_args: Optional[Tuple] = None,
+        f_kwargs: Optional[Dict[str, Any]] = None,
     ):
         page: Optional[SillyPage] = None
         format_args: Optional[Tuple[str, ...]] = None
-        
+
         try:
             page = self._data.pages.get(self._data.get_current_page_name(user.id))
-            if args or kwargs:
-                format_args = await page.on_opened(self, SillyEvent(user, *(args or ()), **(kwargs or {})))
+            if f_args or f_kwargs:
+                format_args = await page.get_format_args(
+                    self, SillyEvent(user, *(f_args or ()), **(f_kwargs or {}))
+                )
 
         except Exception:
             await self.show_page(user, SillyDefaults.Names.START_PAGE)
@@ -106,7 +105,7 @@ class SillyManager:
             ),
             page.keyboard(user.language_code),
         )
-        
+
         self._data.set_format_args(user.id, format_args)
 
     async def show_dialog(
@@ -176,7 +175,7 @@ class SillyManager:
     # endregion
 
     # region Additional messages
-    
+
     async def show_popup(self, user: SillyUser, text: SillyText):
         keyboard = InlineKeyboardMarkup(
             inline_keyboard=[
@@ -210,7 +209,7 @@ class SillyManager:
         await self._aiogram_bot.send_message(
             user.id, text.localize(user.language_code), reply_markup=keyboard
         )
-        
+
     async def show_banner(self, user: SillyUser, text: SillyText):
         current_page_name = self._data.get_current_page_name(user.id)
 
