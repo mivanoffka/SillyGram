@@ -4,12 +4,12 @@ from ..manager import SillyManager
 from ..events import SillyEvent
 
 
-@SillyManager.admin_only
+@SillyManager.admin_only()
 async def _not_implemented(manager: SillyManager, event: SillyEvent):
     await manager.show_popup(event.user, SillyDefaults.Configurator.NOT_IMPLEMENTED_TEXT)
 
 
-@SillyManager.admin_only
+@SillyManager.admin_only()
 async def _on_stats_button_clicked(manager: SillyManager, event: SillyEvent):
     await manager.show_popup(event.user, manager.stats)
 

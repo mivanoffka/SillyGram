@@ -195,7 +195,7 @@ class SillyBot:
         )
 
     @staticmethod
-    @SillyManager.admin_only
+    @SillyManager.admin_only()
     async def _on_configure(manager: SillyManager, event: SillyEvent):
         await manager.show_page(event.user, SillyDefaults.Names.CONFIGURE_PAGE)
 

@@ -5,7 +5,7 @@ from ..manager import SillyManager
 from .common import get_user
 
 
-@SillyManager.admin_only
+@SillyManager.admin_only()
 async def _on_promote_button_click(manager: SillyManager, event: SillyEvent):
     user_to_promote = await get_user(manager, event)
     if not user_to_promote:
@@ -44,7 +44,7 @@ async def _on_promote_button_click(manager: SillyManager, event: SillyEvent):
         return
 
 
-@SillyManager.admin_only
+@SillyManager.admin_only()
 async def _on_demote_button_click(manager: SillyManager, event: SillyEvent):
     user_to_demote = await get_user(manager, event)
     if not user_to_demote:
@@ -83,7 +83,7 @@ async def _on_demote_button_click(manager: SillyManager, event: SillyEvent):
         return
 
 
-@SillyManager.admin_only
+@SillyManager.admin_only()
 async def _on_list_button_click(manager: SillyManager, event: SillyEvent):
     admins_list = manager.users.get_all_admins()
     message_text = SillyDefaults.Configurator.AdminsPage.LIST_MESSAGE_EMPTY

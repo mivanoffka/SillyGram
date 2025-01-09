@@ -384,17 +384,18 @@ class SillyManager:
     # region Decorators
 
     @staticmethod
-    def admin_only(handler: Callable):
-        async def wrapper(manager: SillyManager, event: SillyEvent):
-            print("a")
-            if not manager._data.users.is_admin(event.user.id):
-                await manager.show_popup(
-                    event.user, manager._data.settings.labels.admin_only
-                )
-            else:
-                await handler(manager, event.user)
+    def admin_only():
+        def decorator(function):
+            async def wrapper(manager: SillyManager, event: SillyEvent):
+                if not manager._data.users.is_admin(event.user.id):
+                    await manager.show_popup(
+                        event.user, manager._data.settings.labels.admin_only
+                    )
+                else:
+                    await function(manager, event)
 
-        return wrapper
+            return wrapper
+        return decorator
 
     # endregion
 
