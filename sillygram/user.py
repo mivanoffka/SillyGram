@@ -70,12 +70,12 @@ class SillyUser:
         return self._manager.users.is_banned(self._id)
 
     @property
-    def is_admin(self) -> bool:
-        return self._manager.users.is_admin(self._id)
-
-    @property
     def ban_expiration_date(self) -> Optional[datetime]:
         return self._manager.users.get_ban_expiration_date(self._id)
+    
+    @property
+    def privelege_name(self) -> Optional[str]:
+        return self._manager.users.get_privelege_name(self._id)
 
     # endregion
 
@@ -87,21 +87,12 @@ class SillyUser:
     def unban(self, duration: timedelta):
         self._manager.users.unban(self._id)
 
-    def promote(self):
-        self._manager.users.promote(self._id)
-
-    def demote(self):
-        self._manager.users.demote(self._id)
-
     # endregion
 
     # region Messenger actions
 
     async def show_notification(self, text: SillyText):
         await self._manager.show_notice(self, text)
-
-    async def show_interruption(self, text: SillyText):
-        await self._manager.show_notice_banner(self, text)
 
     async def show_banner(self, text: SillyText):
         await self._manager.show_banner(self, text)

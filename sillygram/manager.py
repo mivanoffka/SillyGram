@@ -7,6 +7,8 @@ from aiogram.types import (
     InlineKeyboardButton,
 )
 
+from .privelege import SillyPrivelege
+
 from .ui import SillyPage
 
 from .context import PATH
@@ -14,7 +16,7 @@ from .text import SillyText
 from .data import SillyDefaults, Data, SillyLogger
 from .user import SillyUser
 from .events import SillyEvent
-from typing import Any, Callable, Dict, Optional, Tuple
+from typing import Any, Awaitable, Callable, Dict, Optional, Tuple
 
 TIME_DELTA = 0.2
 MAX_TIME = 120
@@ -329,6 +331,8 @@ class SillyManager:
                     await self._send_new_target_message(user, text, keyboard)
                 elif "message not modified" in str(e):
                     ...
+                elif "message is not modified" in str(e):
+                    ...
                 else:
                     raise
 
@@ -384,17 +388,29 @@ class SillyManager:
     # region Decorators
 
     @staticmethod
-    def admin_only():
-        def decorator(function):
+    def protected(privelege_name: Optional[str] = None):
+        def decorator(handler: Callable[[SillyManager, SillyEvent], Awaitable[None]]):
             async def wrapper(manager: SillyManager, event: SillyEvent):
-                if not manager._data.users.is_admin(event.user.id):
-                    await manager.show_popup(
-                        event.user, manager._data.settings.labels.admin_only
-                    )
+                privelege = (
+                    manager._data.priveleges[privelege_name]
+                    if privelege_name is not None
+                    else manager._data.priveleges.master
+                )
+                if privelege:
+                    if not manager._data.priveleges.matches(event.user, privelege.name):
+                        message = (
+                            privelege.message
+                            if privelege.message is not None
+                            else manager._data.settings.labels.access_denied
+                        )
+                        return await manager.show_popup(event.user, message)
                 else:
-                    await function(manager, event)
+                    return await manager.show_popup(event.user, manager._data.settings.labels.access_denied)
+                
+                return await handler(manager, event)
 
             return wrapper
+
         return decorator
 
     # endregion

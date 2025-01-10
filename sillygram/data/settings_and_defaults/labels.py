@@ -9,8 +9,9 @@ class SillyLabels:
     _go_on = SillyText("Go on")
     _yes = SillyText("Yes")
     _no = SillyText("No")
+    _access_denied = SillyText("Access denied.")
     _emoji_separator = SillyText("✨")
-    _admin_only = SillyText("Access denied.")
+
     _id_not_recognized = SillyText("Unable to recognize ID.")
     _promotion_success = SillyText("User {} was successfully promoted.")
     _demotion_success = SillyText("User {} was successfully demoted.")
@@ -45,8 +46,8 @@ class SillyLabels:
         return self._emoji_separator
 
     @property
-    def admin_only(self):
-        return self._admin_only
+    def access_denied(self):
+        return self._access_denied
     
     @property
     def error(self):
@@ -61,7 +62,7 @@ class SillyLabels:
         yes: Optional[SillyText] = None,
         no: Optional[SillyText] = None,
         emoji_separator: Optional[SillyText] = None,
-        admin_only: Optional[SillyText] = None,
+        access_denied: Optional[SillyText] = None,
         error: Optional[SillyText] = None,
     ):
         self._go_back = go_back if go_back else self._go_back
@@ -73,5 +74,5 @@ class SillyLabels:
             emoji_separator if emoji_separator else self._emoji_separator
         )
         self._go_on = go_on if go_on else self._go_on
-        self._cancel = admin_only if admin_only else self._cancel
+        self._access_denied = access_denied if access_denied else self._access_denied
         self._error = error if error else self._error

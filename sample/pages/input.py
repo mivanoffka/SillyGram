@@ -8,7 +8,6 @@ from sillygram import (
 )
 from ..text import Text
 
-
 async def on_input_button_clicked(manager: SillyManager, event: SillyEvent):
     text = await manager.get_input(event.user, Text.InputPage.TEXT_INPUT_PROMPT)
     if text is not None:

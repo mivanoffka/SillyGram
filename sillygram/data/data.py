@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 from datetime import datetime
 
 from .db import SillyDB
-from .sections import IO, Pages, Users, Stats
+from .sections import IO, Pages, Users, Stats, Priveleges
 from .orm import (
     FormatArgORM,
     UserORM,
@@ -32,6 +32,7 @@ class Data(SillyDB):
     _registry: SillyRegistry
     _users: Users
     _stats: Stats
+    _priveleges: Priveleges
 
     @property
     def users(self) -> Users:
@@ -56,6 +57,10 @@ class Data(SillyDB):
     @property
     def stats(self) -> Stats:
         return self._stats
+    
+    @property
+    def priveleges(self) -> Priveleges:
+        return self._priveleges
 
     def indicate(self, aiogram_user: AiogramUser) -> int:
         with self._get_session() as session:
@@ -146,3 +151,4 @@ class Data(SillyDB):
         self._settings = settings
         self._registry = SillyRegistry(self)
         self._stats = Stats(self)
+        self._priveleges = Priveleges(self, self._settings.priveleges)

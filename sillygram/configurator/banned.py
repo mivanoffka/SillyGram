@@ -10,7 +10,7 @@ from ..manager import SillyManager
 from .common import get_user
 
 
-@SillyManager.admin_only()
+@SillyManager.protected()
 async def _on_banned_button_click(manager: SillyManager, event: SillyEvent):
     user_to_ban: Optional[SillyUser]
     user_to_ban = await get_user(manager, event)
@@ -93,7 +93,7 @@ async def _on_banned_button_click(manager: SillyManager, event: SillyEvent):
         )
 
 
-@SillyManager.admin_only()
+@SillyManager.protected()
 async def _on_unban_button_click(manager: SillyManager, event: SillyEvent):
     user_to_unban = await get_user(manager, event)
     if user_to_unban is None:
@@ -120,7 +120,7 @@ async def _on_unban_button_click(manager: SillyManager, event: SillyEvent):
         return
 
 
-@SillyManager.admin_only()
+@SillyManager.protected()
 async def _on_amnesty_button_click(manager: SillyManager, event: SillyEvent):
     confirmed = await manager.get_yes_no_answer(
         event.user, SillyDefaults.Configurator.BannedPage.AMNESTY_DIALOG_TEXT
@@ -140,7 +140,7 @@ async def _on_amnesty_button_click(manager: SillyManager, event: SillyEvent):
         )
 
 
-@SillyManager.admin_only()
+@SillyManager.protected()
 async def _on_list_button_click(manager: SillyManager, event: SillyEvent):
     banned_users_list = manager.users.get_all_banned()
     message_text = SillyDefaults.Configurator.BannedPage.NO_BANNED_USERS_MESSAGE

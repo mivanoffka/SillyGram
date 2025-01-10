@@ -14,7 +14,7 @@ class SillyDefaults:
         OPTION_TEMPLATE = "OPTION_"
         CANCEL_OPTION = "OPTION_CANCEL"
         BUTTON_TEMPLATE = "Button-[{}]"
-        
+
         DEFAULT = "DEFAULT"
 
         HOME_COMMAND = "home"
@@ -26,6 +26,10 @@ class SillyDefaults:
         START_PAGE = "START"
         HOME_PAGE = "HOME"
         CONFIGURE_PAGE = "CONFIGURE"
+
+    @dataclass(frozen=True)
+    class Priveleges:
+        ADMIN_PRIVELEGY_NAME = "Administrator"
 
     @dataclass(frozen=True)
     class Configurator:
@@ -152,6 +156,17 @@ class SillyDefaults:
         START = "start"
         HOME = "home"
         CONFIGURE = "configure"
+
+    @dataclass(frozen=True)
+    class CLI:
+
+        @dataclass(frozen=True)
+        class Messages:
+            PRIVELEGE_NOT_MENTIONED_TEMPLATE = "Privelege named '{}' found in DB, but was not specified in SillySettings"
+            PRIVELEGE_NOT_FOUND_TEMPLATE = (
+                "Privelege named '{}' is unknown."
+            )
+            USER_WITH_UNKNOWN_PRIVELEGE = "User {} has unknown privelege '{}'."
 
 
 SILLY_START_PAGE_POINTER = SillyDefaults.Names.START_PAGE

@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Optional
 
 from ..db import SillyDbSection, SillyDB
-from ..orm import UserORM, AdminORM, BanORM
+from ..orm import PrivelegeORM, UserORM, BanORM
 
 if TYPE_CHECKING:
     from ...manager import SillyManager
@@ -111,14 +111,6 @@ class Users(SillyDbSection):
                 session.query(BanORM).filter_by(id=self._validate(nickname_or_id)).all()
             )
 
-    def is_admin(self, nickname_or_id: int | str) -> bool:
-        with self._get_session() as session:
-            return bool(
-                session.query(AdminORM)
-                .filter_by(id=self._validate(nickname_or_id))
-                .all()
-            )
-
     def get_ban_expiration_date(self, nickname_or_id: int | str) -> Optional[datetime]:
         with self._get_session() as session:
             ban = (
@@ -147,31 +139,31 @@ class Users(SillyDbSection):
 
     # endregion
 
-    # region Admins
-
-    def get_all_admins(self) -> tuple[SillyUser, ...]:
+    # region Priveleges
+    
+    def get_privelege_name(self, nickname_or_id: int | str) -> Optional[str]:
         with self._get_session() as session:
-            return tuple(
-                self._create_silly_user(user.id)
-                for user in session.query(AdminORM).all()
-            )
-
-    def promote(self, nickname_or_id: int | str):
+            privelege = (
+                session.query(UserORM)
+                .filter_by(id=self._validate(nickname_or_id))
+                .first()
+            ).privelege
+            
+            if privelege:
+                return privelege.name
+            else:
+                return None
+            
+    def set_privelege(self, nickname_or_id: int | str, privelege_name: Optional[str] = None):
         user_id = self._validate(nickname_or_id)
         with self._get_session() as session:
-            admin = session.query(AdminORM).filter_by(id=user_id).first()
-            if not admin:
-                admin = AdminORM(id=user_id)
-                session.add(admin)
-                session.commit()
-
-    def demote(self, nickname_or_id: int | str):
-        user_id = self._validate(nickname_or_id)
-        with self._get_session() as session:
-            admin = session.query(AdminORM).filter_by(id=user_id).first()
-            if admin:
-                session.delete(admin)
-                session.commit()
+            user = session.query(UserORM).filter_by(id=user_id).first()
+            if privelege_name is None:
+                user.privelege_id = None
+                return
+            privelege = session.query(PrivelegeORM).filter_by(name=privelege_name).first()
+            user.privelege_id = privelege.id
+            session.commit()
 
     # endregion
 
