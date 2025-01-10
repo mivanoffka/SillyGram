@@ -171,7 +171,7 @@ async def _on_list_button_click(manager: SillyManager, event: SillyEvent):
             SillyDefaults.Configurator.BannedPage.LIST_MESSAGE_TEMPLATE.format(lines)
         )
 
-    await event.user.show_message(message_text)
+    await manager.show_popup(event.user, message_text)
 
 
 banned_page = SillyPage(
