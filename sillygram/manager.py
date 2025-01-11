@@ -40,6 +40,13 @@ class SillyManager:
     def stats(self):
         return SillyText(self._data.stats.get_report())
 
+    @property
+    def priveleges_names(self):
+        return self._data.priveleges.all_names
+
+    def set_privelege(self, user: SillyUser, privelege_name: Optional[str]):
+        self._data.users.set_privelege(user.id, privelege_name)
+
     # region High-level messaging methods
 
     # region Target message
@@ -284,27 +291,6 @@ class SillyManager:
         return True if option else False
 
     # endregion
-
-    # # region Other
-
-    # async def start_broadcast(
-    #     self, text: SillyText, user_ids: Optional[List[int]] = None
-    # ):
-    #     async def _task(_text: SillyText, _user_ids: Optional[List[int]] = None):
-    #         all_users = self._data.users.get_all()
-    #         users = (
-    #             all_users
-    #             if user_ids is None
-    #             else (user for user in all_users if user.id in user_ids)
-    #         )
-
-    #         for user in users:
-    #             await self.show_notice_banner(user, _text)
-    #             await asyncio.sleep(0.5)
-
-    #     await asyncio.get_event_loop().create_task(_task(text, user_ids))
-
-    # # endregion
 
     # endregion
 

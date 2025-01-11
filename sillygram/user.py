@@ -75,6 +75,13 @@ class SillyUser:
     def privelege_name(self) -> Optional[str]:
         return self._manager.users.get_privelege_name(self._id)
 
+    @property
+    def nickname_or_id(self) -> int | str:
+        if self.nickname:
+            return self.nickname
+        else:
+            return self.id
+
     # endregion
 
     def __init__(self, manager: SillyManager, user_id: int):

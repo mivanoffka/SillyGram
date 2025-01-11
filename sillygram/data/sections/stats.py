@@ -92,6 +92,8 @@ class Stats(SillyDbSection):
             total_users_count = session.query(UserORM).count()
         text = f"TOTAL USERS COUNT: {total_users_count}"
 
+        text += "\n\nNEW USERS COUNT:"
+
         for pair in pairs:
             noun_label = _STATS_NOUN_LABELS[pair[0]]
             with self._get_session() as session:

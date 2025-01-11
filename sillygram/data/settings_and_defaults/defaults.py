@@ -35,6 +35,19 @@ class SillyDefaults:
     class Configurator:
         ROOT_PAGE_TEXT = SillyText("This is the SillyGram control page")
         BANNED_BUTTON_TEXT = SillyText("Banned")
+        PRIVELEGES_BUTTON_TEXT = SillyText("Priveleges")
+
+        POSITIVE_PRIVELEGE_INFO = SillyText(
+            "Current privelege for {} is {}.\n\nWould you like to change it?"
+        )
+        NEGATIVE_PRIVELEGE_INFO = SillyText(
+            "User {} currently does not possess any priveleges.\n\nWould you like to change it?"
+        )
+        PRIVEGELE_PROMPT = SillyText("What privelege status should be given to {}?")
+        DEFAULT_PRIVELEGE = SillyText("No priveleges")
+        PRIVELEGE_POSITIVE_SETTING_SUCCESS = SillyText("User {} is now {}")
+        PRIVELEGE_NEGATIVE_SETTING_SUCCESS = SillyText("User {} does not have any priveleges anymore.")
+
         ADMINS_BUTTON_TEXT = SillyText("Admins")
         STATS_BUTTON_TEXT = SillyText("Stats")
         HOME_BUTTON_TEXT = SillyText("Home")
@@ -163,9 +176,7 @@ class SillyDefaults:
         @dataclass(frozen=True)
         class Messages:
             PRIVELEGE_NOT_MENTIONED_TEMPLATE = "Privelege named '{}' found in DB, but was not specified in SillySettings"
-            PRIVELEGE_NOT_FOUND_TEMPLATE = (
-                "Privelege named '{}' is unknown."
-            )
+            PRIVELEGE_NOT_FOUND_TEMPLATE = "Privelege named '{}' is unknown."
             USER_WITH_UNKNOWN_PRIVELEGE = "User {} has unknown privelege '{}'."
 
 
