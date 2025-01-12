@@ -49,6 +49,8 @@ class SillyBot:
         if self._regular_activities:
             asyncio.create_task(self._scheduling_loop())
 
+        self._data.io.start_loop()
+
     async def _on_aiogram_shutdown(self):
         if self._data.settings.on_shutdown:
             asyncio.create_task(self._data.settings.on_shutdown(self._manager))  # type: ignore
@@ -325,7 +327,6 @@ class SillyBot:
             callback.from_user.id, SillyDefaults.CallbackData.INPUT_CANCEL_MARKER
         )
         self._data.io.stop_input_listening(callback.from_user.id)
-        await self._manager.refresh_page(user)
 
     async def _default_callback_handler(self, callback: CallbackQuery):
         await callback.answer()
@@ -394,7 +395,7 @@ class SillyBot:
         )
 
     # endregion
-    
+
     def __init__(
         self,
         token: str,
@@ -406,7 +407,7 @@ class SillyBot:
         :param pages: sequence of page objects to include. Names must be unique.
         :param settings: silly-bot settings. None means default settings.
         """
-        
+
         pages = (*pages, *configurator)
         self._data = Data(settings if settings is not None else SillySettings(), *pages)
         self._aiogram_bot = AiogramBot(
@@ -417,6 +418,7 @@ class SillyBot:
         self._dispatcher.shutdown.register(self._on_aiogram_shutdown)
         self._manager = SillyManager(self._aiogram_bot, self._data)
         self._data.init_users(self._manager)
+        self._data.init_io(self._manager)
 
         self._setup_regular_activities()
         self._setup_handlers()

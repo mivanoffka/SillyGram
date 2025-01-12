@@ -16,7 +16,7 @@ from .text import SillyText
 from .data import SillyDefaults, Data, SillyLogger
 from .user import SillyUser
 from .events import SillyEvent
-from typing import Any, Awaitable, Callable, Dict, Optional, Tuple
+from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple
 
 TIME_DELTA = 0.2
 MAX_TIME = 120
@@ -117,6 +117,12 @@ class SillyManager:
 
         self._data.set_format_args(user.id, format_args)
 
+    async def _ask_for_refresh(self, user: SillyUser):
+        self._data.io.push_to_add(user.id)
+
+    async def _prevent_refresh(self, user: SillyUser):
+        self._data.io.push_to_delete(user.id)
+
     async def show_dialog(
         self,
         user: SillyUser,
@@ -176,7 +182,7 @@ class SillyManager:
 
                 await asyncio.sleep(TIME_DELTA)
 
-            await self.refresh_page(user)
+            await self._ask_for_refresh(user)
             return option if option != -1 else None
 
         return await asyncio.get_event_loop().create_task(wait_for_result())
@@ -270,6 +276,8 @@ class SillyManager:
 
                 await asyncio.sleep(0.2)
 
+            await self._ask_for_refresh(user)
+
             return (
                 text if text != SillyDefaults.CallbackData.INPUT_CANCEL_MARKER else None
             )
@@ -322,6 +330,8 @@ class SillyManager:
                 else:
                     raise
 
+        await self._prevent_refresh(user)
+
     async def _send_new_target_message(
         self,
         user: SillyUser,
@@ -336,6 +346,8 @@ class SillyManager:
             user.id, text, reply_markup=keyboard
         )
         self._data.set_target_message_id(user.id, message.message_id)
+
+        await self._prevent_refresh(user)
 
     async def _send_separation_messages(self, user: SillyUser):
         for i in range(0, 5):
@@ -391,8 +403,10 @@ class SillyManager:
                         )
                         return await manager.show_popup(event.user, message)
                 else:
-                    return await manager.show_popup(event.user, manager._data.settings.labels.access_denied)
-                
+                    return await manager.show_popup(
+                        event.user, manager._data.settings.labels.access_denied
+                    )
+
                 return await handler(manager, event)
 
             return wrapper

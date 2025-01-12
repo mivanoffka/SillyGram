@@ -1,4 +1,5 @@
 from __future__ import annotations
+import asyncio
 from typing import TYPE_CHECKING, Optional, Sequence, Tuple
 
 if TYPE_CHECKING:
@@ -143,10 +144,12 @@ class Data(SillyDB):
 
     def init_users(self, manager: SillyManager):
         self._users = Users(self, manager)
+        
+    def init_io(self, manager: SillyManager):
+        self._io = IO(manager)
 
     def __init__(self, settings: SillySettings, *pages: SillyPage):
         super().__init__("sillygram", DECLARATIVE_BASE)
-        self._io = IO()
         self._pages = Pages(*pages)
         self._settings = settings
         self._registry = SillyRegistry(self)
