@@ -7,13 +7,13 @@
             "command": "${command:osPlatform}",
             "args": [],
             "windows": {
-                 "command": "echo 'Launching bot...' ;  ${workspaceFolder}\\.venv/Scripts\\python.exe -m sample.main"
+                 "command": "${workspaceFolder}\\.venv/Scripts\\python.exe -m sample.main"
             },
             "linux": {
-                "command": "source ${workspaceFolder}/.venv/bin/activate && echo 'Launching bot...' && python -m sample.main"
+                "command": "${workspaceFolder}/.venv/bin/python -m sample.main"
             },
             "osx": {
-                "command": "source ${workspaceFolder}/.venv/bin/activate && echo 'Launching bot...' && python -m sample.main"
+                "command": "${workspaceFolder}/.venv/bin/python -m sample.main"
             },
             "group": {
                 "kind": "build",
@@ -30,10 +30,10 @@
                 "command": "${workspaceFolder}\\.venv/Scripts\\python.exe -m pytest ./tests --maxfail=1 --disable-warnings"
             },
             "linux": {
-                "command": "source ${workspaceFolder}/.venv/bin/activate && pytest ./tests --maxfail=1 --disable-warnings"
+                "command": "${workspaceFolder}/.venv/bin/python -m pytest ./tests --maxfail=1 --disable-warnings"
             },
             "osx": {
-                "command": "source ${workspaceFolder}/.venv/bin/activate && pytest ./tests --maxfail=1 --disable-warnings"
+                "command": "${workspaceFolder}/.venv/bin/python -m pytest ./tests --maxfail=1 --disable-warnings"
             },
             "group": {
                 "kind": "build",
