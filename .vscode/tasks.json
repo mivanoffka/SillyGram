@@ -7,7 +7,7 @@
             "command": "${command:osPlatform}",
             "args": [],
             "windows": {
-                "command": ". ${workspaceFolder}\\.venv\\Scripts\\Activate ; echo 'Launching bot...' ; python -m sample.main"
+                 "command": "echo 'Launching bot...' ;  ${workspaceFolder}\\.venv/Scripts\\python.exe -m sample.main"
             },
             "linux": {
                 "command": "source ${workspaceFolder}/.venv/bin/activate && echo 'Launching bot...' && python -m sample.main"
@@ -27,7 +27,7 @@
             "command": "${command:osPlatform}",
             "args": [],
             "windows": {
-                "command": ". ${workspaceFolder}\\.venv\\Scripts\\Activate && pytest ./tests --maxfail=1 --disable-warnings"
+                "command": "${workspaceFolder}\\.venv/Scripts\\python.exe -m pytest ./tests --maxfail=1 --disable-warnings"
             },
             "linux": {
                 "command": "source ${workspaceFolder}/.venv/bin/activate && pytest ./tests --maxfail=1 --disable-warnings"
