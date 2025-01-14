@@ -248,15 +248,22 @@ class SillyBot:
             return
 
         option = 0
+
+        if not self._data.io.is_dialog_listening(user.id):
+            await self._manager.refresh_page(user)
+
         if callback.data:
             if callback.data == SillyDefaults.CallbackData.CANCEL_OPTION:
                 option = -1
             else:
+                if not self._data.io.is_dialog_listening(user.id):
+                    await self._manager.show_notice(user, self._data.settings.labels.try_again)
                 option = int(
                     callback.data.replace(
                         SillyDefaults.CallbackData.OPTION_TEMPLATE, ""
                     )
                 )
+
         self._data.io.push_dialog_result(callback.from_user.id, option)
 
     async def _on_close_button_clicked(self, callback: CallbackQuery):
@@ -322,6 +329,9 @@ class SillyBot:
 
         if user.is_banned:
             return
+
+        if not self._data.io.is_input_listening(user.id):
+            await self._manager.refresh_page(user)
 
         self._data.io.push_text(
             callback.from_user.id, SillyDefaults.CallbackData.INPUT_CANCEL_MARKER

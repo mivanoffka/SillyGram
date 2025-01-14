@@ -16,6 +16,7 @@ class SillyLabels:
     _promotion_success = SillyText("User {} was successfully promoted.")
     _demotion_success = SillyText("User {} was successfully demoted.")
     _error = SillyText("An error has occurred.\n<blockquote>{}</blockquote>")
+    _try_again = SillyText("Please, try again.")
 
     @property
     def go_back(self):
@@ -48,10 +49,14 @@ class SillyLabels:
     @property
     def access_denied(self):
         return self._access_denied
-    
+
     @property
     def error(self):
         return self._error
+
+    @property
+    def try_again(self):
+        return self._try_again
 
     def __init__(
         self,
@@ -64,6 +69,7 @@ class SillyLabels:
         emoji_separator: Optional[SillyText] = None,
         access_denied: Optional[SillyText] = None,
         error: Optional[SillyText] = None,
+        try_again: Optional[Optional[SillyText]] = None,
     ):
         self._go_back = go_back if go_back else self._go_back
         self._close = close if close else self._close
@@ -76,3 +82,4 @@ class SillyLabels:
         self._go_on = go_on if go_on else self._go_on
         self._access_denied = access_denied if access_denied else self._access_denied
         self._error = error if error else self._error
+        self._try_again = try_again if try_again else self._try_again

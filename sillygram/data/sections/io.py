@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from ast import AsyncFunctionDef
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -93,7 +92,7 @@ class IO:
                     user = self._manager.users.get(user_id)
                     if user:
                         await self._manager.refresh_page(user)
-                        
+
     def start_loop(self):
         asyncio.create_task(self._refreshing_countdowns_loop())
 
