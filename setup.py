@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="sillygram",
-    version="0.0.0-alpha.1",
+    version="1.0.0-beta.1",
     packages=find_packages(),
     install_requires=[
         "aiofiles==23.2.1",
@@ -35,7 +35,7 @@ setup(
     ],
     author="mivanoffka",
     author_email="mivanoffka@icloud.com",
-    description="A lightweight and simple Telegram-bot framework based on aiogram",
+    description="A lightweight Telegram-bot framework based on aiogram",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/mivanoffka/SillyGram",
