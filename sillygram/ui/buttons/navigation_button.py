@@ -24,10 +24,11 @@ class NavigationSillyButton(ActionSillyButton):
         self,
         text: SillyText,
         page_name: str,
+        privelege_name: Optional[str] = None,
         f_args: Optional[Tuple] = None,
         f_kwargs: Optional[Dict[str, Any]] = None,
     ):
-        super().__init__(text, self._show_page)
+        super().__init__(text, self._show_page, privelege_name)
         self._page_name = page_name
         self._f_args = f_args
         self._f_kwargs = f_kwargs

@@ -386,7 +386,7 @@ class SillyManager:
     # region Decorators
 
     @staticmethod
-    def protected(privelege_name: Optional[str] = None):
+    def priveleged(privelege_name: Optional[str] = None):
         def decorator(handler: Callable[[SillyManager, SillyEvent], Awaitable[None]]):
             async def wrapper(manager: SillyManager, event: SillyEvent):
                 privelege = (

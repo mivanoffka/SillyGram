@@ -7,19 +7,19 @@ from ..events import SillyEvent
 from .common import get_user
 
 
-@SillyManager.protected()
+@SillyManager.priveleged()
 async def _not_implemented(manager: SillyManager, event: SillyEvent):
     await manager.show_popup(
         event.user, SillyDefaults.Configurator.NOT_IMPLEMENTED_TEXT
     )
 
 
-@SillyManager.protected()
+@SillyManager.priveleged()
 async def _on_stats_button_clicked(manager: SillyManager, event: SillyEvent):
     await manager.show_popup(event.user, manager.stats)
 
 
-@SillyManager.protected()
+@SillyManager.priveleged()
 async def _on_priveleges_button_clicked(manager: SillyManager, event: SillyEvent):
     user_to_check = await get_user(manager, event)
     if not user_to_check:

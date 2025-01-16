@@ -11,7 +11,7 @@ from ..data import SillyDefaults
 from .common import get_user
 
 
-@SillyManager.protected()
+@SillyManager.priveleged()
 async def _on_send_message_button_clicked(manager: SillyManager, event: SillyEvent):
     user_to_text: Optional[SillyUser]
     user_to_text = await get_user(manager, event)
@@ -26,7 +26,7 @@ async def _on_send_message_button_clicked(manager: SillyManager, event: SillyEve
     await manager.show_popup(event.user, SillyDefaults.Configurator.CommunicationPage.MESSAGE_DELIVERED_TEXT.format(user_to_text.nickname_or_id))
 
 
-@SillyManager.protected()
+@SillyManager.priveleged()
 async def _on_broadcast_button_clicked(manager: SillyManager, event: SillyEvent): ...
 
 
