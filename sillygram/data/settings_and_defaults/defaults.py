@@ -169,6 +169,18 @@ class SillyDefaults:
 
             MESSAGE_RECEIVED_TEMPLATE = SillyText("{}\n<blockquote>{}</blockquote>")
             MESSAGE_DELIVERED_TEXT = SillyText("Your message has been delivered to {}.")
+    
+            BROADCAST_SUCCESS_TEXT = SillyText("Broadcast has been successfully started.")
+
+        class BroadcastStatusPage:
+            NAME = "BROADCAST_RUNNING"
+            TEXT = SillyText("There is already a broadcast running. Please wait.\n\nAt the moment {} of {} messages have been sent. ({}%)")
+
+            REFRESH_BUTTON_TEXT = SillyText("Refresh")
+            STOP_BROADCAST_BUTTON_TEXT = SillyText("Stop")
+    
+            STOP_CONFIRMATION_TEXT = SillyText("Are you sure you want to stop the broadcast?")
+            BROADCAST_STOPPED_TEXT = SillyText("Broadcast has been stopped.")
 
 
         @dataclass(frozen=True)

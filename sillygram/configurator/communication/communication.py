@@ -1,14 +1,15 @@
 from typing import Optional
 
-from ..manager import SillyManager
-from ..events import SillyEvent
-from ..user import SillyUser
-from ..text import SillyText
+from ...manager import SillyManager
+from ...events import SillyEvent
+from ...user import SillyUser
 
-from ..ui import SillyPage, ActionSillyButton, NavigationSillyButton
+from ...ui import SillyPage, ActionSillyButton, NavigationSillyButton
 
-from ..data import SillyDefaults
-from .common import get_user
+from ...data import SillyDefaults
+from ..common import get_user
+
+from .broadcaster import broadcaster
 
 
 @SillyManager.priveleged()
@@ -43,7 +44,21 @@ async def _on_send_message_button_clicked(manager: SillyManager, event: SillyEve
 
 
 @SillyManager.priveleged()
-async def _on_broadcast_button_clicked(manager: SillyManager, event: SillyEvent): ...
+async def _on_broadcast_button_clicked(manager: SillyManager, event: SillyEvent):
+    if broadcaster.is_busy:
+        await manager.show_page(
+            event.user, SillyDefaults.Configurator.BroadcastStatusPage.NAME
+        )
+    else:
+        message_text = await manager.get_input(
+            event.user,
+            SillyDefaults.Configurator.CommunicationPage.BROADCAST_MESSAGE_TEXT,
+        )
+        if not message_text:
+            return
+
+        if await broadcaster.try_show_broadcast_notice(manager, message_text):
+            await manager.show_popup(event.user, SillyDefaults.Configurator.CommunicationPage.BROADCAST_SUCCESS_TEXT)
 
 
 communication_page = SillyPage(

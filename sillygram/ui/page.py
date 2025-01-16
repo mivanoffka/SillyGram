@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, Awaitable, Callable, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Tuple
 
 from aiogram.types import InlineKeyboardMarkup
 
@@ -69,7 +69,7 @@ class SillyPage:
         name: str,
         text: SillyText,
         buttons: SillyButton | Sequence[SillyButton] | Sequence[Sequence[SillyButton]],
-        get_format_args: Optional[Callable[[SillyManager, SillyEvent], Awaitable[Optional[Tuple[str, ...]]]]] = None,
+        get_format_args: Optional[Callable[[SillyManager, SillyEvent], Awaitable[Optional[Tuple[Any, ...]]]]] = None,
         is_home: bool = False,
         is_start: bool = False,
     ):
