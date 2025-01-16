@@ -167,7 +167,7 @@ class SillyDefaults:
             PERSONAL_MESSAGE_TEXT = SillyText("Please enter the text you want to send to {}.")
             BROADCAST_MESSAGE_TEXT = SillyText("Please enter the text you want to broadcast.")
 
-            MESSAGE_RECEIVED_TEXT = SillyText("You have got a message!\n\n{}")
+            MESSAGE_RECEIVED_TEMPLATE = SillyText("{}\n<blockquote>{}</blockquote>")
             MESSAGE_DELIVERED_TEXT = SillyText("Your message has been delivered to {}.")
 
 

@@ -41,6 +41,10 @@ class SillyManager:
         return SillyText(self._data.stats.get_report())
 
     @property
+    def settings(self):
+        return self._data.settings
+
+    @property
     def priveleges_names(self):
         return self._data.priveleges.all_names
 

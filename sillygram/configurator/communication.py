@@ -18,12 +18,28 @@ async def _on_send_message_button_clicked(manager: SillyManager, event: SillyEve
     if not user_to_text:
         return
 
-    message_text = await manager.get_input(event.user, SillyDefaults.Configurator.CommunicationPage.PERSONAL_MESSAGE_TEXT.format(user_to_text.nickname_or_id))
+    message_text = await manager.get_input(
+        event.user,
+        SillyDefaults.Configurator.CommunicationPage.PERSONAL_MESSAGE_TEXT.format(
+            user_to_text.nickname_or_id
+        ),
+    )
     if not message_text:
         return
 
-    await manager.show_notice(user_to_text, SillyDefaults.Configurator.CommunicationPage.MESSAGE_RECEIVED_TEXT.format(message_text))
-    await manager.show_popup(event.user, SillyDefaults.Configurator.CommunicationPage.MESSAGE_DELIVERED_TEXT.format(user_to_text.nickname_or_id))
+    combined_text = (
+        SillyDefaults.Configurator.CommunicationPage.MESSAGE_RECEIVED_TEMPLATE.format(
+            manager._data.settings.labels.message_recieved, message_text
+        )
+    )
+
+    await manager.show_notice(user_to_text, combined_text)
+    await manager.show_popup(
+        event.user,
+        SillyDefaults.Configurator.CommunicationPage.MESSAGE_DELIVERED_TEXT.format(
+            user_to_text.nickname_or_id
+        ),
+    )
 
 
 @SillyManager.priveleged()

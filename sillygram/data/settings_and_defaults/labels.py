@@ -17,6 +17,7 @@ class SillyLabels:
     _demotion_success = SillyText("User {} was successfully demoted.")
     _error = SillyText("An error has occurred.\n<blockquote>{}</blockquote>")
     _try_again = SillyText("Please, try again.")
+    _message_received = SillyText("You have got a message!")
 
     @property
     def go_back(self):
@@ -57,6 +58,10 @@ class SillyLabels:
     @property
     def try_again(self):
         return self._try_again
+    
+    @property
+    def message_recieved(self):
+        return self._message_received
 
     def __init__(
         self,
@@ -70,6 +75,7 @@ class SillyLabels:
         access_denied: Optional[SillyText] = None,
         error: Optional[SillyText] = None,
         try_again: Optional[Optional[SillyText]] = None,
+        message_recieved: Optional[SillyText] = None,
     ):
         self._go_back = go_back if go_back else self._go_back
         self._close = close if close else self._close
@@ -83,3 +89,4 @@ class SillyLabels:
         self._access_denied = access_denied if access_denied else self._access_denied
         self._error = error if error else self._error
         self._try_again = try_again if try_again else self._try_again
+        self._message_received = message_recieved if message_recieved else self._message_received
