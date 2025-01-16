@@ -49,6 +49,7 @@ class SillyDefaults:
         PRIVELEGE_NEGATIVE_SETTING_SUCCESS = SillyText("User {} does not have any priveleges anymore.")
 
         ADMINS_BUTTON_TEXT = SillyText("Admins")
+        COMMUNICATION_BUTTON_TEXT = SillyText("Communication")
         STATS_BUTTON_TEXT = SillyText("Stats")
         HOME_BUTTON_TEXT = SillyText("Home")
         RESET_BUTTON_TEXT = SillyText("Reset data")
@@ -154,6 +155,21 @@ class SillyDefaults:
             BANNED_USER_LINE_TEMPLATE = SillyText("User {} is banned until {}.")
 
             DAYS_PARSING_ERROR_TEXT = SillyText("Invalid input format.")
+
+        @dataclass(frozen=True)
+        class CommunicationPage:
+            NAME = "COMMUNICATION"
+            TEXT = SillyText("Communication page")
+
+            SEND_MESSAGE_BUTTON_TEXT = SillyText("Personal message")
+            BROADCAST_BUTTON_TEXT = SillyText("Broadcast message")
+
+            PERSONAL_MESSAGE_TEXT = SillyText("Please enter the text you want to send to {}.")
+            BROADCAST_MESSAGE_TEXT = SillyText("Please enter the text you want to broadcast.")
+
+            MESSAGE_RECEIVED_TEXT = SillyText("You have got a message!\n\n{}")
+            MESSAGE_DELIVERED_TEXT = SillyText("Your message has been delivered to {}.")
+
 
         @dataclass(frozen=True)
         class RegistryPage:

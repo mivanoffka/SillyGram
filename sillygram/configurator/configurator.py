@@ -70,6 +70,10 @@ configuration_page = SillyPage(
     text=SillyDefaults.Configurator.ROOT_PAGE_TEXT,
     buttons=(
         (
+            NavigationSillyButton(
+                SillyDefaults.Configurator.COMMUNICATION_BUTTON_TEXT,
+                SillyDefaults.Configurator.CommunicationPage.NAME,
+            ),
             ActionSillyButton(
                 SillyDefaults.Configurator.STATS_BUTTON_TEXT, _on_stats_button_clicked
             ),

@@ -79,8 +79,10 @@ class Priveleges(SillyDbSection):
             session.commit()
 
     def __init__(
-        self, db: SillyDB, priveleges: Optional[Sequence[SillyPrivelege]] = None
-    ) -> None:
+        self,
+        db: SillyDB,
+        priveleges: Optional[Sequence[SillyPrivelege]] = None,
+    ):
         super().__init__(db)
         if priveleges is None:
             self._priveleges = (

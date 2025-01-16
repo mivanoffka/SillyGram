@@ -20,7 +20,7 @@ class SillySettings:
     _regular_activities: Optional[Sequence[SillyRegularActivity]] = None
     _on_startup: Optional[Callable[[SillyManager], Awaitable[None]]] = None
     _on_shutdown: Optional[Callable[[SillyManager], Awaitable[None]]] = None
-    
+
     _priveleges: Optional[Tuple[SillyPrivelege, ...]] = None
 
     @property
@@ -34,7 +34,7 @@ class SillySettings:
     @property
     def log_to_console(self):
         return self._log_to_console
-    
+
     @property
     def regular_activities(self):
         return self._regular_activities
@@ -46,10 +46,14 @@ class SillySettings:
     @property
     def on_shutdown(self):
         return self._on_shutdown
-    
+
     @property
     def priveleges(self):
         return self._priveleges
+
+    @property
+    def master_users(self):
+        return self._master_users
 
     def __init__(
         self,
@@ -59,16 +63,16 @@ class SillySettings:
         on_shutdown: Optional[Callable[[SillyManager], Awaitable[None]]] = None,
         skip_updates: bool = True,
         log_to_console: bool = False,
-        priveleges: Optional[Sequence[SillyPrivelege]] = None
+        priveleges: Optional[Sequence[SillyPrivelege]] = None,
+        master_users: Optional[Sequence[int|str]] = None,
     ):
         self._skip_updates = skip_updates
         self._log_to_console = log_to_console
         self._labels = labels if labels else SillyLabels()
-        
+
         self._regular_activities = regular_activities
         self._on_startup = on_startup
         self._on_shutdown = on_shutdown
-        
+
         self._priveleges = tuple(priveleges) if priveleges else None
-        
-        
+        self._master_users = tuple(master_users) if master_users else None

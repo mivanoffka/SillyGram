@@ -10,7 +10,7 @@ if __name__ == "__main__":
         silly_bot: SillyBot = SillyBot(
             TOKEN,
             pages=pages,
-            settings=SillySettings(log_to_console=LOG_TO_CONSOLE),
+            settings=SillySettings(log_to_console=LOG_TO_CONSOLE, master_users=["mivanoffka"]),
         )
 
         silly_bot.launch()
