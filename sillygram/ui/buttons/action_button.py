@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING, Optional, Sequence
+from typing import TYPE_CHECKING, Optional, Sequence, Tuple
 
 from ...text import SillyText
 
@@ -20,7 +20,7 @@ _button_ids: List[int] = list()
 class ActionSillyButton(SillyButton):
     _id: int
     _on_click: Optional[Callable[[SillyManager, SillyEvent], Awaitable[None]]]
-    _privelege_name: Optional[str]
+    _priveleged: bool | str
 
     # region Properties etc.
 
@@ -56,12 +56,21 @@ class ActionSillyButton(SillyButton):
         _button_ids.append(self._id)
 
     async def _on_click_wrapper(self, manager: SillyManager, event: SillyEvent):
-        @manager.priveleged(self._privelege_name)
-        async def protected(manager: SillyManager, event: SillyEvent):
+        async def handler(manager: SillyManager, event: SillyEvent):
             if self._on_click is not None:
                 return await self._on_click(manager, event)
 
-        return await protected(manager, event)
+        @manager.priveleged(self._priveleged if isinstance(self._priveleged, str) else None)
+        async def priveleged(manager: SillyManager, event: SillyEvent):
+            return await handler(manager, event)
+
+        if isinstance(self._priveleged, bool):
+            if self._priveleged:
+                return await priveleged(manager, event)
+        elif isinstance(self._priveleged, str):
+            return await priveleged(manager, event)
+
+        return await handler(manager, event)
 
     # endregion
 
@@ -69,9 +78,10 @@ class ActionSillyButton(SillyButton):
         self,
         text: SillyText,
         on_click: Optional[Callable[[SillyManager, SillyEvent], Awaitable[None]]] = None,
-        privelege_name: Optional[str] = None
+        priveleged: bool | str = False
     ):
         super().__init__(text)
         self._generate_id()
         self._on_click = on_click
-        self._privelege_name = privelege_name
+        self._priveleged = priveleged
+

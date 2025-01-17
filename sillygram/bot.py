@@ -18,7 +18,7 @@ from .data import Data, SillyDefaults
 from .ui import SillyPage, ActionSillyButton
 
 from .activities import SillyRegularActivity, SillyDateTimeActivity
-from .configurator import configurator
+from .options import options_pages
 
 
 class SillyBot:
@@ -109,14 +109,9 @@ class SillyBot:
             F.data.startswith(SillyDefaults.CallbackData.OPTION_TEMPLATE),
         )
 
-        # self._dispatcher.callback_query.register(
-        #     self._on_confirm_button_clicked,
-        #     F.data.startswith(SillyDefaults.CallbackData.CONFIRM),
-        # )
-
         self._register_command(SillyDefaults.Commands.HOME, self._on_home)
         self._register_command(SillyDefaults.Commands.START, self._on_start)
-        self._register_command(SillyDefaults.Commands.CONFIGURE, self._on_configure)
+        self._register_command(SillyDefaults.Commands.OPTIONS, self._on_configure)
 
         self._dispatcher.message.register(self._on_text_input, F.text)
         self._dispatcher.message.register(self._on_other_input)
@@ -124,6 +119,8 @@ class SillyBot:
         pages = (self._data.pages.get(name) for name in self._data.pages.names)
         buttons = []
         for page in pages:
+            if page is None:
+                raise KeyError("Page not found")
             for button in page.buttons:
                 if button not in buttons:
                     buttons.append(button)
@@ -199,7 +196,7 @@ class SillyBot:
     @staticmethod
     @SillyManager.priveleged()
     async def _on_configure(manager: SillyManager, event: SillyEvent):
-        await manager.show_page(event.user, SillyDefaults.Names.CONFIGURE_PAGE)
+        await manager.show_page(event.user, SillyDefaults.Names.OPTIONS_PAGE)
 
     async def _on_text_input(self, message: Message):
         if not message.from_user:
@@ -418,7 +415,7 @@ class SillyBot:
         :param settings: silly-bot settings. None means default settings.
         """
 
-        pages = (*pages, *configurator)
+        pages = (*pages, *options_pages)
         self._data = Data(settings if settings is not None else SillySettings(), *pages)
         self._aiogram_bot = AiogramBot(
             token=token, default=DefaultBotProperties(parse_mode="HTML")

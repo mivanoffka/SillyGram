@@ -1,4 +1,5 @@
 import logging
+import re
 from typing import Dict, List, Optional, Sequence
 
 
@@ -7,7 +8,8 @@ class SillyText:
     _undefined_content: str = "?"
 
     def _fix_args_count(self, args: List[str], text_to_format: str) -> List[str]:
-        placeholders_count = text_to_format.count("{}")
+        placeholders_pattern = r"\{[^{}]*\}"
+        placeholders_count = len(re.findall(placeholders_pattern, text_to_format))
 
         if len(args) > placeholders_count:
             args = args[:placeholders_count]

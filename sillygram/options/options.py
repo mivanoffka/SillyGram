@@ -9,9 +9,7 @@ from .common import get_user
 
 @SillyManager.priveleged()
 async def _not_implemented(manager: SillyManager, event: SillyEvent):
-    await manager.show_popup(
-        event.user, SillyDefaults.Configurator.NOT_IMPLEMENTED_TEXT
-    )
+    await manager.show_popup(event.user, SillyDefaults.Options.NOT_IMPLEMENTED_TEXT)
 
 
 @SillyManager.priveleged()
@@ -26,11 +24,11 @@ async def _on_priveleges_button_clicked(manager: SillyManager, event: SillyEvent
         return
 
     privelege_name = user_to_check.privelege_name
-    text_to_show = SillyDefaults.Configurator.NEGATIVE_PRIVELEGE_INFO.format(
+    text_to_show = SillyDefaults.Options.NEGATIVE_PRIVELEGE_INFO.format(
         user_to_check.nickname_or_id
     )
     if privelege_name:
-        text_to_show = SillyDefaults.Configurator.POSITIVE_PRIVELEGE_INFO.format(
+        text_to_show = SillyDefaults.Options.POSITIVE_PRIVELEGE_INFO.format(
             user_to_check.nickname_or_id, privelege_name
         )
 
@@ -39,23 +37,21 @@ async def _on_priveleges_button_clicked(manager: SillyManager, event: SillyEvent
 
     privelege_options = (
         *[SillyText(text) for text in manager.priveleges_names],
-        SillyDefaults.Configurator.DEFAULT_PRIVELEGE,
+        SillyDefaults.Options.DEFAULT_PRIVELEGE,
     )
 
     privelege_id = await manager.show_dialog(
         event.user,
-        SillyDefaults.Configurator.PRIVEGELE_PROMPT.format(
-            user_to_check.nickname_or_id
-        ),
+        SillyDefaults.Options.PRIVEGELE_PROMPT.format(user_to_check.nickname_or_id),
         *privelege_options
     )
 
     if privelege_id is not None:
-        text = SillyDefaults.Configurator.PRIVELEGE_NEGATIVE_SETTING_SUCCESS.format(
+        text = SillyDefaults.Options.PRIVELEGE_NEGATIVE_SETTING_SUCCESS.format(
             user_to_check.nickname_or_id
         )
         if privelege_id in range(len(manager.priveleges_names)):
-            text = SillyDefaults.Configurator.PRIVELEGE_POSITIVE_SETTING_SUCCESS.format(
+            text = SillyDefaults.Options.PRIVELEGE_POSITIVE_SETTING_SUCCESS.format(
                 user_to_check.nickname_or_id, manager.priveleges_names[privelege_id]
             )
             manager.set_privelege(user_to_check, manager.priveleges_names[privelege_id])
@@ -65,33 +61,38 @@ async def _on_priveleges_button_clicked(manager: SillyManager, event: SillyEvent
         await manager.show_popup(event.user, text)
 
 
-configuration_page = SillyPage(
-    name=SillyDefaults.Names.CONFIGURE_PAGE,
-    text=SillyDefaults.Configurator.ROOT_PAGE_TEXT,
+options_page = SillyPage(
+    name=SillyDefaults.Names.OPTIONS_PAGE,
+    text=SillyDefaults.Options.ROOT_PAGE_TEXT,
     buttons=(
         (
             NavigationSillyButton(
-                SillyDefaults.Configurator.COMMUNICATION_BUTTON_TEXT,
-                SillyDefaults.Configurator.CommunicationPage.NAME,
-            ),
-            ActionSillyButton(
-                SillyDefaults.Configurator.STATS_BUTTON_TEXT, _on_stats_button_clicked
+                SillyDefaults.Options.COMMUNICATION_BUTTON_TEXT,
+                SillyDefaults.Options.CommunicationPage.NAME,
             ),
         ),
         (
             ActionSillyButton(
-                SillyDefaults.Configurator.PRIVELEGES_BUTTON_TEXT,
+                SillyDefaults.Options.PRIVELEGES_BUTTON_TEXT,
                 _on_priveleges_button_clicked,
             ),
+            ActionSillyButton(
+                SillyDefaults.Options.STATS_BUTTON_TEXT, _on_stats_button_clicked
+            ),
             NavigationSillyButton(
-                SillyDefaults.Configurator.BANNED_BUTTON_TEXT,
-                SillyDefaults.Configurator.BannedPage.NAME,
+                SillyDefaults.Options.BANNED_BUTTON_TEXT,
+                SillyDefaults.Options.BannedPage.NAME,
             ),
         ),
         (
             NavigationSillyButton(
-                SillyDefaults.Configurator.HOME_BUTTON_TEXT,
+                SillyDefaults.Options.HOME_BUTTON_TEXT,
                 SillyDefaults.Names.HOME_PAGE,
+            ),
+            NavigationSillyButton(
+                SillyDefaults.Options.MORE_BUTTON_TEXT,
+                SillyDefaults.Names.MORE_OPTIONS_PAGE,
+                not_found_message=SillyDefaults.Options.MORE_OPTIONS_PAGE_TEMPLATE_TEXT,
             ),
         ),
     ),

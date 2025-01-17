@@ -22,9 +22,12 @@ class SillyPage:
 
     _is_home: bool = False
     _is_start: bool = False
-    
-    _get_format_args: Callable[[SillyManager, SillyEvent], Awaitable[Optional[Tuple[str, ...]]]]
-    
+    _is_options: bool = False
+
+    _get_format_args: Callable[
+        [SillyManager, SillyEvent], Awaitable[Optional[Tuple[str, ...]]]
+    ]
+
     @property
     def text(self) -> SillyText:
         return self._text
@@ -50,9 +53,13 @@ class SillyPage:
         return self._is_start
 
     @property
+    def is_options(self) -> bool:
+        return self._is_options
+
+    @property
     def name(self) -> str:
         return self._name
-    
+
     async def get_format_args(self, manager: SillyManager, event: SillyEvent):
         args = event.args
         kwargs = event.kwargs.values()
@@ -60,18 +67,21 @@ class SillyPage:
             return (
                 *args,
                 *kwargs,
-            )    
+            )
         else:
-            return await self._get_format_args(manager, event) 
+            return await self._get_format_args(manager, event)
 
     def __init__(
         self,
         name: str,
         text: SillyText,
         buttons: SillyButton | Sequence[SillyButton] | Sequence[Sequence[SillyButton]],
-        get_format_args: Optional[Callable[[SillyManager, SillyEvent], Awaitable[Optional[Tuple[Any, ...]]]]] = None,
+        get_format_args: Optional[
+            Callable[[SillyManager, SillyEvent], Awaitable[Optional[Tuple[Any, ...]]]]
+        ] = None,
         is_home: bool = False,
         is_start: bool = False,
+        is_options: bool = False,
     ):
 
         buttons_edited = []
@@ -101,8 +111,9 @@ class SillyPage:
 
         self._is_home = is_home
         self._is_start = is_start
-        
+        self._is_options = is_options
+
         async def format_default(manager: SillyManager, event: SillyEvent):
             return ()
-        
+
         self._get_format_args = get_format_args if get_format_args else format_default

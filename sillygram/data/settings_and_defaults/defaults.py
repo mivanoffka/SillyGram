@@ -25,15 +25,16 @@ class SillyDefaults:
     class Names:
         START_PAGE = "START"
         HOME_PAGE = "HOME"
-        CONFIGURE_PAGE = "CONFIGURE"
+        OPTIONS_PAGE = "OPTIONS"
+        MORE_OPTIONS_PAGE = "MORE_OPTIONS"
 
     @dataclass(frozen=True)
     class Priveleges:
         ADMIN_PRIVELEGY_NAME = "Administrator"
 
     @dataclass(frozen=True)
-    class Configurator:
-        ROOT_PAGE_TEXT = SillyText("This is the SillyGram control page")
+    class Options:
+        ROOT_PAGE_TEXT = SillyText("This is the SillyGram options page")
         BANNED_BUTTON_TEXT = SillyText("Banned")
         PRIVELEGES_BUTTON_TEXT = SillyText("Priveleges")
 
@@ -65,6 +66,8 @@ class SillyDefaults:
         ERROR_MESSAGE_TEMPLATE = SillyText("An error has occurred.\n\n{}")
 
         USER_NOT_REGISTERED_ERROR_TEMPLATE = SillyText("User {} not registered")
+        MORE_BUTTON_TEXT = SillyText("More")
+        MORE_PAGE_PLACEHOLDER = SillyText("There is no such page...")
 
         @dataclass(frozen=True)
         class AdminsPage:
@@ -178,10 +181,9 @@ class SillyDefaults:
 
             REFRESH_BUTTON_TEXT = SillyText("Refresh")
             STOP_BROADCAST_BUTTON_TEXT = SillyText("Stop")
-    
+
             STOP_CONFIRMATION_TEXT = SillyText("Are you sure you want to stop the broadcast?")
             BROADCAST_STOPPED_TEXT = SillyText("Broadcast has been stopped.")
-
 
         @dataclass(frozen=True)
         class RegistryPage:
@@ -191,12 +193,14 @@ class SillyDefaults:
         class StatsPage:
             NAME = "STATS"
 
+        MORE_OPTIONS_PAGE_TEMPLATE_TEXT = SillyText("There is no such page...")
+
     # region Commands
     @dataclass(frozen=True)
     class Commands:
         START = "start"
         HOME = "home"
-        CONFIGURE = "configure"
+        OPTIONS = "options"
 
     @dataclass(frozen=True)
     class CLI:
@@ -205,7 +209,7 @@ class SillyDefaults:
         class Messages:
             PRIVELEGE_NOT_MENTIONED_TEMPLATE = "Privelege named '{}' found in DB, but was not specified in SillySettings"
             PRIVELEGE_NOT_FOUND_TEMPLATE = "Privelege named '{}' is unknown."
-            USER_WITH_UNKNOWN_PRIVELEGE = "User {} has unknown privelege '{}'."
+            USER_WITH_UNKNOWN_PRIVELEGE = "User {} has an unknown privelege '{}'."
 
 
 SILLY_START_PAGE_POINTER = SillyDefaults.Names.START_PAGE

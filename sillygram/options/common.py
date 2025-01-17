@@ -9,7 +9,7 @@ async def get_user(manager: SillyManager, event: SillyEvent) -> Optional[SillyUs
     user_to_promote: Optional[SillyUser] = None
     input_str = "?"
     try:
-        input_str = await manager.get_input(event.user, SillyDefaults.Configurator.USER_ID_INPUT_PROMPT)
+        input_str = await manager.get_input(event.user, SillyDefaults.Options.USER_ID_INPUT_PROMPT)
         if not input_str:
             return None
         user_to_promote = manager.users.get(input_str)
@@ -25,8 +25,8 @@ async def get_user(manager: SillyManager, event: SillyEvent) -> Optional[SillyUs
                 raise Exception(input_str)
 
     except Exception as e:
-        await manager.show_popup(event.user, SillyDefaults.Configurator.ERROR_MESSAGE_TEMPLATE.format(
-            SillyDefaults.Configurator.USER_NOT_REGISTERED_ERROR_TEMPLATE.format(e)
+        await manager.show_popup(event.user, SillyDefaults.Options.ERROR_MESSAGE_TEMPLATE.format(
+            SillyDefaults.Options.USER_NOT_REGISTERED_ERROR_TEMPLATE.format(e)
         ))
         return None
 

@@ -1,20 +1,22 @@
-from typing import Dict, Any, Tuple
+from typing import Dict, Any, Tuple, Optional
 from ..settings_and_defaults import SillyDefaults
 from ...ui import SillyPage
 
 
 class Pages:
     _pages: Dict[Any, SillyPage]
+    _more_options_page_name: Optional[str] = None
 
     @property
     def names(self) -> Tuple[str, ...]:
         return tuple(self._pages.keys())
 
-    def get(self, name: Any) -> SillyPage:
+    def get(self, name: Any) -> Optional[SillyPage]:
         if name in self.names:
             return self._pages[name]
 
-        raise KeyError("No page found with name '{}'".format(name))
+        # raise KeyError("No page found with name '{}'".format(name))
+        return None
 
     @staticmethod
     def _pages_to_dict(*pages: SillyPage) -> Dict[Any, SillyPage]:
@@ -35,9 +37,9 @@ class Pages:
                 start_pages.append(page)
 
         if len(start_pages) == 0:
-            raise ValueError(f"There must be a START page.")
+            raise ValueError("There must be a START page.")
         elif len(start_pages) > 1:
-            raise ValueError(f"There can be only one START page.")
+            raise ValueError("There can be only one START page.")
         else:
             self._pages[SillyDefaults.Names.START_PAGE] = start_pages[0]
 
@@ -47,11 +49,22 @@ class Pages:
                 home_pages.append(page)
 
         if len(home_pages) == 0:
-            raise ValueError(f"There must be a HOME page.")
+            raise ValueError("There must be a HOME page.")
         elif len(home_pages) > 1:
-            raise ValueError(f"There can be only one HOME page.")
+            raise ValueError("There can be only one HOME page.")
         else:
             self._pages[SillyDefaults.Names.HOME_PAGE] = home_pages[0]
+
+        options_pages = []
+        for page in self._pages.values():
+            if page.is_options:
+                options_pages.append(page)
+
+        if len(options_pages) > 1:
+            raise ValueError("There can be only one OPTIONS page.")
+        elif len(options_pages) == 1:
+            self._pages[SillyDefaults.Names.MORE_OPTIONS_PAGE] = options_pages[0]
+
 
     def __init__(self, *pages: SillyPage):
         self._pages = self._pages_to_dict(*pages)

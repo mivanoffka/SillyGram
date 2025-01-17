@@ -60,10 +60,19 @@ class SillyManager:
         user: SillyUser,
         page_name: Any,
         new_target_message=False,
+        not_found_message: Optional[SillyText] = None,
         f_args: Optional[Tuple] = None,
         f_kwargs: Optional[Dict[str, Any]] = None,
     ):
         page = self._data.pages.get(page_name)
+
+        if not page:
+            if not not_found_message:
+                not_found_message = self._data.settings.labels.page_not_found
+
+            await self.show_popup(user, not_found_message)
+            return
+
         format_args = await page.get_format_args(
             self, SillyEvent(user, *(f_args or ()), **(f_kwargs or {}))
         )
@@ -91,6 +100,7 @@ class SillyManager:
     async def refresh_page(
         self,
         user: SillyUser,
+        not_found_message: Optional[SillyText] = None,
         f_args: Optional[Tuple] = None,
         f_kwargs: Optional[Dict[str, Any]] = None,
     ):
@@ -99,13 +109,22 @@ class SillyManager:
 
         try:
             page = self._data.pages.get(self._data.get_current_page_name(user.id))
+
+            if not page:
+                if not not_found_message:
+                    not_found_message = self._data.settings.labels.page_not_found
+
+                await self.show_notice(user, self._data.settings.labels.page_not_found)
+                await self.show_page(user, SillyDefaults.Names.HOME_PAGE)
+                return
+
             if f_args or f_kwargs:
                 format_args = await page.get_format_args(
                     self, SillyEvent(user, *(f_args or ()), **(f_kwargs or {}))
                 )
 
         except Exception:
-            await self.show_page(user, SillyDefaults.Names.START_PAGE)
+            await self.show_page(user, SillyDefaults.Names.HOME_PAGE)
             return
 
         if format_args is None:
@@ -231,11 +250,16 @@ class SillyManager:
 
     async def show_banner(self, user: SillyUser, text: SillyText):
         current_page_name = self._data.get_current_page_name(user.id)
+        page = self._data.pages.get(current_page_name)
+
+        if page is None:
+            page = self._data.pages.get(SillyDefaults.Names.HOME_PAGE)
+            if page is None:
+                return
 
         await self._delete_target_message(user)
         await self._aiogram_bot.send_message(user.id, text.localize(user.language_code))
 
-        page = self._data.pages.get(current_page_name)
         await self._send_new_target_message(
             user,
             page.text.localize(user.language_code),

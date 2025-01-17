@@ -3,7 +3,7 @@ from typing import Optional
 from ...manager import SillyManager
 from ...text import SillyText
 
-TIME_DELTA = 100
+TIME_DELTA = 0.25
 
 
 class _Broadcaster:

@@ -18,6 +18,7 @@ class SillyLabels:
     _error = SillyText("An error has occurred.\n<blockquote>{}</blockquote>")
     _try_again = SillyText("Please, try again.")
     _message_received = SillyText("You have got a message!")
+    _page_not_found = SillyText("Page not found.")
 
     @property
     def go_back(self):
@@ -63,6 +64,10 @@ class SillyLabels:
     def message_recieved(self):
         return self._message_received
 
+    @property
+    def page_not_found(self):
+        return self._page_not_found
+
     def __init__(
         self,
         go_back: Optional[SillyText] = None,
@@ -76,6 +81,7 @@ class SillyLabels:
         error: Optional[SillyText] = None,
         try_again: Optional[Optional[SillyText]] = None,
         message_recieved: Optional[SillyText] = None,
+        page_not_found: Optional[SillyText] = None,
     ):
         self._go_back = go_back if go_back else self._go_back
         self._close = close if close else self._close
@@ -90,3 +96,4 @@ class SillyLabels:
         self._error = error if error else self._error
         self._try_again = try_again if try_again else self._try_again
         self._message_received = message_recieved if message_recieved else self._message_received
+        self._page_not_found = page_not_found if page_not_found else self._page_not_found
