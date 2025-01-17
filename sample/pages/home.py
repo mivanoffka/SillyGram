@@ -26,5 +26,5 @@ home_page = SillyPage(
             ),
         )
     ),
-    is_home=True,
+    flags=SillyPage.Flags.HOME
 )

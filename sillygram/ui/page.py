@@ -4,7 +4,7 @@ from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Tuple
 
 from aiogram.types import InlineKeyboardMarkup
-
+from enum import Flag, auto
 
 from ..text import SillyText
 
@@ -16,13 +16,17 @@ if TYPE_CHECKING:
 
 
 class SillyPage:
+    class Flags(Flag):
+        NO = 0
+        HOME = auto()
+        START = auto()
+        OPTIONS = auto()
+
     _text: SillyText
     _name: str
     _buttons: Sequence[Sequence[SillyButton]]
 
-    _is_home: bool = False
-    _is_start: bool = False
-    _is_options: bool = False
+    _flags: Flags
 
     _get_format_args: Callable[
         [SillyManager, SillyEvent], Awaitable[Optional[Tuple[str, ...]]]
@@ -45,16 +49,8 @@ class SillyPage:
         return tuple(button for row in self._buttons for button in row)
 
     @property
-    def is_home(self) -> bool:
-        return self._is_home
-
-    @property
-    def is_start(self) -> bool:
-        return self._is_start
-
-    @property
-    def is_options(self) -> bool:
-        return self._is_options
+    def flags(self) -> Flags:
+        return self._flags
 
     @property
     def name(self) -> str:
@@ -79,9 +75,7 @@ class SillyPage:
         get_format_args: Optional[
             Callable[[SillyManager, SillyEvent], Awaitable[Optional[Tuple[Any, ...]]]]
         ] = None,
-        is_home: bool = False,
-        is_start: bool = False,
-        is_options: bool = False,
+        flags: Flags = Flags.NO
     ):
 
         buttons_edited = []
@@ -109,9 +103,7 @@ class SillyPage:
         self._text = text
         self._buttons = buttons_edited
 
-        self._is_home = is_home
-        self._is_start = is_start
-        self._is_options = is_options
+        self._flags = flags
 
         async def format_default(manager: SillyManager, event: SillyEvent):
             return ()

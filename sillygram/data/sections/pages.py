@@ -15,7 +15,6 @@ class Pages:
         if name in self.names:
             return self._pages[name]
 
-        # raise KeyError("No page found with name '{}'".format(name))
         return None
 
     @staticmethod
@@ -33,7 +32,7 @@ class Pages:
     def _setup_specials(self):
         start_pages = []
         for page in self._pages.values():
-            if page.is_start:
+            if page.flags & SillyPage.Flags.START:
                 start_pages.append(page)
 
         if len(start_pages) == 0:
@@ -45,7 +44,7 @@ class Pages:
 
         home_pages = []
         for page in self._pages.values():
-            if page.is_home:
+            if page.flags & SillyPage.Flags.HOME:
                 home_pages.append(page)
 
         if len(home_pages) == 0:
@@ -57,7 +56,7 @@ class Pages:
 
         options_pages = []
         for page in self._pages.values():
-            if page.is_options:
+            if page.flags & SillyPage.Flags.OPTIONS:
                 options_pages.append(page)
 
         if len(options_pages) > 1:

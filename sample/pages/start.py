@@ -5,7 +5,7 @@ from sillygram import SillyPage, NavigationSillyButton
 start_page = SillyPage(
     name="Start",
     text=Text.StartPage.TEXT,
-    is_start=True,
+    flags=SillyPage.Flags.START,
     buttons=[
         [NavigationSillyButton(text=Text.StartPage.NEXT_BUTTON, page_name="Home")]
     ],
