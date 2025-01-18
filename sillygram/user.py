@@ -3,7 +3,6 @@ from __future__ import annotations
 from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 
-from .data.registry import PersonalRegistry
 
 if TYPE_CHECKING:
     from .manager import SillyManager
@@ -11,27 +10,6 @@ if TYPE_CHECKING:
 class SillyUser:
     _manager: SillyManager
     _id: int
-    _registry: _UserRegistry
-
-    @property
-    def registry(self) -> _UserRegistry:
-        return self._registry
-
-    class _UserRegistry:
-        _disk: PersonalRegistry
-        _session: PersonalRegistry
-
-        @property
-        def disk(self) -> PersonalRegistry:
-            return self._disk
-
-        @property
-        def session(self) -> PersonalRegistry:
-            return self._session
-
-        def __init__(self, disk: PersonalRegistry, session: PersonalRegistry) -> None:
-            self._disk = disk
-            self._session = session
 
     # region Attributes
 
@@ -86,8 +64,4 @@ class SillyUser:
 
     def __init__(self, manager: SillyManager, user_id: int):
         self._manager = manager
-        self._registry = self._UserRegistry(
-            PersonalRegistry(user_id, manager.registry.disk),
-            PersonalRegistry(user_id, manager.registry.session),
-        )
         self._id = user_id
