@@ -15,7 +15,7 @@ class DiskRegistry(Registrable, SillyDbSection):
 
     def _is_user_value_not_default(self, key: str, user_id: int):
         with self._get_session() as session:
-            registry_key = session.query(RegistryKeyORM).filter_by(key=key[0]).first()
+            registry_key = session.query(RegistryKeyORM).filter_by(key=key).first()
             if registry_key:
                 registry_value = session.query(RegistryValueORM).filter_by(key_id=registry_key.id, user_id=user_id).first()
                 if registry_value:
@@ -25,7 +25,7 @@ class DiskRegistry(Registrable, SillyDbSection):
 
     def _remove_key_entrances(self, key: str):
         with self._get_session() as session:
-            registry_key = session.query(RegistryKeyORM).filter_by(key=key[0]).first()
+            registry_key = session.query(RegistryKeyORM).filter_by(key=key).first()
             if registry_key:
                 registry_values = session.query(RegistryValueORM).filter_by(key_id=registry_key.id)
                 for registry_value in registry_values:
