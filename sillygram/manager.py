@@ -7,8 +7,6 @@ from aiogram.types import (
     InlineKeyboardButton,
 )
 
-from .privelege import SillyPrivelege
-
 from .ui import SillyPage
 
 from .context import PATH
@@ -16,7 +14,7 @@ from .text import SillyText
 from .data import SillyDefaults, Data, SillyLogger
 from .user import SillyUser
 from .events import SillyEvent
-from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple
+from typing import Any, Awaitable, Callable, Dict, Optional, Tuple
 
 TIME_DELTA = 0.2
 MAX_TIME = 120
@@ -104,8 +102,22 @@ class SillyManager:
         f_args: Optional[Tuple] = None,
         f_kwargs: Optional[Dict[str, Any]] = None,
     ):
+        await self.show_page(
+            user,
+            self._data.get_current_page_name(user.id),
+            not_found_message=not_found_message,
+            f_args=f_args,
+            f_kwargs=f_kwargs,
+        )
+
+    async def restore_page(
+        self,
+        user: SillyUser,
+        not_found_message: Optional[SillyText] = None,
+        f_args: Optional[Tuple] = None,
+        f_kwargs: Optional[Dict[str, Any]] = None,
+    ):
         page: Optional[SillyPage] = None
-        format_args: Optional[Tuple[str, ...]] = None
 
         try:
             page = self._data.pages.get(self._data.get_current_page_name(user.id))
@@ -118,17 +130,15 @@ class SillyManager:
                 await self.show_page(user, SillyDefaults.Names.HOME_PAGE)
                 return
 
-            if f_args or f_kwargs:
-                format_args = await page.get_format_args(
-                    self, SillyEvent(user, *(f_args or ()), **(f_kwargs or {}))
-                )
-
         except Exception:
             await self.show_page(user, SillyDefaults.Names.HOME_PAGE)
             return
 
-        if format_args is None:
-            format_args = self._data.get_format_args(user.id)
+        format_args: Optional[Tuple[str, ...]] = None
+
+        format_args = self._data.get_format_args(user.id)
+        if len(format_args) == 0:
+            format_args = (*(f_args or ()), *(f_kwargs.values() if f_kwargs else ()))
 
         await self._edit_target_message(
             user,
@@ -140,10 +150,10 @@ class SillyManager:
 
         self._data.set_format_args(user.id, format_args)
 
-    async def _ask_for_refresh(self, user: SillyUser):
+    async def _ask_for_restore(self, user: SillyUser):
         self._data.io.push_to_add(user.id)
 
-    async def _prevent_refresh(self, user: SillyUser):
+    async def _prevent_restore(self, user: SillyUser):
         self._data.io.push_to_delete(user.id)
 
     async def show_dialog(
@@ -205,7 +215,7 @@ class SillyManager:
 
                 await asyncio.sleep(TIME_DELTA)
 
-            await self._ask_for_refresh(user)
+            await self._ask_for_restore(user)
             return option if option != -1 else None
 
         return await asyncio.get_event_loop().create_task(wait_for_result())
@@ -304,7 +314,7 @@ class SillyManager:
 
                 await asyncio.sleep(0.2)
 
-            await self._ask_for_refresh(user)
+            await self._ask_for_restore(user)
 
             return (
                 text if text != SillyDefaults.CallbackData.INPUT_CANCEL_MARKER else None
@@ -358,7 +368,7 @@ class SillyManager:
                 else:
                     raise
 
-        await self._prevent_refresh(user)
+        await self._prevent_restore(user)
 
     async def _send_new_target_message(
         self,
@@ -375,7 +385,7 @@ class SillyManager:
         )
         self._data.set_target_message_id(user.id, message.message_id)
 
-        await self._prevent_refresh(user)
+        await self._prevent_restore(user)
 
     async def _send_separation_messages(self, user: SillyUser):
         for i in range(0, 5):

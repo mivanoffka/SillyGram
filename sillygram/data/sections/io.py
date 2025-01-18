@@ -91,7 +91,7 @@ class IO:
                 if self._refreshing_count_downs[user_id] == -1:
                     user = self._manager.users.get(user_id)
                     if user:
-                        await self._manager.refresh_page(user)
+                        await self._manager.restore_page(user)
 
     def start_loop(self):
         asyncio.create_task(self._refreshing_countdowns_loop())

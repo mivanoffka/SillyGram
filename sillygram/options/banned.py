@@ -64,7 +64,7 @@ async def _on_banned_button_click(manager: SillyManager, event: SillyEvent):
     if option == 5:
             multiplier = 9999
     if option == 6:
-            await manager.refresh_page(event.user)
+            await manager.restore_page(event.user)
             return
 
     try:
@@ -126,7 +126,7 @@ async def _on_amnesty_button_click(manager: SillyManager, event: SillyEvent):
         event.user, SillyDefaults.Options.BannedPage.AMNESTY_DIALOG_TEXT
     )
     if not confirmed:
-        await manager.refresh_page(event.user)
+        await manager.restore_page(event.user)
         return
 
     try:

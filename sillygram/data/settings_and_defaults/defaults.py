@@ -67,7 +67,7 @@ class SillyDefaults:
 
         USER_NOT_REGISTERED_ERROR_TEMPLATE = SillyText("User {} not registered")
         MORE_BUTTON_TEXT = SillyText("More")
-        MORE_PAGE_PLACEHOLDER = SillyText("There is no such page...")
+        MORE_OPTIONS_PAGE_TEMPLATE_TEXT = SillyText("There is nothing here!\n\nHowever, bot developers can create a special page with additional functionality for administrators that will be stored here.")
 
         @dataclass(frozen=True)
         class AdminsPage:
@@ -192,8 +192,6 @@ class SillyDefaults:
         @dataclass(frozen=True)
         class StatsPage:
             NAME = "STATS"
-
-        MORE_OPTIONS_PAGE_TEMPLATE_TEXT = SillyText("There is no such page...")
 
     # region Commands
     @dataclass(frozen=True)
