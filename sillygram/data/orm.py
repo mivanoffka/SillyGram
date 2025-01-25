@@ -67,31 +67,15 @@ class BanORM(DECLARATIVE_BASE):
     expires: Mapped[datetime | None] = mapped_column(nullable=True)
 
 
-class RegistryKeyORM(DECLARATIVE_BASE):
-    __tablename__ = "registry_keys"
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    key: Mapped[str] = mapped_column(nullable=False)
-    global_value: Mapped[str | None] = mapped_column(nullable=True)
-
-    local_values: Mapped[list["RegistryValueORM"]] = relationship(
-        "RegistryValueORM", back_populates="key"
-    )
-
-
 class RegistryValueORM(DECLARATIVE_BASE):
     __tablename__ = "registry_values"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    key_id: Mapped[int] = mapped_column(ForeignKey("registry_keys.id"), nullable=False)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    key_name: Mapped[str] = mapped_column(nullable=True)
+    user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
     value: Mapped[str | None] = mapped_column(nullable=True)
 
-    key: Mapped["RegistryKeyORM"] = relationship(
-        "RegistryKeyORM", back_populates="local_values"
-    )
     user: Mapped["UserORM"] = relationship("UserORM", back_populates="local_values")
-
 
 # region Statistics
 

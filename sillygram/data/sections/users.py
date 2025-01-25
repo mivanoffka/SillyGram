@@ -3,6 +3,8 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Optional
 
+from ..registry import SillyRegistry
+
 from ..db import SillyDbSection, SillyDB
 from ..orm import PrivelegeORM, UserORM, BanORM
 
@@ -14,10 +16,12 @@ from ...user import SillyUser
 
 class Users(SillyDbSection):
     _manager: SillyManager
+    _registry: SillyRegistry
 
-    def __init__(self, db: SillyDB, manager: SillyManager):
+    def __init__(self, db: SillyDB, manager: SillyManager, registry: SillyRegistry):
         super().__init__(db)
         self._manager = manager
+        self._registry = registry
 
     # region System
 
@@ -26,7 +30,7 @@ class Users(SillyDbSection):
             user = session.query(UserORM).filter_by(id=user_id).first()
             if not user:
                 raise KeyError()
-            return SillyUser(user_id=user_id, manager=self._manager)
+            return SillyUser(user_id=user_id, manager=self._manager, registry=self._registry)
 
     def _validate(self, nickname_or_id: int | str) -> int:
         with self._get_session() as session:

@@ -1,11 +1,11 @@
 from ..text import Text
 from sillygram import (
     SillyPage,
-    NavigationSillyButton,
+    SillyNavigationButton,
     SILLY_HOME_PAGE_POINTER,
     SillyManager,
     SillyEvent,
-    ActionSillyButton,
+    SillyActionButton,
 )
 
 
@@ -36,11 +36,11 @@ dialog_page = SillyPage(
     text=Text.DialogPage.TEXT,
     buttons=[
         [
-            NavigationSillyButton(Text.BACK_BUTTON, SILLY_HOME_PAGE_POINTER),
-            ActionSillyButton(
+            SillyNavigationButton(Text.BACK_BUTTON, SILLY_HOME_PAGE_POINTER),
+            SillyActionButton(
                 Text.DialogPage.CUSTOM_DIALOG_BUTTON, on_custom_button_clicked
             ),
-            ActionSillyButton(
+            SillyActionButton(
                 Text.DialogPage.YES_NO_DIALOG_BUTTON, on_yes_no_button_clicked
             ),
         ]

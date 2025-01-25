@@ -71,7 +71,7 @@ class SillyPage:
         self,
         name: str,
         text: SillyText,
-        buttons: SillyButton | Sequence[SillyButton] | Sequence[Sequence[SillyButton]],
+        buttons: Optional[SillyButton | Sequence[SillyButton] | Sequence[Sequence[SillyButton]]] = None,
         get_format_args: Optional[
             Callable[[SillyManager, SillyEvent], Awaitable[Optional[Tuple[Any, ...]]]]
         ] = None,

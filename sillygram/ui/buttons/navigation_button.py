@@ -5,11 +5,11 @@ if TYPE_CHECKING:
     from ...manager import SillyManager
     from ...events import SillyEvent
 
-from .action_button import ActionSillyButton
+from .action_button import SillyActionButton
 from ...text import SillyText
 
 
-class NavigationSillyButton(ActionSillyButton):
+class SillyNavigationButton(SillyActionButton):
     _page_name: str
     _not_found_message: Optional[SillyText]
 

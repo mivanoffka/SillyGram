@@ -1,5 +1,5 @@
 from ..text import Text
-from sillygram import SillyPage, NavigationSillyButton
+from sillygram import SillyPage, SillyNavigationButton
 
 
 home_page = SillyPage(
@@ -7,20 +7,20 @@ home_page = SillyPage(
     text=Text.HomePage.TEXT,
     buttons=(
         (
-            NavigationSillyButton(
+            SillyNavigationButton(
                 text=Text.HomePage.GOTO_INPUT_BUTTON_TEXT, page_name=Text.InputPage.NAME
             ),
-            NavigationSillyButton(
+            SillyNavigationButton(
                 text=Text.HomePage.GOTO_MESSAGE_BUTTON_TEXT,
                 page_name=Text.MessagePage.NAME,
             ),
         ),
         (
-            NavigationSillyButton(
+            SillyNavigationButton(
                 text=Text.HomePage.GOTO_DIALOG_BUTTON_TEXT,
                 page_name=Text.DialogPage.NAME,
             ),
-            NavigationSillyButton(
+            SillyNavigationButton(
                 text=Text.HomePage.GOTO_FORMAT_BUTTON_TEXT,
                 page_name=Text.FormatPage.NAME,
             ),

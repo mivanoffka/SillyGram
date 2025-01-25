@@ -1,5 +1,5 @@
 from sillygram import privelege
-from ..ui import ActionSillyButton, SillyPage, NavigationSillyButton
+from ..ui import SillyActionButton, SillyPage, SillyNavigationButton
 from ..data import SillyDefaults
 from ..manager import SillyManager
 from ..text import SillyText
@@ -66,30 +66,30 @@ options_page = SillyPage(
     text=SillyDefaults.Options.ROOT_PAGE_TEXT,
     buttons=(
         (
-            NavigationSillyButton(
+            SillyNavigationButton(
                 SillyDefaults.Options.COMMUNICATION_BUTTON_TEXT,
                 SillyDefaults.Options.CommunicationPage.NAME,
             ),
         ),
         (
-            ActionSillyButton(
+            SillyActionButton(
                 SillyDefaults.Options.PRIVELEGES_BUTTON_TEXT,
                 _on_priveleges_button_clicked,
             ),
-            ActionSillyButton(
+            SillyActionButton(
                 SillyDefaults.Options.STATS_BUTTON_TEXT, _on_stats_button_clicked
             ),
-            NavigationSillyButton(
+            SillyNavigationButton(
                 SillyDefaults.Options.BANNED_BUTTON_TEXT,
                 SillyDefaults.Options.BannedPage.NAME,
             ),
         ),
         (
-            NavigationSillyButton(
+            SillyNavigationButton(
                 SillyDefaults.Options.HOME_BUTTON_TEXT,
                 SillyDefaults.Names.HOME_PAGE,
             ),
-            NavigationSillyButton(
+            SillyNavigationButton(
                 SillyDefaults.Options.MORE_BUTTON_TEXT,
                 SillyDefaults.Names.MORE_OPTIONS_PAGE,
                 not_found_message=SillyDefaults.Options.MORE_OPTIONS_PAGE_TEMPLATE_TEXT,

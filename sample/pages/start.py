@@ -1,5 +1,5 @@
 from ..text import Text
-from sillygram import SillyPage, NavigationSillyButton
+from sillygram import SillyPage, SillyNavigationButton
 
 
 start_page = SillyPage(
@@ -7,6 +7,6 @@ start_page = SillyPage(
     text=Text.StartPage.TEXT,
     flags=SillyPage.Flags.START,
     buttons=[
-        [NavigationSillyButton(text=Text.StartPage.NEXT_BUTTON, page_name="Home")]
+        [SillyNavigationButton(text=Text.StartPage.NEXT_BUTTON, page_name="Home")]
     ],
 )

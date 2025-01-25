@@ -1,7 +1,7 @@
 from ...manager import SillyManager
 from ...events import SillyEvent
 
-from ...ui import SillyPage, ActionSillyButton, NavigationSillyButton
+from ...ui import SillyPage, SillyActionButton, SillyNavigationButton
 
 from ...data import SillyDefaults
 
@@ -33,17 +33,17 @@ broadcast_status_page = SillyPage(
     SillyDefaults.Options.BroadcastStatusPage.TEXT,
     buttons=(
         (
-            ActionSillyButton(
+            SillyActionButton(
                 SillyDefaults.Options.BroadcastStatusPage.REFRESH_BUTTON_TEXT,
                 _on_refresh_button_clicked,
             ),
         ),
         (
-            NavigationSillyButton(
+            SillyNavigationButton(
                 SillyDefaults.Options.BACK_BUTTON_TEXT,
                 SillyDefaults.Names.OPTIONS_PAGE,
             ),
-            ActionSillyButton(
+            SillyActionButton(
                 SillyDefaults.Options.BroadcastStatusPage.STOP_BROADCAST_BUTTON_TEXT,
                 _on_stop_broadcast_button_clicked,
             ),

@@ -1,3 +1,3 @@
+from .disk import SillyDiskRegistry
+from .personal import SillyPersonalRegistry
 from .registry import SillyRegistry
-from .disk import DiskRegistry
-from .session import SessionRegistry

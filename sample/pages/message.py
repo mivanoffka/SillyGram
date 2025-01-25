@@ -1,7 +1,7 @@
 from sillygram import (
     SillyPage,
-    NavigationSillyButton,
-    ActionSillyButton,
+    SillyNavigationButton,
+    SillyActionButton,
     SillyManager,
     SillyEvent,
     SILLY_HOME_PAGE_POINTER,
@@ -26,18 +26,18 @@ message_page = SillyPage(
     text=Text.MessagePage.TEXT,
     buttons=(
         (
-            ActionSillyButton(
+            SillyActionButton(
                 Text.MessagePage.NOTICE_MESSAGE_BUTTON_TEXT, on_notice_button_clicked
             ),  
-            ActionSillyButton(
+            SillyActionButton(
                 Text.MessagePage.POPUP_MESSAGE_BUTTON_TEXT, on_popup_button_clicked
             ),
-            ActionSillyButton(
+            SillyActionButton(
                 Text.MessagePage.BANNER_MESSAGE_BUTTON_TEXT, on_banner_button_clicked
             ),
         ),
         (
-            NavigationSillyButton(Text.BACK_BUTTON, page_name=SILLY_HOME_PAGE_POINTER),
+            SillyNavigationButton(Text.BACK_BUTTON, page_name=SILLY_HOME_PAGE_POINTER),
         ),
     ),
 )

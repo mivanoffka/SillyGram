@@ -9,13 +9,15 @@ from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery, InaccessibleMessage
 from aiogram.methods import DeleteWebhook
 
-from sillygram.text import SillyText
+from .context import PATH
+
+from .data.logger import SillyLogger
 
 from .data import SillySettings
 from .events import SillyEvent, SillyErrorEvent
 from .manager import SillyManager
 from .data import Data, SillyDefaults
-from .ui import SillyPage, ActionSillyButton
+from .ui import SillyPage, SillyActionButton
 
 from .activities import SillyRegularActivity, SillyDateTimeActivity
 from .options import options_pages
@@ -33,6 +35,7 @@ class SillyBot:
 
     _data: Data
     _manager: SillyManager
+    _logger: SillyLogger
 
     _regular_activities: Sequence[SillyRegularActivity]
 
@@ -126,15 +129,17 @@ class SillyBot:
                     buttons.append(button)
 
         for button in buttons:
-            if isinstance(button, ActionSillyButton):
+            if isinstance(button, SillyActionButton):
                 self._register_callback(button.identity, button.on_click)
 
         self._dispatcher.callback_query.register(self._default_callback_handler)
 
     def _register_command(self, command: str, handler: Any):
         async def aiogram_handler(message: Message):
+            print("HELLO")
             if not message.from_user:
                 return
+
             user = self._manager.users.get(self._data.indicate(message.from_user))
 
             if user is None:
@@ -142,16 +147,21 @@ class SillyBot:
             if user.is_banned:
                 return
 
+            result = None
+
+            try:
+                event = SillyEvent(user)
+                result = await handler(self._manager, event)
+
+            except Exception as e:
+                result = await self._on_error(self._manager, SillyErrorEvent(user, exception=e))
+
             try:
                 await message.delete()
             except Exception:
                 ...
 
-            try:
-                event = SillyEvent(user)
-                return await handler(self._manager, event)
-            except Exception as e:
-                await self._on_error(self._manager, SillyErrorEvent(user, exception=e))
+            return result
 
         self._dispatcher.message.register(aiogram_handler, Command(command))
 
@@ -254,7 +264,9 @@ class SillyBot:
                 option = -1
             else:
                 if not self._data.io.is_dialog_listening(user.id):
-                    await self._manager.show_notice(user, self._data.settings.labels.try_again)
+                    await self._manager.show_notice(
+                        user, self._data.settings.labels.try_again
+                    )
                 option = int(
                     callback.data.replace(
                         SillyDefaults.CallbackData.OPTION_TEMPLATE, ""
@@ -357,7 +369,7 @@ class SillyBot:
 
     async def _scheduling_loop(self, time_delta: int = 20):
         while True:
-            logging.info("Checking for regular activities to run...")
+            # logging.info("Checking for regular activities to run...")
             for scheduled_activity in self._regular_activities:
                 await scheduled_activity.execute(self._manager)
             await asyncio.sleep(time_delta)
@@ -406,7 +418,7 @@ class SillyBot:
     def __init__(
         self,
         token: str,
-        pages: Sequence[SillyPage],
+        pages: Optional[Sequence[SillyPage]] = None,
         settings: Optional[SillySettings] = None,
     ):
         """
@@ -414,8 +426,10 @@ class SillyBot:
         :param pages: sequence of page objects to include. Names must be unique.
         :param settings: silly-bot settings. None means default settings.
         """
-
-        pages = (*pages, *options_pages)
+        logger = SillyLogger(
+            PATH / "logs", settings.log_to_console if settings else True
+        )
+        pages = (*(pages or ()), *options_pages)
         self._data = Data(settings if settings is not None else SillySettings(), *pages)
         self._aiogram_bot = AiogramBot(
             token=token, default=DefaultBotProperties(parse_mode="HTML")

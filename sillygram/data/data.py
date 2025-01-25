@@ -1,6 +1,9 @@
 from __future__ import annotations
-import asyncio
 from typing import TYPE_CHECKING, Optional, Sequence, Tuple
+
+from .registry.registry import SillyRegistry
+
+from .registry import SillyPersonalRegistry, SillyDiskRegistry
 
 if TYPE_CHECKING:
     from sillygram.manager import SillyManager
@@ -20,7 +23,6 @@ from .orm import (
 )
 from ..ui import SillyPage
 from .settings_and_defaults import SillySettings
-from .registry import SillyRegistry
 
 
 from aiogram.types import User as AiogramUser
@@ -30,7 +32,7 @@ class Data(SillyDB):
     _io: IO
     _pages: Pages
     _settings: SillySettings
-    _registry: SillyRegistry
+    _registry: SillyDiskRegistry
     _users: Users
     _stats: Stats
     _priveleges: Priveleges
@@ -54,6 +56,10 @@ class Data(SillyDB):
     @property
     def registry(self) -> SillyRegistry:
         return self._registry
+    
+    @property
+    def global_registry(self) -> SillyPersonalRegistry:
+        return self._global_registry
 
     @property
     def stats(self) -> Stats:
@@ -156,7 +162,7 @@ class Data(SillyDB):
             )
 
     def init_users(self, manager: SillyManager):
-        self._users = Users(self, manager)
+        self._users = Users(self, manager, self._registry)
 
     def init_io(self, manager: SillyManager):
         self._io = IO(manager)
@@ -165,6 +171,7 @@ class Data(SillyDB):
         super().__init__("sillygram", DECLARATIVE_BASE)
         self._pages = Pages(*pages)
         self._settings = settings
-        self._registry = SillyRegistry(self)
+        self._registry = SillyDiskRegistry(self)
+        self._global_registry = SillyPersonalRegistry(self._registry, None)
         self._stats = Stats(self)
         self._priveleges = Priveleges(self, self._settings.priveleges)

@@ -17,7 +17,7 @@ from .button import SillyButton
 _button_ids: List[int] = list()
 
 
-class ActionSillyButton(SillyButton):
+class SillyActionButton(SillyButton):
     _id: int
     _on_click: Optional[Callable[[SillyManager, SillyEvent], Awaitable[None]]]
     _priveleged: bool | str

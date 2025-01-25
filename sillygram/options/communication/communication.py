@@ -4,7 +4,7 @@ from ...manager import SillyManager
 from ...events import SillyEvent
 from ...user import SillyUser
 
-from ...ui import SillyPage, ActionSillyButton, NavigationSillyButton
+from ...ui import SillyPage, SillyActionButton, SillyNavigationButton
 
 from ...data import SillyDefaults
 from ..common import get_user
@@ -66,17 +66,17 @@ communication_page = SillyPage(
     SillyDefaults.Options.CommunicationPage.TEXT,
     buttons=(
         (
-            ActionSillyButton(
+            SillyActionButton(
                 SillyDefaults.Options.CommunicationPage.SEND_MESSAGE_BUTTON_TEXT,
                 _on_send_message_button_clicked,
             ),
-            ActionSillyButton(
+            SillyActionButton(
                 SillyDefaults.Options.CommunicationPage.BROADCAST_BUTTON_TEXT,
                 _on_broadcast_button_clicked,
             ),
         ),
         (
-            NavigationSillyButton(
+            SillyNavigationButton(
                 SillyDefaults.Options.BACK_BUTTON_TEXT,
                 SillyDefaults.Names.OPTIONS_PAGE,
             ),

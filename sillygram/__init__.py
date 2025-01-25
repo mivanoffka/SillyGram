@@ -8,9 +8,9 @@ from .privelege import SillyPrivelege
 from .ui import (
     SillyPage,
     SillyButton,
-    ActionSillyButton,
-    LinkSillyButton,
-    NavigationSillyButton,
+    SillyActionButton,
+    SillyLinkButton,
+    SillyNavigationButton,
 )
 
 from .activities import SillyRegularActivity, SillyDateTimeActivity

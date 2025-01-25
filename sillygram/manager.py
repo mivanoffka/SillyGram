@@ -11,7 +11,7 @@ from .ui import SillyPage
 
 from .context import PATH
 from .text import SillyText
-from .data import SillyDefaults, Data, SillyLogger
+from .data import SillyDefaults, Data
 from .user import SillyUser
 from .events import SillyEvent
 from typing import Any, Awaitable, Callable, Dict, Optional, Tuple
@@ -24,11 +24,9 @@ class SillyManager:
     _aiogram_bot: AiogramBot
     _data: Data
 
-    _logger: SillyLogger
-
     @property
     def registry(self):
-        return self._data.registry
+        return self._data.global_registry
 
     @property
     def users(self):
@@ -68,7 +66,7 @@ class SillyManager:
             if not not_found_message:
                 not_found_message = self._data.settings.labels.page_not_found
 
-            await self.show_popup(user, not_found_message)
+            await self.show_notice(user, not_found_message)
             return
 
         format_args = await page.get_format_args(
@@ -361,6 +359,8 @@ class SillyManager:
                 # noqa: F841
                 if "message can't be edited" in str(e):
                     await self._send_new_target_message(user, text, keyboard)
+                elif "message to edit not found" in str(e):
+                    await self._send_new_target_message(user, text, keyboard)
                 elif "message not modified" in str(e):
                     ...
                 elif "message is not modified" in str(e):
@@ -457,4 +457,3 @@ class SillyManager:
         self._aiogram_bot = aiogram_bot
         self._data = data
 
-        self._logger = SillyLogger(PATH / "logs", self._data.settings.log_to_console)

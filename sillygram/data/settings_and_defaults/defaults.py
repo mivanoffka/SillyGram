@@ -31,6 +31,7 @@ class SillyDefaults:
     @dataclass(frozen=True)
     class Priveleges:
         ADMIN_PRIVELEGY_NAME = "Administrator"
+    
 
     @dataclass(frozen=True)
     class Options:

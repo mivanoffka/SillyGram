@@ -1,7 +1,7 @@
 from sillygram import (
     SillyPage,
-    NavigationSillyButton,
-    ActionSillyButton,
+    SillyNavigationButton,
+    SillyActionButton,
     SillyManager,
     SillyEvent,
     SILLY_HOME_PAGE_POINTER
@@ -21,8 +21,8 @@ input_page = SillyPage(
     text=Text.InputPage.TEXT,
     buttons=(
         (
-            NavigationSillyButton(text=Text.BACK_BUTTON, page_name=SILLY_HOME_PAGE_POINTER),
-            ActionSillyButton(
+            SillyNavigationButton(text=Text.BACK_BUTTON, page_name=SILLY_HOME_PAGE_POINTER),
+            SillyActionButton(
                 text=Text.InputPage.TEXT_INPUT_BUTTON, on_click=on_input_button_clicked
             ),
         ),

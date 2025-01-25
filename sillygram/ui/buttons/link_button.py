@@ -6,7 +6,7 @@ from ...text import SillyText
 from .button import SillyButton
 
 
-class LinkSillyButton(SillyButton):
+class SillyLinkButton(SillyButton):
     _uri: str
 
     def aiogramify(self, language_code: str) -> Any:

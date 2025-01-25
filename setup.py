@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="sillygram",
-    version="1.0.0-beta.1",
+    version="1.0.0-beta.2",
     packages=find_packages(),
     install_requires=[
         "aiofiles==23.2.1",
