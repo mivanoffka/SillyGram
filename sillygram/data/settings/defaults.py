@@ -1,37 +1,47 @@
 from dataclasses import dataclass
 from ...text import SillyText
 
+DEFAULT_NAME_TEMPLATE = "$-SILLYGRAM-DEFAULT-{}-[{}]-$"
+PAGE_TYPE_NAME = "PAGE"
+PRIVELEGE_TYPE_NAME = "PRIVELEGE"
+CALLBACK_TYPE_NAME = "CALLBACK"
+MARKER_TYPE_NAME = "MARKER"
+def _to_default_name(text: str, type: str) -> str:
+    return DEFAULT_NAME_TEMPLATE.format(text, type)
 
 @dataclass(frozen=True)
 class SillyDefaults:
+
+    @dataclass(frozen=True)
+    class Registry:
+        NOT_FOUND_MARKER = _to_default_name("NOT_FOUND", MARKER_TYPE_NAME)
+
     @dataclass(frozen=True)
     class CallbackData:
-        CONTINUE = "CONTINUE"
-        CONFIRM = "CONFIRM"
-        BACK = "BACK"
-        CLOSE = "CLOSE"
-        CANCEL = "CANCEL"
-        OPTION_TEMPLATE = "OPTION_"
-        CANCEL_OPTION = "OPTION_CANCEL"
-        BUTTON_TEMPLATE = "Button-[{}]"
+        CONTINUE = _to_default_name("CONTINUE", CALLBACK_TYPE_NAME)
+        CONFIRM = _to_default_name("CONFIRM", CALLBACK_TYPE_NAME)
+        BACK = _to_default_name("BACK", CALLBACK_TYPE_NAME)
+        CLOSE = _to_default_name("CLOSE", CALLBACK_TYPE_NAME)
+        CANCEL = _to_default_name("CANCEL", CALLBACK_TYPE_NAME)
+        OPTION_TEMPLATE = _to_default_name("OPTION_", CALLBACK_TYPE_NAME)
+        CANCEL_OPTION = _to_default_name("OPTION_CANCEL", CALLBACK_TYPE_NAME)
+        BUTTON_TEMPLATE = _to_default_name("BUTTON-{}", CALLBACK_TYPE_NAME)
 
-        DEFAULT = "DEFAULT"
+        DEFAULT = _to_default_name("DEFAULT", CALLBACK_TYPE_NAME)
 
-        HOME_COMMAND = "home"
-        START_COMMAND = "start"
-        INPUT_CANCEL_MARKER = "$INPUT_CANCELLED$"
+        INPUT_CANCEL_MARKER = _to_default_name("INPUT_CANCELLED", MARKER_TYPE_NAME)
 
     @dataclass(frozen=True)
     class Names:
-        START_PAGE = "START"
-        HOME_PAGE = "HOME"
-        OPTIONS_PAGE = "OPTIONS"
-        MORE_OPTIONS_PAGE = "MORE_OPTIONS"
+        class Pages:
+            START = _to_default_name("START", PAGE_TYPE_NAME)
+            HOME = _to_default_name("HOME", PAGE_TYPE_NAME)
+            OPTIONS = _to_default_name("OPTIONS", PAGE_TYPE_NAME)
+            ADDITIONAL_OPTIONS = _to_default_name("ADDITIONAL_OPTIONS", PAGE_TYPE_NAME)
 
-    @dataclass(frozen=True)
-    class Priveleges:
-        ADMIN_PRIVELEGY_NAME = "Administrator"
-    
+        class Priveleges:
+            MASTER = _to_default_name("MASTER", PRIVELEGE_TYPE_NAME)
+
 
     @dataclass(frozen=True)
     class Options:
@@ -68,11 +78,11 @@ class SillyDefaults:
 
         USER_NOT_REGISTERED_ERROR_TEMPLATE = SillyText("User {} not registered")
         MORE_BUTTON_TEXT = SillyText("More")
-        MORE_OPTIONS_PAGE_TEMPLATE_TEXT = SillyText("There is nothing here!\n\nHowever, bot developers can create a special page with additional functionality for administrators that will be stored here.")
+        ADDITIONAL_OPTIONS_PAGE_TEMPLATE_TEXT = SillyText("There is nothing here!\n\nHowever, bot developers can create a special page with additional functionality for administrators that will be stored here.")
 
         @dataclass(frozen=True)
         class AdminsPage:
-            NAME = "ADMINS"
+            NAME = _to_default_name("ADMINS", PAGE_TYPE_NAME)
             TEXT = SillyText("Admins page")
             PROMOTE_BUTTON_TEXT = SillyText("Promote")
             DEMOTE_BUTTON_TEXT = SillyText("Demote")
@@ -111,7 +121,7 @@ class SillyDefaults:
 
         @dataclass(frozen=True)
         class BannedPage:
-            NAME = "BANNED"
+            NAME = _to_default_name("BANNED", PAGE_TYPE_NAME)
             TEXT = SillyText("Banned page")
             LIST_MESSAGE_TEMPLATE = SillyText("SillyText(Banned users list:\n\n{}")
 
@@ -162,7 +172,7 @@ class SillyDefaults:
 
         @dataclass(frozen=True)
         class CommunicationPage:
-            NAME = "COMMUNICATION"
+            NAME = _to_default_name("COMMUNICATION", PAGE_TYPE_NAME)
             TEXT = SillyText("Communication page")
 
             SEND_MESSAGE_BUTTON_TEXT = SillyText("Personal message")
@@ -173,11 +183,11 @@ class SillyDefaults:
 
             MESSAGE_RECEIVED_TEMPLATE = SillyText("{}\n<blockquote>{}</blockquote>")
             MESSAGE_DELIVERED_TEXT = SillyText("Your message has been delivered to {}.")
-    
+
             BROADCAST_SUCCESS_TEXT = SillyText("Broadcast has been successfully started.")
 
         class BroadcastStatusPage:
-            NAME = "BROADCAST_RUNNING"
+            NAME = _to_default_name("BROADCAST_RUNNING", PAGE_TYPE_NAME)
             TEXT = SillyText("There is already a broadcast running. Please wait.\n\nAt the moment {} of {} messages have been sent. ({}%)")
 
             REFRESH_BUTTON_TEXT = SillyText("Refresh")
@@ -185,14 +195,6 @@ class SillyDefaults:
 
             STOP_CONFIRMATION_TEXT = SillyText("Are you sure you want to stop the broadcast?")
             BROADCAST_STOPPED_TEXT = SillyText("Broadcast has been stopped.")
-
-        @dataclass(frozen=True)
-        class RegistryPage:
-            NAME = "REGISTRY"
-
-        @dataclass(frozen=True)
-        class StatsPage:
-            NAME = "STATS"
 
     # region Commands
     @dataclass(frozen=True)
@@ -203,7 +205,6 @@ class SillyDefaults:
 
     @dataclass(frozen=True)
     class CLI:
-
         @dataclass(frozen=True)
         class Messages:
             PRIVELEGE_NOT_MENTIONED_TEMPLATE = "Privelege named '{}' found in DB, but was not specified in SillySettings"
@@ -211,5 +212,3 @@ class SillyDefaults:
             USER_WITH_UNKNOWN_PRIVELEGE = "User {} has an unknown privelege '{}'."
 
 
-SILLY_START_PAGE_POINTER = SillyDefaults.Names.START_PAGE
-SILLY_HOME_PAGE_POINTER = SillyDefaults.Names.HOME_PAGE

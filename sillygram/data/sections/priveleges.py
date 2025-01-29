@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 from ..db import SillyDbSection, SillyDB
 from ...privelege import SillyPrivelege
-from ..settings_and_defaults import SillyDefaults
+from ..settings import SillyDefaults
 
 
 class Priveleges(SillyDbSection):
@@ -86,7 +86,7 @@ class Priveleges(SillyDbSection):
         super().__init__(db)
         if priveleges is None:
             self._priveleges = (
-                SillyPrivelege(SillyDefaults.Priveleges.ADMIN_PRIVELEGY_NAME),
+                SillyPrivelege(SillyDefaults.Names.Priveleges.MASTER),
             )
         else:
             self._priveleges = tuple(priveleges)

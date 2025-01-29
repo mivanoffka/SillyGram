@@ -1,3 +1,4 @@
+from xml.dom import NotFoundErr
 from .bot import SillyBot
 from .manager import SillyManager
 from .user import SillyUser
@@ -16,4 +17,4 @@ from .ui import (
 from .activities import SillyRegularActivity, SillyDateTimeActivity
 from .data import SillySettings, SillyLabels
 
-from .data.settings_and_defaults.defaults import SILLY_HOME_PAGE_POINTER, SILLY_START_PAGE_POINTER
+from .data import SillyRegistry

@@ -125,11 +125,11 @@ class SillyManager:
                     not_found_message = self._data.settings.labels.page_not_found
 
                 await self.show_notice(user, self._data.settings.labels.page_not_found)
-                await self.show_page(user, SillyDefaults.Names.HOME_PAGE)
+                await self.show_page(user, SillyDefaults.Names.Pages.HOME)
                 return
 
         except Exception:
-            await self.show_page(user, SillyDefaults.Names.HOME_PAGE)
+            await self.show_page(user, SillyDefaults.Names.Pages.HOME)
             return
 
         format_args: Optional[Tuple[str, ...]] = None
@@ -261,7 +261,7 @@ class SillyManager:
         page = self._data.pages.get(current_page_name)
 
         if page is None:
-            page = self._data.pages.get(SillyDefaults.Names.HOME_PAGE)
+            page = self._data.pages.get(SillyDefaults.Names.Pages.HOME)
             if page is None:
                 return
 

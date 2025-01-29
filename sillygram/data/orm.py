@@ -70,10 +70,9 @@ class BanORM(DECLARATIVE_BASE):
 class RegistryValueORM(DECLARATIVE_BASE):
     __tablename__ = "registry_values"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    key_name: Mapped[str] = mapped_column(nullable=True)
-    user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"), nullable=True)
-    value: Mapped[str | None] = mapped_column(nullable=True)
+    key_name: Mapped[str] = mapped_column(primary_key=True, nullable=False)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    value: Mapped[str] = mapped_column()
 
     user: Mapped["UserORM"] = relationship("UserORM", back_populates="local_values")
 

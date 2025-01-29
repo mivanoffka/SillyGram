@@ -1,12 +1,12 @@
+from enum import Enum
 import logging
 from typing import Dict, Any, Tuple, Optional
-from ..settings_and_defaults import SillyDefaults
+from ..settings import SillyDefaults
 from ...ui import SillyPage
 
 
 class Pages:
     _pages: Dict[Any, SillyPage]
-    _more_options_page_name: Optional[str] = None
 
     @property
     def names(self) -> Tuple[str, ...]:
@@ -42,7 +42,7 @@ class Pages:
             if len(start_pages) > 1:
                 logging.warning("There should beonly one START page.")
 
-            self._pages[SillyDefaults.Names.START_PAGE] = start_pages[0]
+            self._pages[SillyPage.Pointers.START] = start_pages[0]
 
         home_pages = []
         for page in self._pages.values():
@@ -54,7 +54,7 @@ class Pages:
         else:
             if len(home_pages) > 1:
                 logging.warning("There should be only one HOME page.")
-            self._pages[SillyDefaults.Names.HOME_PAGE] = home_pages[0]
+            self._pages[SillyPage.Pointers.HOME] = home_pages[0]
 
         options_pages = []
         for page in self._pages.values():
@@ -64,7 +64,7 @@ class Pages:
         if len(options_pages) > 0:
             if len(options_pages) > 1:
                 logging.warning("There should be only one OPTIONS page.")
-            self._pages[SillyDefaults.Names.MORE_OPTIONS_PAGE] = options_pages[0]
+            self._pages[SillyPage.Pointers.ADDITIONAL_OPTIONS] = options_pages[0]
 
     def __init__(self, *pages: SillyPage):
         self._pages = self._pages_to_dict(*pages)

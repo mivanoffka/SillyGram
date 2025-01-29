@@ -78,7 +78,7 @@ communication_page = SillyPage(
         (
             SillyNavigationButton(
                 SillyDefaults.Options.BACK_BUTTON_TEXT,
-                SillyDefaults.Names.OPTIONS_PAGE,
+                 SillyDefaults.Names.Pages.OPTIONS,
             ),
         ),
     ),

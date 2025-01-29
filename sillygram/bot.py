@@ -136,7 +136,6 @@ class SillyBot:
 
     def _register_command(self, command: str, handler: Any):
         async def aiogram_handler(message: Message):
-            print("HELLO")
             if not message.from_user:
                 return
 
@@ -195,18 +194,18 @@ class SillyBot:
 
     async def _on_start(self, manager: SillyManager, event: SillyEvent):
         await manager.show_page(
-            event.user, SillyDefaults.Names.START_PAGE, new_target_message=True
+            event.user, SillyDefaults.Names.Pages.START, new_target_message=True
         )
 
     async def _on_home(self, manager: SillyManager, event: SillyEvent):
         await manager.show_page(
-            event.user, SillyDefaults.Names.HOME_PAGE, new_target_message=True
+            event.user, SillyDefaults.Names.Pages.HOME, new_target_message=True
         )
 
     @staticmethod
     @SillyManager.priveleged()
     async def _on_configure(manager: SillyManager, event: SillyEvent):
-        await manager.show_page(event.user, SillyDefaults.Names.OPTIONS_PAGE)
+        await manager.show_page(event.user, SillyDefaults.Names.Pages.OPTIONS)
 
     async def _on_text_input(self, message: Message):
         if not message.from_user:
@@ -358,7 +357,7 @@ class SillyBot:
             return
 
         await self._manager.show_page(
-            user, SillyDefaults.Names.HOME_PAGE, new_target_message=True
+            user, SillyDefaults.Names.Pages.HOME, new_target_message=True
         )
 
     # endregion

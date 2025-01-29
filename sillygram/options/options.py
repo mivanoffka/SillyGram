@@ -62,7 +62,7 @@ async def _on_priveleges_button_clicked(manager: SillyManager, event: SillyEvent
 
 
 options_page = SillyPage(
-    name=SillyDefaults.Names.OPTIONS_PAGE,
+    name=SillyDefaults.Names.Pages.OPTIONS,
     text=SillyDefaults.Options.ROOT_PAGE_TEXT,
     buttons=(
         (
@@ -87,12 +87,12 @@ options_page = SillyPage(
         (
             SillyNavigationButton(
                 SillyDefaults.Options.HOME_BUTTON_TEXT,
-                SillyDefaults.Names.HOME_PAGE,
+                SillyDefaults.Names.Pages.HOME,
             ),
             SillyNavigationButton(
                 SillyDefaults.Options.MORE_BUTTON_TEXT,
-                SillyDefaults.Names.MORE_OPTIONS_PAGE,
-                not_found_message=SillyDefaults.Options.MORE_OPTIONS_PAGE_TEMPLATE_TEXT,
+                SillyDefaults.Names.Pages.ADDITIONAL_OPTIONS,
+                not_found_message=SillyDefaults.Options.ADDITIONAL_OPTIONS_PAGE_TEMPLATE_TEXT,
             ),
         ),
     ),

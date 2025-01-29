@@ -2,7 +2,6 @@ from ..text import Text
 from sillygram import (
     SillyPage,
     SillyNavigationButton,
-    SILLY_HOME_PAGE_POINTER,
     SillyManager,
     SillyEvent,
     SillyActionButton,
@@ -36,7 +35,7 @@ dialog_page = SillyPage(
     text=Text.DialogPage.TEXT,
     buttons=[
         [
-            SillyNavigationButton(Text.BACK_BUTTON, SILLY_HOME_PAGE_POINTER),
+            SillyNavigationButton(Text.BACK_BUTTON, SillyPage.Pointers.HOME),
             SillyActionButton(
                 Text.DialogPage.CUSTOM_DIALOG_BUTTON, on_custom_button_clicked
             ),

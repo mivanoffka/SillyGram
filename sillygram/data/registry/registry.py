@@ -1,30 +1,22 @@
 from abc import abstractmethod, ABCMeta
 from typing import Optional, Tuple
 
-
 class SillyRegistry(metaclass=ABCMeta):
-    class NotFound:
-        _instance = None
-
-        def __new__(cls):
-            if cls._instance is None:
-                cls._instance = super().__new__(cls)
-            return cls._instance
-
-        def __eq__(self, other):
-            return isinstance(other, SillyRegistry.NotFound)
-
-    def set(self, key_name: str, user_id: Optional[int], value: Optional[str]):
+    def set(self, key_name: str, user_id: Optional[int], value: str):
         if self._exists(key_name, user_id):
             self._update(key_name, user_id, value)
         else:
             self._add(key_name, user_id, value)
 
-    def get(self, key_name: str, user_id: Optional[int]) -> Optional[str] | 'SillyRegistry.NotFound':
+    def get(self, key_name: str, user_id: Optional[int]) -> Optional[str]:
         if self._exists(key_name, user_id):
             return self._get(key_name, user_id)
         else:
-            return self.NotFound()
+            return None
+
+    def delete(self, key_name: str, user_id: Optional[int]):
+        if self._exists(key_name, user_id):
+            self._delete(key_name, user_id)
 
     @abstractmethod
     def _get(self, key_name: str, user_id) -> Optional[str]:
@@ -35,14 +27,18 @@ class SillyRegistry(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def _update(self, key_name: str, user_id: Optional[int], value: Optional[str]):
+    def _update(self, key_name: str, user_id: Optional[int], value: str):
         raise NotImplementedError()
 
     @abstractmethod
-    def _add(self, key_name: str, user_id: Optional[int], value: Optional[str]):
+    def _add(self, key_name: str, user_id: Optional[int], value: str):
         raise NotImplementedError()
 
-    def __getitem__(self, key: Tuple[str, Optional[int]] | Tuple[Optional[int], str]) -> Optional[str] | 'SillyRegistry.NotFound':
+    @abstractmethod
+    def _delete(self, key_name: str, user_id: Optional[int]):
+        raise NotImplementedError()
+
+    def __getitem__(self, key: Tuple[str, Optional[int]] | Tuple[Optional[int], str]) -> Optional[str]:
         if isinstance(key, Tuple):
             if len(key) == 2:
                 if (isinstance(key[0], int) or key[0] is None) and isinstance(
@@ -56,7 +52,7 @@ class SillyRegistry(metaclass=ABCMeta):
 
         raise TypeError("Invalid key format")
 
-    def __setitem__(self, key: Tuple[str, Optional[int]] | Tuple[Optional[int], str], value: Optional[str]):
+    def __setitem__(self, key: Tuple[str, Optional[int]] | Tuple[Optional[int], str], value: str):
         if isinstance(key, Tuple):
             if len(key) == 2:
                 if (isinstance(key[0], int) or key[0] is None) and isinstance(

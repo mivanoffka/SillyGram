@@ -24,7 +24,7 @@ async def _get_format_args(manager: SillyManager, event: SillyEvent):
 async def _on_stop_broadcast_button_clicked(manager: SillyManager, event: SillyEvent):
     if await manager.get_yes_no_answer(event.user, SillyDefaults.Options.BroadcastStatusPage.STOP_CONFIRMATION_TEXT):
         await broadcaster.stop()
-        await manager.show_page(event.user, SillyDefaults.Names.OPTIONS_PAGE)
+        await manager.show_page(event.user,  SillyDefaults.Names.Pages.OPTIONS)
         await manager.show_notice(event.user, SillyDefaults.Options.BroadcastStatusPage.BROADCAST_STOPPED_TEXT)
 
 
@@ -41,7 +41,7 @@ broadcast_status_page = SillyPage(
         (
             SillyNavigationButton(
                 SillyDefaults.Options.BACK_BUTTON_TEXT,
-                SillyDefaults.Names.OPTIONS_PAGE,
+                 SillyDefaults.Names.Pages.OPTIONS,
             ),
             SillyActionButton(
                 SillyDefaults.Options.BroadcastStatusPage.STOP_BROADCAST_BUTTON_TEXT,

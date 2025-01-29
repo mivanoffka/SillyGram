@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from ...manager import SillyManager
     from ...events import SillyEvent
 
-from ...data.settings_and_defaults import SillyDefaults
+from ...data.settings import SillyDefaults
 
 from aiogram.types import InlineKeyboardButton
 from typing import List, Callable, Awaitable

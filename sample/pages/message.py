@@ -4,7 +4,6 @@ from sillygram import (
     SillyActionButton,
     SillyManager,
     SillyEvent,
-    SILLY_HOME_PAGE_POINTER,
 )
 from ..text import Text
 
@@ -37,7 +36,7 @@ message_page = SillyPage(
             ),
         ),
         (
-            SillyNavigationButton(Text.BACK_BUTTON, page_name=SILLY_HOME_PAGE_POINTER),
+            SillyNavigationButton(Text.BACK_BUTTON, page_name=SillyPage.Pointers.HOME),
         ),
     ),
 )

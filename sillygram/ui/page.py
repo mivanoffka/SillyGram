@@ -4,7 +4,9 @@ from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Tuple
 
 from aiogram.types import InlineKeyboardMarkup
-from enum import Flag, auto
+from enum import Enum, Flag, auto
+
+from ..data.settings.defaults import SillyDefaults
 
 from ..text import SillyText
 
@@ -16,6 +18,12 @@ if TYPE_CHECKING:
 
 
 class SillyPage:
+    class Pointers:
+        START = SillyDefaults.Names.Pages.START
+        HOME = SillyDefaults.Names.Pages.HOME
+        OPTIONS = SillyDefaults.Names.Pages.OPTIONS
+        ADDITIONAL_OPTIONS = SillyDefaults.Names.Pages.ADDITIONAL_OPTIONS
+
     class Flags(Flag):
         NO = 0
         HOME = auto()

@@ -22,7 +22,7 @@ from .orm import (
     DECLARATIVE_BASE,
 )
 from ..ui import SillyPage
-from .settings_and_defaults import SillySettings
+from .settings import SillySettings
 
 
 from aiogram.types import User as AiogramUser

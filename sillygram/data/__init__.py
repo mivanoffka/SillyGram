@@ -1,3 +1,4 @@
 from .data import Data
-from .settings_and_defaults import SillySettings, SillyLabels, SillyDefaults
+from .settings import SillySettings, SillyLabels, SillyDefaults
 from .logger import SillyLogger
+from .registry import SillyDiskRegistry, SillyRegistry, SillyPersonalRegistry

@@ -4,21 +4,19 @@ from sillygram import (
     SillyActionButton,
     SillyManager,
     SillyEvent,
-    SILLY_HOME_PAGE_POINTER,
+    SillyRegistry
 )
-from ...sillygram.data.registry.registry import SillyRegistry
 from ..text import Text
 
 
 async def _get_format_args(manager: SillyManager, event: SillyEvent):
     KEY_NAME = "format_page_visited_count"
-
     str_value = event.user.registry[KEY_NAME]
-    if str_value is not SillyRegistry.NotFound:
+    print(str_value)
+    if str_value is None:
         event.user.registry[KEY_NAME] = "1"
     else:
         event.user.registry[KEY_NAME] = str(int(str_value) + 1)
-
     current_value = event.user.registry[KEY_NAME] 
     return (event.user.nickname, current_value)
 
@@ -33,7 +31,7 @@ format_page = SillyPage(
     buttons=(
         (
             SillyNavigationButton(
-                text=Text.BACK_BUTTON, page_name=SILLY_HOME_PAGE_POINTER
+                text=Text.BACK_BUTTON, page_name=SillyPage.Pointers.HOME
             ),
             SillyActionButton(
                 text=Text.FormatPage.MORE_INFO_BUTTON_TEXT,

@@ -10,14 +10,14 @@ class SillyPersonalRegistry:
         self._user_id = user_id
         self._registry = registry
 
-    def set(self, key_name: str, value: Optional[str]):
+    def set(self, key_name: str, value: str):
         return self._registry.set(key_name, self._user_id, value)
 
-    def get(self, key_name: str) -> Optional[str] | SillyRegistry.NotFound:
+    def get(self, key_name: str) -> Optional[str]:
         return self._registry.get(key_name, self._user_id)
 
-    def __getitem__(self, key: str) -> Optional[str] | SillyRegistry.NotFound:
+    def __getitem__(self, key: str) -> Optional[str]:
         return self.get(key)
 
-    def __setitem__(self, key: str, value: Optional[str]):
+    def __setitem__(self, key: str, value: str):
         return self.set(key, value)

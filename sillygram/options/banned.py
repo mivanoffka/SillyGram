@@ -195,7 +195,7 @@ banned_page = SillyPage(
         (
             SillyNavigationButton(
                 SillyDefaults.Options.BACK_BUTTON_TEXT,
-                SillyDefaults.Names.OPTIONS_PAGE,
+                SillyDefaults.Names.Pages.OPTIONS,
             ),
             SillyActionButton(
                 SillyDefaults.Options.BannedPage.LIST_BUTTON_TEXT,
