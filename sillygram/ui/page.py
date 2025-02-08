@@ -21,14 +21,14 @@ class SillyPage:
     class Pointers:
         START = SillyDefaults.Names.Pages.START
         HOME = SillyDefaults.Names.Pages.HOME
-        OPTIONS = SillyDefaults.Names.Pages.OPTIONS
-        ADDITIONAL_OPTIONS = SillyDefaults.Names.Pages.ADDITIONAL_OPTIONS
+        CONTROLS = SillyDefaults.Names.Pages.CONTROLS
+        CUSTOM_CONTROLS = SillyDefaults.Names.Pages.CUSTOM_CONTROLS
 
     class Flags(Flag):
         NO = 0
         HOME = auto()
         START = auto()
-        OPTIONS = auto()
+        CUSTOM_CONTROLS = auto()
 
     _text: SillyText
     _name: str

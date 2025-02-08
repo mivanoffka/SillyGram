@@ -56,15 +56,15 @@ class Pages:
                 logging.warning("There should be only one HOME page.")
             self._pages[SillyPage.Pointers.HOME] = home_pages[0]
 
-        options_pages = []
+        custom_controls_pages = []
         for page in self._pages.values():
-            if page.flags & SillyPage.Flags.OPTIONS:
-                options_pages.append(page)
+            if page.flags & SillyPage.Flags.CUSTOM_CONTROLS:
+                custom_controls_pages.append(page)
 
-        if len(options_pages) > 0:
-            if len(options_pages) > 1:
-                logging.warning("There should be only one OPTIONS page.")
-            self._pages[SillyPage.Pointers.ADDITIONAL_OPTIONS] = options_pages[0]
+        if len(custom_controls_pages) > 0:
+            if len(custom_controls_pages) > 1:
+                logging.warning("There should be only one CUSTOM-CONTROLS page.")
+            self._pages[SillyPage.Pointers.CUSTOM_CONTROLS] = custom_controls_pages[0]
 
     def __init__(self, *pages: SillyPage):
         self._pages = self._pages_to_dict(*pages)

@@ -22,7 +22,7 @@ Let's create a simple Telegram-bot with the help of SillyGram. Once you have cre
 
 First of all create a bot with the help of Telegram @BotFather. After you launched it with the /start command, create your own bot following the example below.
 
-<img src="readme-images/1.png" width="75%" height="75%">
+<img src="readme-images/1.png" width="50%" height="50%">
 
 Your new bot is now created. Moreover, there's an API-token in @BotFather's message. This token is neccessary for our future program to communicate with Telegram API and run the bot.
 
@@ -47,7 +47,7 @@ This is the simplest SillyGram code possible We only create a SillyBot object, p
 
 To make sure that your bot is really working, open it in Telegram and try pressing the "START" button. You will see that a command is sent, and if the SillyGram bot is running properly, you will see a notice. 
 
-<img src="readme-images/4.gif" width="75%" height="75%">
+<img src="readme-images/4.gif" width="50%" height="50%">
 
 (Note that the message with the /start command is deleted. This is a SillyGram design feature for keeping the chat clean and rid of rubbish messages)
 
@@ -125,7 +125,7 @@ SillyPage.Flags.START | SillyPage.Flags.HOME
 
 Now we launch the bot again, and finally there are no warnings and the bot responds to our /start command by showing us the page we created!
 
-<img src="readme-images/5.gif" width="75%" height="75%">
+<img src="readme-images/5.gif" width="50%" height="50%">
 
 To be honest, such a page is not very useful... And we are only able to see the START page. How do we visit the HOME page?
 
@@ -159,7 +159,7 @@ home_page = SillyPage(
 
 Yikes, it works!
 
-<img src="readme-images/6.gif" width="75%" height="75%">
+<img src="readme-images/6.gif" width="50%" height="50%">
 
 But still not very functional, to be honest... We should teach our bot to do something more impressive.
 
@@ -222,7 +222,7 @@ home_page = SillyPage(
 )
 ```
 
-<img src="readme-images/7.gif" width="75%" height="75%">
+<img src="readme-images/7.gif" width="50%" height="50%">
 
 But what if you want to gather some more information about the user? For example, you might want to know user's age and gender. 
 

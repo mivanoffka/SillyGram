@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from ...text import SillyText
 
-DEFAULT_NAME_TEMPLATE = "$-SILLYGRAM-DEFAULT-{}-[{}]-$"
+DEFAULT_NAME_TEMPLATE = "$-SILLYGRAM-DEFAULT-{}-{}-$"
 PAGE_TYPE_NAME = "PAGE"
 PRIVELEGE_TYPE_NAME = "PRIVELEGE"
 CALLBACK_TYPE_NAME = "CALLBACK"
@@ -36,16 +36,16 @@ class SillyDefaults:
         class Pages:
             START = _to_default_name("START", PAGE_TYPE_NAME)
             HOME = _to_default_name("HOME", PAGE_TYPE_NAME)
-            OPTIONS = _to_default_name("OPTIONS", PAGE_TYPE_NAME)
-            ADDITIONAL_OPTIONS = _to_default_name("ADDITIONAL_OPTIONS", PAGE_TYPE_NAME)
+            CONTROLS = _to_default_name("CONTROLS", PAGE_TYPE_NAME)
+            CUSTOM_CONTROLS = _to_default_name("CUSTOM_CONTROLS", PAGE_TYPE_NAME)
 
         class Priveleges:
             MASTER = _to_default_name("MASTER", PRIVELEGE_TYPE_NAME)
 
 
     @dataclass(frozen=True)
-    class Options:
-        ROOT_PAGE_TEXT = SillyText("This is the SillyGram options page")
+    class Controls:
+        ROOT_PAGE_TEXT = SillyText("This is the SillyGram controls page")
         BANNED_BUTTON_TEXT = SillyText("Banned")
         PRIVELEGES_BUTTON_TEXT = SillyText("Priveleges")
 
@@ -78,7 +78,7 @@ class SillyDefaults:
 
         USER_NOT_REGISTERED_ERROR_TEMPLATE = SillyText("User {} not registered")
         MORE_BUTTON_TEXT = SillyText("More")
-        ADDITIONAL_OPTIONS_PAGE_TEMPLATE_TEXT = SillyText("There is nothing here!\n\nHowever, bot developers can create a special page with additional functionality for administrators that will be stored here.")
+        ADDITIONAL_CONTROLS_PAGE_TEMPLATE_TEXT = SillyText("There is nothing here!\n\nHowever, bot developers can create a special page with additional control options for master-users that will be stored here.")
 
         @dataclass(frozen=True)
         class AdminsPage:
@@ -201,7 +201,7 @@ class SillyDefaults:
     class Commands:
         START = "start"
         HOME = "home"
-        OPTIONS = "options"
+        CONTROLS = "controls"
 
     @dataclass(frozen=True)
     class CLI:

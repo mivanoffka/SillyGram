@@ -20,7 +20,7 @@ from .data import Data, SillyDefaults
 from .ui import SillyPage, SillyActionButton
 
 from .activities import SillyRegularActivity, SillyDateTimeActivity
-from .options import options_pages
+from .controls import controls_pages
 
 
 class SillyBot:
@@ -114,7 +114,7 @@ class SillyBot:
 
         self._register_command(SillyDefaults.Commands.HOME, self._on_home)
         self._register_command(SillyDefaults.Commands.START, self._on_start)
-        self._register_command(SillyDefaults.Commands.OPTIONS, self._on_configure)
+        self._register_command(SillyDefaults.Commands.CONTROLS, self._on_configure)
 
         self._dispatcher.message.register(self._on_text_input, F.text)
         self._dispatcher.message.register(self._on_other_input)
@@ -205,7 +205,7 @@ class SillyBot:
     @staticmethod
     @SillyManager.priveleged()
     async def _on_configure(manager: SillyManager, event: SillyEvent):
-        await manager.show_page(event.user, SillyDefaults.Names.Pages.OPTIONS)
+        await manager.show_page(event.user, SillyDefaults.Names.Pages.CONTROLS)
 
     async def _on_text_input(self, message: Message):
         if not message.from_user:
@@ -425,10 +425,10 @@ class SillyBot:
         :param pages: sequence of page objects to include. Names must be unique.
         :param settings: silly-bot settings. None means default settings.
         """
-        logger = SillyLogger(
+        self._logger = SillyLogger(
             PATH / "logs", settings.log_to_console if settings else True
         )
-        pages = (*(pages or ()), *options_pages)
+        pages = (*(pages or ()), *controls_pages)
         self._data = Data(settings if settings is not None else SillySettings(), *pages)
         self._aiogram_bot = AiogramBot(
             token=token, default=DefaultBotProperties(parse_mode="HTML")
