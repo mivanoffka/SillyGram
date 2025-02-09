@@ -12,7 +12,6 @@ from ..text import Text
 async def _get_format_args(manager: SillyManager, event: SillyEvent):
     KEY_NAME = "format_page_visited_count"
     str_value = event.user.registry[KEY_NAME]
-    print(str_value)
     if str_value is None:
         event.user.registry[KEY_NAME] = "1"
     else:

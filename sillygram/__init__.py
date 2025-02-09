@@ -15,6 +15,4 @@ from .ui import (
 )
 
 from .activities import SillyRegularActivity, SillyDateTimeActivity
-from .data import SillySettings, SillyLabels
-
-from .data import SillyRegistry
+from .data import SillySettings, SillyLabels, SillyRegistry, SillyLogger

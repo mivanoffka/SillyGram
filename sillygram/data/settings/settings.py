@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Optional, Sequence, Callable, Awaitable, TYPE_CHECKING, Tuple
 
+from ..logger import SillyLogger
+
 from .defaults import SillyDefaults
 
 if TYPE_CHECKING:
@@ -22,6 +24,9 @@ class SillySettings:
     _on_shutdown: Optional[Callable[[SillyManager], Awaitable[None]]] = None
 
     _priveleges: Optional[Tuple[SillyPrivelege, ...]] = None
+
+    _file_logging_mode: SillyLogger.Mode
+    _console_logging_mode: SillyLogger.Mode
 
     @property
     def labels(self):
@@ -55,6 +60,14 @@ class SillySettings:
     def master_users(self):
         return self._master_users
 
+    @property
+    def console_logging_mode(self):
+        return self._console_logging_mode
+
+    @property
+    def file_logging_mode(self):
+        return self._file_logging_mode
+
     def __init__(
         self,
         labels: Optional[SillyLabels] = None,
@@ -62,12 +75,12 @@ class SillySettings:
         on_startup: Optional[Callable[[SillyManager], Awaitable[None]]] = None,
         on_shutdown: Optional[Callable[[SillyManager], Awaitable[None]]] = None,
         skip_updates: bool = True,
-        log_to_console: bool = False,
         priveleges: Optional[Sequence[SillyPrivelege]] = None,
-        master_users: Optional[Sequence[int|str]] = None,
+        master_users: Optional[Sequence[int | str]] = None,
+        file_logging_mode: SillyLogger.Mode = SillyLogger.Mode.INFO,
+        console_logging_mode: SillyLogger.Mode = SillyLogger.Mode.INFO,
     ):
         self._skip_updates = skip_updates
-        self._log_to_console = log_to_console
         self._labels = labels if labels else SillyLabels()
 
         self._regular_activities = regular_activities
@@ -76,3 +89,6 @@ class SillySettings:
 
         self._priveleges = tuple(priveleges) if priveleges else None
         self._master_users = tuple(master_users) if master_users else None
+
+        self._file_logging_mode = file_logging_mode
+        self._console_logging_mode = console_logging_mode

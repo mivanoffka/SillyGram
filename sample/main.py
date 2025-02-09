@@ -1,7 +1,8 @@
-from sillygram import SillyBot, SillySettings
+from re import S
+from sillygram import SillyBot, SillySettings, SillyLogger
 from .pages import home_page, start_page, input_page, message_page, dialog_page, format_page
 
-from .config import TOKEN, LOG_TO_CONSOLE
+from .config import TOKEN
 
 if __name__ == "__main__":
     pages = (home_page, start_page, input_page, message_page, dialog_page, format_page)
@@ -10,7 +11,6 @@ if __name__ == "__main__":
         silly_bot: SillyBot = SillyBot(
             TOKEN,
             pages=pages,
-            settings=SillySettings(log_to_console=LOG_TO_CONSOLE),
         )
 
         silly_bot.launch()

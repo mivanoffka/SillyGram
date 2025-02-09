@@ -153,7 +153,9 @@ class SillyBot:
                 result = await handler(self._manager, event)
 
             except Exception as e:
-                result = await self._on_error(self._manager, SillyErrorEvent(user, exception=e))
+                result = await self._on_error(
+                    self._manager, SillyErrorEvent(user, exception=e)
+                )
 
             try:
                 await message.delete()
@@ -425,8 +427,12 @@ class SillyBot:
         :param pages: sequence of page objects to include. Names must be unique.
         :param settings: silly-bot settings. None means default settings.
         """
+
+        settings = settings if settings else SillySettings()
         self._logger = SillyLogger(
-            PATH / "logs", settings.log_to_console if settings else True
+            path=PATH / "logs",
+            file_logging_mode=settings.file_logging_mode,
+            console_logging_mode=settings.console_logging_mode,
         )
         pages = (*(pages or ()), *controls_pages)
         self._data = Data(settings if settings is not None else SillySettings(), *pages)
