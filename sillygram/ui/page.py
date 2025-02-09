@@ -4,7 +4,7 @@ from collections.abc import Sequence
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Tuple
 
 from aiogram.types import InlineKeyboardMarkup
-from enum import Enum, Flag, auto
+from enum import Flag, auto
 
 from ..data.settings.defaults import SillyDefaults
 
@@ -29,6 +29,18 @@ class SillyPage:
         HOME = auto()
         START = auto()
         CUSTOM_CONTROLS = auto()
+
+        def __or__(self, other):
+            if (
+                self is SillyPage.Flags.CUSTOM_CONTROLS
+                or other is SillyPage.Flags.CUSTOM_CONTROLS
+            ):
+                if self != SillyPage.Flags.NO and other != SillyPage.Flags.NO:
+                    raise ValueError(
+                        SillyDefaults.CLI.Messages.CUSTOM_CONTROLS_FLAG_INCOMPATIBLE
+                    )
+
+            return super().__or__(other)
 
     _text: SillyText
     _name: str
@@ -79,11 +91,13 @@ class SillyPage:
         self,
         name: str,
         text: SillyText,
-        buttons: Optional[SillyButton | Sequence[SillyButton] | Sequence[Sequence[SillyButton]]] = None,
+        buttons: Optional[
+            SillyButton | Sequence[SillyButton] | Sequence[Sequence[SillyButton]]
+        ] = None,
         get_format_args: Optional[
             Callable[[SillyManager, SillyEvent], Awaitable[Optional[Tuple[Any, ...]]]]
         ] = None,
-        flags: Flags = Flags.NO
+        flags: Flags = Flags.NO,
     ):
 
         buttons_edited = []

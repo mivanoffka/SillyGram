@@ -210,5 +210,6 @@ class SillyDefaults:
             PRIVELEGE_NOT_MENTIONED_TEMPLATE = "Privelege named '{}' found in DB, but was not specified in SillySettings"
             PRIVELEGE_NOT_FOUND_TEMPLATE = "Privelege named '{}' is unknown."
             USER_WITH_UNKNOWN_PRIVELEGE = "User {} has an unknown privelege '{}'."
+            CUSTOM_CONTROLS_FLAG_INCOMPATIBLE = "CUSTOM_CONTROLS flag is incompatible with any others"
 
 
