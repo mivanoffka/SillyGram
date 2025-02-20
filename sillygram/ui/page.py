@@ -45,6 +45,7 @@ class SillyPage:
     _text: SillyText
     _name: str
     _buttons: Sequence[Sequence[SillyButton]]
+    _priveled: bool | str
 
     _flags: Flags
 
@@ -76,6 +77,10 @@ class SillyPage:
     def name(self) -> str:
         return self._name
 
+    @property
+    def priveleged(self) -> str | bool:
+        return self._priveleged
+
     async def get_format_args(self, manager: SillyManager, event: SillyEvent):
         args = event.args
         kwargs = event.kwargs.values()
@@ -94,6 +99,7 @@ class SillyPage:
         buttons: Optional[
             SillyButton | Sequence[SillyButton] | Sequence[Sequence[SillyButton]]
         ] = None,
+        priveleged: bool | str = False,
         get_format_args: Optional[
             Callable[[SillyManager, SillyEvent], Awaitable[Optional[Tuple[Any, ...]]]]
         ] = None,
@@ -124,6 +130,7 @@ class SillyPage:
         self._name = name
         self._text = text
         self._buttons = buttons_edited
+        self._priveleged = priveleged
 
         self._flags = flags
 

@@ -20,7 +20,7 @@ _button_ids: List[int] = list()
 class SillyActionButton(SillyButton):
     _id: int
     _on_click: Optional[Callable[[SillyManager, SillyEvent], Awaitable[None]]]
-    _priveleged: bool | str
+    _priveleged: str | bool
 
     # region Properties etc.
 
@@ -56,19 +56,10 @@ class SillyActionButton(SillyButton):
         _button_ids.append(self._id)
 
     async def _on_click_wrapper(self, manager: SillyManager, event: SillyEvent):
+        @manager.priveleged(self._priveleged)
         async def handler(manager: SillyManager, event: SillyEvent):
             if self._on_click is not None:
                 return await self._on_click(manager, event)
-
-        @manager.priveleged(self._priveleged if isinstance(self._priveleged, str) else None)
-        async def priveleged(manager: SillyManager, event: SillyEvent):
-            return await handler(manager, event)
-
-        if isinstance(self._priveleged, bool):
-            if self._priveleged:
-                return await priveleged(manager, event)
-        elif isinstance(self._priveleged, str):
-            return await priveleged(manager, event)
 
         return await handler(manager, event)
 
@@ -78,7 +69,7 @@ class SillyActionButton(SillyButton):
         self,
         text: SillyText,
         on_click: Optional[Callable[[SillyManager, SillyEvent], Awaitable[None]]] = None,
-        priveleged: bool | str = False
+        priveleged: str | bool = False
     ):
         super().__init__(text)
         self._generate_id()

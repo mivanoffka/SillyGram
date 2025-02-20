@@ -73,25 +73,29 @@ class SillyManager:
             self, SillyEvent(user, *(f_args or ()), **(f_kwargs or {}))
         )
 
-        if new_target_message:
-            await self._send_new_target_message(
-                user,
-                page.text.format(*format_args if format_args else ()).localize(
-                    user.language_code
-                ),
-                page.keyboard(user.language_code),
-            )
-        else:
-            await self._edit_target_message(
-                user,
-                page.text.format(*format_args if format_args else ()).localize(
-                    user.language_code
-                ),
-                page.keyboard(user.language_code),
-            )
+        @SillyManager.priveleged(page.priveleged if page.priveleged else None)
+        async def _(manager: SillyManager, event: SillyEvent):
+            if new_target_message:
+                await self._send_new_target_message(
+                    user,
+                    page.text.format(*format_args if format_args else ()).localize(
+                        user.language_code
+                    ),
+                    page.keyboard(user.language_code),
+                )
+            else:
+                await self._edit_target_message(
+                    user,
+                    page.text.format(*format_args if format_args else ()).localize(
+                        user.language_code
+                    ),
+                    page.keyboard(user.language_code),
+                )
 
-        self._data.set_format_args(user.id, format_args)
-        self._data.set_current_page_name(user.id, page_name)
+            self._data.set_format_args(user.id, format_args)
+            self._data.set_current_page_name(user.id, page_name)
+
+        await _(self, SillyEvent(user))
 
     async def refresh_page(
         self,
@@ -124,7 +128,7 @@ class SillyManager:
                 if not not_found_message:
                     not_found_message = self._data.settings.labels.page_not_found
 
-                await self.show_notice(user, self._data.settings.labels.page_not_found)
+                await self.show_notice(user, not_found_message)
                 await self.show_page(user, SillyDefaults.Names.Pages.HOME)
                 return
 
@@ -132,21 +136,28 @@ class SillyManager:
             await self.show_page(user, SillyDefaults.Names.Pages.HOME)
             return
 
-        format_args: Optional[Tuple[str, ...]] = None
+        @SillyManager.priveleged(page.priveleged if page.priveleged else None)
+        async def _(manager: SillyManager, event: SillyEvent):
+            format_args: Optional[Tuple[str, ...]] = None
 
-        format_args = self._data.get_format_args(user.id)
-        if len(format_args) == 0:
-            format_args = (*(f_args or ()), *(f_kwargs.values() if f_kwargs else ()))
+            format_args = self._data.get_format_args(user.id)
+            if len(format_args) == 0:
+                format_args = (
+                    *(f_args or ()),
+                    *(f_kwargs.values() if f_kwargs else ()),
+                )
 
-        await self._edit_target_message(
-            user,
-            page.text.format(*format_args if format_args else ()).localize(
-                user.language_code
-            ),
-            page.keyboard(user.language_code),
-        )
+            await self._edit_target_message(
+                user,
+                page.text.format(*format_args if format_args else ()).localize(
+                    user.language_code
+                ),
+                page.keyboard(user.language_code),
+            )
 
-        self._data.set_format_args(user.id, format_args)
+            self._data.set_format_args(user.id, format_args)
+
+        await _(self, SillyEvent(user))
 
     async def _ask_for_restore(self, user: SillyUser):
         self._data.io.push_to_add(user.id)
@@ -424,26 +435,24 @@ class SillyManager:
     # region Decorators
 
     @staticmethod
-    def priveleged(privelege_name: Optional[str] = None):
+    def priveleged(value: bool | str = True):
         def decorator(handler: Callable[[SillyManager, SillyEvent], Awaitable[None]]):
             async def wrapper(manager: SillyManager, event: SillyEvent):
-                privelege = (
-                    manager._data.priveleges[privelege_name]
-                    if privelege_name is not None
-                    else manager._data.priveleges.master
-                )
-                if privelege:
-                    if not manager._data.priveleges.matches(event.user, privelege.name):
+                if value:
+                    privelege = manager._data.priveleges.master
+                    if isinstance(value, str):
+                        actual_privelege = manager._data.priveleges[value]
+                        if actual_privelege:
+                            privelege = actual_privelege
+                    if not manager._data.priveleges.matches(
+                        event.user, privelege.name
+                    ):
                         message = (
                             privelege.message
                             if privelege.message is not None
                             else manager._data.settings.labels.access_denied
                         )
                         return await manager.show_popup(event.user, message)
-                else:
-                    return await manager.show_popup(
-                        event.user, manager._data.settings.labels.access_denied
-                    )
 
                 return await handler(manager, event)
 
@@ -456,4 +465,3 @@ class SillyManager:
     def __init__(self, aiogram_bot: AiogramBot, data: Data):
         self._aiogram_bot = aiogram_bot
         self._data = data
-

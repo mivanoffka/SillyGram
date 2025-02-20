@@ -61,6 +61,7 @@ async def _on_priveleges_button_clicked(manager: SillyManager, event: SillyEvent
         await manager.show_popup(event.user, text)
 
 
+
 root_controls_page = SillyPage(
     name=SillyDefaults.Names.Pages.CONTROLS,
     text=SillyDefaults.Controls.ROOT_PAGE_TEXT,

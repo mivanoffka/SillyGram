@@ -118,7 +118,101 @@ It is convinient as the actual page marked as special can change, and pointers w
 
 ## **SillyButton**
 
+SillyButton objects represent 
+
+### **SillyActionButton**
+
 ...
+
+```py
+from sillygram import SillyActionButton, SillyText
+
+button = SillyActionButton(text=SillyText(...))
+
+```
+#### **Click handling**
+
+SillyActionButtons are able to produce any kind of action in responce to users' actions. This action is defined by an asyncronous handler function that must accept a SillyManager and a SillyEvent object as its arguments. 
+
+```py
+from sillygram import SillyActionButton, SillyText, SillyManager, SillyEvent
+
+async def on_silly_button_click(manager: SillyManager, event: SillyEvent):
+    ...
+
+button = SillyActionButton(
+    text=SillyText(...),
+    on_click=on_silly_button_click
+    )
+```
+It is not neccessary to do the type hinting for the function arguments, but appreciated.
+
+#### **Priveleging**
+
+There are two ways of restricting certain actions in SillyGram:
+
+1. Using the SillyManager.priveleged decorator for the handler
+
+```py
+from sillygram import SillyActionButton, SillyText, SillyManager, SillyEvent
+
+@SillyManager.priveleged(value=True)
+async def on_silly_button_click(manager: SillyManager, event: SillyEvent):
+    ...
+
+```
+
+2. Setting *priveleged* flag for the SillyActionButton. In this case the action will be restricted regardless of the handler being used. However, if the handler has a stricter privelegy, it won't be overcome!
+
+```py
+from sillygram import SillyActionButton, SillyText, SillyManager, SillyEvent
+
+async def on_silly_button_click(manager: SillyManager, event: SillyEvent):
+    ...
+
+button = SillyActionButton(
+    text=SillyText(...),
+    on_click=on_silly_button_click
+    )
+```
+
+*True* value used with both the *SillyManager.priveleged* decorator and SillyActionButton *priveleged* flag stand for the master privelegy. It is however possible to use a non-boolean value for specifying priveleges. Visit [SillyPrivelege](#sillyprivilege) for more information.
+
+### **SillyNavigationButton**
+
+SillyNavigationButtons move users to a page it is linked to. To specify the page you use the page name or, if it is one of the special ones, its [pointer](#pointers).
+
+```py
+from sillygram import SillyNavigationButton, SillyPage, SillyText
+
+PAGE_NAME = "PAGE_NAME"
+
+page = SillyPage(name=PAGE_NAME, ...)
+
+button = SillyNavigationButton(
+    text=SillyText(...),
+    page_name=PAGE_NAME,
+)
+
+```
+If you need to provide specific format args for the page content when it is called with the button, you may specify *f_args* and *f_kwargs*.
+
+```py
+from sillygram import SillyNavigationButton, SillyText
+
+...
+
+button = SillyNavigationButton(
+        ...,
+        f_args = (...),
+        f_kwargs = {...},
+)
+
+```
+
+This will rewrite the results of the *get_format_args()* function embedded to the page!
+
+### **SillyLinkButton**
 
 ## **SillyText**
 
