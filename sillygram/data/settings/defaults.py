@@ -3,11 +3,14 @@ from ...text import SillyText
 
 DEFAULT_NAME_TEMPLATE = "$-SILLYGRAM-DEFAULT-{}-{}-$"
 PAGE_TYPE_NAME = "PAGE"
-PRIVELEGE_TYPE_NAME = "PRIVELEGE"
+PRIVILEGE_TYPE_NAME = "privilege"
 CALLBACK_TYPE_NAME = "CALLBACK"
 MARKER_TYPE_NAME = "MARKER"
+
+
 def _to_default_name(text: str, type: str) -> str:
     return DEFAULT_NAME_TEMPLATE.format(text, type)
+
 
 @dataclass(frozen=True)
 class SillyDefaults:
@@ -39,26 +42,27 @@ class SillyDefaults:
             CONTROLS = _to_default_name("CONTROLS", PAGE_TYPE_NAME)
             CUSTOM_CONTROLS = _to_default_name("CUSTOM_CONTROLS", PAGE_TYPE_NAME)
 
-        class Priveleges:
-            MASTER = _to_default_name("MASTER", PRIVELEGE_TYPE_NAME)
-
+        class PRIVILEGEs:
+            MASTER = _to_default_name("MASTER", PRIVILEGE_TYPE_NAME)
 
     @dataclass(frozen=True)
     class Controls:
         ROOT_PAGE_TEXT = SillyText("This is the SillyGram controls page")
         BANNED_BUTTON_TEXT = SillyText("Banned")
-        PRIVELEGES_BUTTON_TEXT = SillyText("Priveleges")
+        PRIVILEGES_BUTTON_TEXT = SillyText("PRIVILEGEs")
 
-        POSITIVE_PRIVELEGE_INFO = SillyText(
-            "Current privelege for {} is {}.\n\nWould you like to change it?"
+        POSITIVE_PRIVILEGE_INFO = SillyText(
+            "Current privilege for {} is {}.\n\nWould you like to change it?"
         )
-        NEGATIVE_PRIVELEGE_INFO = SillyText(
-            "User {} currently does not possess any priveleges.\n\nWould you like to change it?"
+        NEGATIVE_PRIVILEGE_INFO = SillyText(
+            "User {} currently does not possess any privileges.\n\nWould you like to change it?"
         )
-        PRIVEGELE_PROMPT = SillyText("What privelege status should be given to {}?")
-        DEFAULT_PRIVELEGE = SillyText("No priveleges")
-        PRIVELEGE_POSITIVE_SETTING_SUCCESS = SillyText("User {} is now {}")
-        PRIVELEGE_NEGATIVE_SETTING_SUCCESS = SillyText("User {} does not have any priveleges anymore.")
+        PRIVEGELE_PROMPT = SillyText("What privilege status should be given to {}?")
+        DEFAULT_PRIVILEGE = SillyText("No privileges")
+        PRIVILEGE_POSITIVE_SETTING_SUCCESS = SillyText("User {} is now {}")
+        PRIVILEGE_NEGATIVE_SETTING_SUCCESS = SillyText(
+            "User {} does not have any privileges anymore."
+        )
 
         ADMINS_BUTTON_TEXT = SillyText("Admins")
         COMMUNICATION_BUTTON_TEXT = SillyText("Communication")
@@ -78,7 +82,9 @@ class SillyDefaults:
 
         USER_NOT_REGISTERED_ERROR_TEMPLATE = SillyText("User {} not registered")
         MORE_BUTTON_TEXT = SillyText("More")
-        ADDITIONAL_CONTROLS_PAGE_TEMPLATE_TEXT = SillyText("There is nothing here!\n\nHowever, bot developers can create a special page with additional control options for master-users that will be stored here.")
+        ADDITIONAL_CONTROLS_PAGE_TEMPLATE_TEXT = SillyText(
+            "There is nothing here!\n\nHowever, bot developers can create a special page with additional control options for master-users that will be stored here."
+        )
 
         @dataclass(frozen=True)
         class AdminsPage:
@@ -178,22 +184,32 @@ class SillyDefaults:
             SEND_MESSAGE_BUTTON_TEXT = SillyText("Personal message")
             BROADCAST_BUTTON_TEXT = SillyText("Broadcast message")
 
-            PERSONAL_MESSAGE_TEXT = SillyText("Please enter the text you want to send to {}.")
-            BROADCAST_MESSAGE_TEXT = SillyText("Please enter the text you want to broadcast.")
+            PERSONAL_MESSAGE_TEXT = SillyText(
+                "Please enter the text you want to send to {}."
+            )
+            BROADCAST_MESSAGE_TEXT = SillyText(
+                "Please enter the text you want to broadcast."
+            )
 
             MESSAGE_RECEIVED_TEMPLATE = SillyText("{}\n<blockquote>{}</blockquote>")
             MESSAGE_DELIVERED_TEXT = SillyText("Your message has been delivered to {}.")
 
-            BROADCAST_SUCCESS_TEXT = SillyText("Broadcast has been successfully started.")
+            BROADCAST_SUCCESS_TEXT = SillyText(
+                "Broadcast has been successfully started."
+            )
 
         class BroadcastStatusPage:
             NAME = _to_default_name("BROADCAST_RUNNING", PAGE_TYPE_NAME)
-            TEXT = SillyText("There is already a broadcast running. Please wait.\n\nAt the moment {} of {} messages have been sent. ({}%)")
+            TEXT = SillyText(
+                "There is already a broadcast running. Please wait.\n\nAt the moment {} of {} messages have been sent. ({}%)"
+            )
 
             REFRESH_BUTTON_TEXT = SillyText("Refresh")
             STOP_BROADCAST_BUTTON_TEXT = SillyText("Stop")
 
-            STOP_CONFIRMATION_TEXT = SillyText("Are you sure you want to stop the broadcast?")
+            STOP_CONFIRMATION_TEXT = SillyText(
+                "Are you sure you want to stop the broadcast?"
+            )
             BROADCAST_STOPPED_TEXT = SillyText("Broadcast has been stopped.")
 
     # region Commands
@@ -207,9 +223,9 @@ class SillyDefaults:
     class CLI:
         @dataclass(frozen=True)
         class Messages:
-            PRIVELEGE_NOT_MENTIONED_TEMPLATE = "Privelege named '{}' found in DB, but was not specified in SillySettings"
-            PRIVELEGE_NOT_FOUND_TEMPLATE = "Privelege named '{}' is unknown."
-            USER_WITH_UNKNOWN_PRIVELEGE = "User {} has an unknown privelege '{}'."
-            CUSTOM_CONTROLS_FLAG_INCOMPATIBLE = "CUSTOM_CONTROLS flag is incompatible with any others"
-
-
+            PRIVILEGE_NOT_MENTIONED_TEMPLATE = "Privilege named '{}' found in DB, but was not specified in SillySettings"
+            PRIVILEGE_NOT_FOUND_TEMPLATE = "Privilege named '{}' is unknown."
+            USER_WITH_UNKNOWN_PRIVILEGE = "User {} has an unknown privilege '{}'."
+            CUSTOM_CONTROLS_FLAG_INCOMPATIBLE = (
+                "CUSTOM_CONTROLS flag is incompatible with any others"
+            )

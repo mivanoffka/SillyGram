@@ -11,8 +11,10 @@ class UserORM(DECLARATIVE_BASE):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    privelege_id: Mapped[int | None] = mapped_column(ForeignKey("privileges.id"), nullable=True)
-    
+    privilege_id: Mapped[int | None] = mapped_column(
+        ForeignKey("privileges.id"), nullable=True
+    )
+
     target_message_id: Mapped[int | None] = mapped_column(nullable=True)
     current_page_name: Mapped[str | None] = mapped_column(nullable=True)
 
@@ -23,10 +25,10 @@ class UserORM(DECLARATIVE_BASE):
 
     registered_at: Mapped[datetime | None] = mapped_column(nullable=True)
     last_seen_at: Mapped[datetime | None] = mapped_column(nullable=True)
-    
 
-    
-    privelege: Mapped["PrivelegeORM"] = relationship("PrivelegeORM", back_populates="users")
+    privilege: Mapped["PrivilegeORM"] = relationship(
+        "PrivilegeORM", back_populates="users"
+    )
 
     local_values: Mapped[list["RegistryValueORM"]] = relationship(
         "RegistryValueORM", back_populates="user"
@@ -51,13 +53,13 @@ class FormatArgORM(DECLARATIVE_BASE):
     user: Mapped[UserORM] = relationship("UserORM", back_populates="format_args")
 
 
-class PrivelegeORM(DECLARATIVE_BASE):
+class PrivilegeORM(DECLARATIVE_BASE):
     __tablename__ = "privileges"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(nullable=False)
-    
-    users: Mapped[list[UserORM]] = relationship("UserORM", back_populates="privelege")
+
+    users: Mapped[list[UserORM]] = relationship("UserORM", back_populates="privilege")
 
 
 class BanORM(DECLARATIVE_BASE):
@@ -75,6 +77,7 @@ class RegistryValueORM(DECLARATIVE_BASE):
     value: Mapped[str] = mapped_column()
 
     user: Mapped["UserORM"] = relationship("UserORM", back_populates="local_values")
+
 
 # region Statistics
 

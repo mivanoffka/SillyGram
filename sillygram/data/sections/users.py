@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Optional
 from ..registry import SillyRegistry
 
 from ..db import SillyDbSection, SillyDB
-from ..orm import PrivelegeORM, UserORM, BanORM
+from ..orm import PrivilegeORM, UserORM, BanORM
 
 if TYPE_CHECKING:
     from ...manager import SillyManager
@@ -30,7 +30,9 @@ class Users(SillyDbSection):
             user = session.query(UserORM).filter_by(id=user_id).first()
             if not user:
                 raise KeyError()
-            return SillyUser(user_id=user_id, manager=self._manager, registry=self._registry)
+            return SillyUser(
+                user_id=user_id, manager=self._manager, registry=self._registry
+            )
 
     def _validate(self, nickname_or_id: int | str) -> int:
         with self._get_session() as session:
@@ -143,30 +145,34 @@ class Users(SillyDbSection):
 
     # endregion
 
-    # region Priveleges
-    
-    def get_privelege_name(self, nickname_or_id: int | str) -> Optional[str]:
+    # region PRIVILEGEs
+
+    def get_privilege_name(self, nickname_or_id: int | str) -> Optional[str]:
         with self._get_session() as session:
-            privelege = (
+            privilege = (
                 session.query(UserORM)
                 .filter_by(id=self._validate(nickname_or_id))
                 .first()
-            ).privelege
-            
-            if privelege:
-                return privelege.name
+            ).privilege
+
+            if privilege:
+                return privilege.name
             else:
                 return None
-            
-    def set_privelege(self, nickname_or_id: int | str, privelege_name: Optional[str] = None):
+
+    def set_privilege(
+        self, nickname_or_id: int | str, privilege_name: Optional[str] = None
+    ):
         user_id = self._validate(nickname_or_id)
         with self._get_session() as session:
             user = session.query(UserORM).filter_by(id=user_id).first()
-            if privelege_name is None:
-                user.privelege_id = None
+            if privilege_name is None:
+                user.privilege_id = None
                 return
-            privelege = session.query(PrivelegeORM).filter_by(name=privelege_name).first()
-            user.privelege_id = privelege.id
+            privilege = (
+                session.query(PrivilegeORM).filter_by(name=privilege_name).first()
+            )
+            user.privilege_id = privilege.id
             session.commit()
 
     # endregion

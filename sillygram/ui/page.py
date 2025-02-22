@@ -78,8 +78,8 @@ class SillyPage:
         return self._name
 
     @property
-    def priveleged(self) -> str | bool:
-        return self._priveleged
+    def privileged(self) -> str | bool:
+        return self._privileged
 
     async def get_format_args(self, manager: SillyManager, event: SillyEvent):
         args = event.args
@@ -99,7 +99,7 @@ class SillyPage:
         buttons: Optional[
             SillyButton | Sequence[SillyButton] | Sequence[Sequence[SillyButton]]
         ] = None,
-        priveleged: bool | str = False,
+        privileged: bool | str = False,
         get_format_args: Optional[
             Callable[[SillyManager, SillyEvent], Awaitable[Optional[Tuple[Any, ...]]]]
         ] = None,
@@ -130,7 +130,7 @@ class SillyPage:
         self._name = name
         self._text = text
         self._buttons = buttons_edited
-        self._priveleged = priveleged
+        self._privileged = privileged
 
         self._flags = flags
 

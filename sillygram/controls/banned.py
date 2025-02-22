@@ -10,7 +10,7 @@ from ..manager import SillyManager
 from .common import get_user
 
 
-@SillyManager.priveleged()
+@SillyManager.privileged()
 async def _on_banned_button_click(manager: SillyManager, event: SillyEvent):
     user_to_ban: Optional[SillyUser]
     user_to_ban = await get_user(manager, event)
@@ -32,40 +32,40 @@ async def _on_banned_button_click(manager: SillyManager, event: SillyEvent):
     duration = 24
     multiplier = -1
     if option == 0:
-            multiplier = 1
+        multiplier = 1
     if option == 1:
-            multiplier = 7
+        multiplier = 7
     if option == 2:
-            multiplier = 30
+        multiplier = 30
     if option == 3:
-            multiplier = 365
+        multiplier = 365
     if option == 4:
-            input_text = await manager.get_input(
-                event.user, SillyDefaults.Controls.BannedPage.BAN_DATE_INPUT_PROMPT
-            )
-            try:
-                if not input_text:
-                    raise Exception()
+        input_text = await manager.get_input(
+            event.user, SillyDefaults.Controls.BannedPage.BAN_DATE_INPUT_PROMPT
+        )
+        try:
+            if not input_text:
+                raise Exception()
 
-                if "," in input_text:
-                    input_text = input_text.replace(",", ".")
-                value = float(input_text)
-                if value <= 0:
-                    raise ValueError()
-                multiplier = round(value, 2)
-            except Exception:
-                await manager.show_popup(
-                    event.user,
-                    SillyDefaults.Controls.ERROR_MESSAGE_TEMPLATE.format(
-                        SillyDefaults.Controls.BannedPage.DAYS_PARSING_ERROR_TEXT
-                    ),
-                )
-                return
-    if option == 5:
-            multiplier = 9999
-    if option == 6:
-            await manager.restore_page(event.user)
+            if "," in input_text:
+                input_text = input_text.replace(",", ".")
+            value = float(input_text)
+            if value <= 0:
+                raise ValueError()
+            multiplier = round(value, 2)
+        except Exception:
+            await manager.show_popup(
+                event.user,
+                SillyDefaults.Controls.ERROR_MESSAGE_TEMPLATE.format(
+                    SillyDefaults.Controls.BannedPage.DAYS_PARSING_ERROR_TEXT
+                ),
+            )
             return
+    if option == 5:
+        multiplier = 9999
+    if option == 6:
+        await manager.restore_page(event.user)
+        return
 
     try:
         duration *= multiplier
@@ -93,7 +93,7 @@ async def _on_banned_button_click(manager: SillyManager, event: SillyEvent):
         )
 
 
-@SillyManager.priveleged()
+@SillyManager.privileged()
 async def _on_unban_button_click(manager: SillyManager, event: SillyEvent):
     user_to_unban = await get_user(manager, event)
     if user_to_unban is None:
@@ -120,7 +120,7 @@ async def _on_unban_button_click(manager: SillyManager, event: SillyEvent):
         return
 
 
-@SillyManager.priveleged()
+@SillyManager.privileged()
 async def _on_amnesty_button_click(manager: SillyManager, event: SillyEvent):
     confirmed = await manager.get_yes_no_answer(
         event.user, SillyDefaults.Controls.BannedPage.AMNESTY_DIALOG_TEXT
@@ -140,7 +140,7 @@ async def _on_amnesty_button_click(manager: SillyManager, event: SillyEvent):
         )
 
 
-@SillyManager.priveleged()
+@SillyManager.privileged()
 async def _on_list_button_click(manager: SillyManager, event: SillyEvent):
     banned_users_list = manager.users.get_all_banned()
     message_text = SillyDefaults.Controls.BannedPage.NO_BANNED_USERS_MESSAGE
@@ -162,13 +162,11 @@ async def _on_list_button_click(manager: SillyManager, event: SillyEvent):
                         event.user.language_code
                     )
                 )
-            lines += (
-                SillyDefaults.Controls.BannedPage.BANNED_USER_LINE_TEMPLATE.format(
-                    uinfo, exp_date
-                ).localize(event.user.language_code)
-            )
-        message_text = (
-            SillyDefaults.Controls.BannedPage.LIST_MESSAGE_TEMPLATE.format(lines)
+            lines += SillyDefaults.Controls.BannedPage.BANNED_USER_LINE_TEMPLATE.format(
+                uinfo, exp_date
+            ).localize(event.user.language_code)
+        message_text = SillyDefaults.Controls.BannedPage.LIST_MESSAGE_TEMPLATE.format(
+            lines
         )
 
     await manager.show_popup(event.user, message_text)

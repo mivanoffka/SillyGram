@@ -205,7 +205,7 @@ class SillyBot:
         )
 
     @staticmethod
-    @SillyManager.priveleged()
+    @SillyManager.privileged()
     async def _on_configure(manager: SillyManager, event: SillyEvent):
         await manager.show_page(event.user, SillyDefaults.Names.Pages.CONTROLS)
 

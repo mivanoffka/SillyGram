@@ -12,7 +12,7 @@ from ..common import get_user
 from .broadcaster import broadcaster
 
 
-@SillyManager.priveleged()
+@SillyManager.privileged()
 async def _on_send_message_button_clicked(manager: SillyManager, event: SillyEvent):
     user_to_text: Optional[SillyUser]
     user_to_text = await get_user(manager, event)
@@ -43,7 +43,7 @@ async def _on_send_message_button_clicked(manager: SillyManager, event: SillyEve
     )
 
 
-@SillyManager.priveleged()
+@SillyManager.privileged()
 async def _on_broadcast_button_clicked(manager: SillyManager, event: SillyEvent):
     if broadcaster.is_busy:
         await manager.show_page(
@@ -58,7 +58,10 @@ async def _on_broadcast_button_clicked(manager: SillyManager, event: SillyEvent)
             return
 
         if await broadcaster.try_show_broadcast_notice(manager, message_text):
-            await manager.show_popup(event.user, SillyDefaults.Controls.CommunicationPage.BROADCAST_SUCCESS_TEXT)
+            await manager.show_popup(
+                event.user,
+                SillyDefaults.Controls.CommunicationPage.BROADCAST_SUCCESS_TEXT,
+            )
 
 
 communication_page = SillyPage(
@@ -78,7 +81,7 @@ communication_page = SillyPage(
         (
             SillyNavigationButton(
                 SillyDefaults.Controls.BACK_BUTTON_TEXT,
-                 SillyDefaults.Names.Pages.CONTROLS,
+                SillyDefaults.Names.Pages.CONTROLS,
             ),
         ),
     ),

@@ -41,11 +41,11 @@ class SillyManager:
         return self._data.settings
 
     @property
-    def priveleges_names(self):
-        return self._data.priveleges.all_names
+    def privileges_names(self):
+        return self._data.privileges.all_names
 
-    def set_privelege(self, user: SillyUser, privelege_name: Optional[str]):
-        self._data.users.set_privelege(user.id, privelege_name)
+    def set_privilege(self, user: SillyUser, privilege_name: Optional[str]):
+        self._data.users.set_privilege(user.id, privilege_name)
 
     # region High-level messaging methods
 
@@ -73,7 +73,7 @@ class SillyManager:
             self, SillyEvent(user, *(f_args or ()), **(f_kwargs or {}))
         )
 
-        @SillyManager.priveleged(page.priveleged if page.priveleged else None)
+        @SillyManager.privileged(page.privileged if page.privileged else None)
         async def _(manager: SillyManager, event: SillyEvent):
             if new_target_message:
                 await self._send_new_target_message(
@@ -136,7 +136,7 @@ class SillyManager:
             await self.show_page(user, SillyDefaults.Names.Pages.HOME)
             return
 
-        @SillyManager.priveleged(page.priveleged if page.priveleged else None)
+        @SillyManager.privileged(page.privileged if page.privileged else None)
         async def _(manager: SillyManager, event: SillyEvent):
             format_args: Optional[Tuple[str, ...]] = None
 
@@ -435,21 +435,19 @@ class SillyManager:
     # region Decorators
 
     @staticmethod
-    def priveleged(value: bool | str = True):
+    def privileged(value: bool | str = True):
         def decorator(handler: Callable[[SillyManager, SillyEvent], Awaitable[None]]):
             async def wrapper(manager: SillyManager, event: SillyEvent):
                 if value:
-                    privelege = manager._data.priveleges.master
+                    privilege = manager._data.privileges.master
                     if isinstance(value, str):
-                        actual_privelege = manager._data.priveleges[value]
-                        if actual_privelege:
-                            privelege = actual_privelege
-                    if not manager._data.priveleges.matches(
-                        event.user, privelege.name
-                    ):
+                        actual_privilege = manager._data.privileges[value]
+                        if actual_privilege:
+                            privilege = actual_privilege
+                    if not manager._data.privileges.matches(event.user, privilege.name):
                         message = (
-                            privelege.message
-                            if privelege.message is not None
+                            privilege.message
+                            if privilege.message is not None
                             else manager._data.settings.labels.access_denied
                         )
                         return await manager.show_popup(event.user, message)

@@ -58,8 +58,8 @@ class SillyUser:
         return self._manager.users.get_ban_expiration_date(self._id)
 
     @property
-    def privelege_name(self) -> Optional[str]:
-        return self._manager.users.get_privelege_name(self._id)
+    def privilege_name(self) -> Optional[str]:
+        return self._manager.users.get_privilege_name(self._id)
 
     @property
     def nickname_or_id(self) -> int | str:

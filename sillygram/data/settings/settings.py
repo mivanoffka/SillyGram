@@ -9,7 +9,7 @@ from .defaults import SillyDefaults
 if TYPE_CHECKING:
     from ...manager import SillyManager
     from ...activities import SillyRegularActivity
-    from ...privelege import SillyPrivelege
+    from ...privilege import SillyPrivilege
 
 from .labels import SillyLabels
 
@@ -23,7 +23,7 @@ class SillySettings:
     _on_startup: Optional[Callable[[SillyManager], Awaitable[None]]] = None
     _on_shutdown: Optional[Callable[[SillyManager], Awaitable[None]]] = None
 
-    _priveleges: Optional[Tuple[SillyPrivelege, ...]] = None
+    _privileges: Optional[Tuple[SillyPrivilege, ...]] = None
 
     _file_logging_mode: SillyLogger.Mode
     _console_logging_mode: SillyLogger.Mode
@@ -53,8 +53,8 @@ class SillySettings:
         return self._on_shutdown
 
     @property
-    def priveleges(self):
-        return self._priveleges
+    def privileges(self):
+        return self._privileges
 
     @property
     def master_users(self):
@@ -75,7 +75,7 @@ class SillySettings:
         on_startup: Optional[Callable[[SillyManager], Awaitable[None]]] = None,
         on_shutdown: Optional[Callable[[SillyManager], Awaitable[None]]] = None,
         skip_updates: bool = True,
-        priveleges: Optional[Sequence[SillyPrivelege]] = None,
+        privileges: Optional[Sequence[SillyPrivilege]] = None,
         master_users: Optional[Sequence[int | str]] = None,
         file_logging_mode: SillyLogger.Mode = SillyLogger.Mode.INFO,
         console_logging_mode: SillyLogger.Mode = SillyLogger.Mode.INFO,
@@ -87,7 +87,7 @@ class SillySettings:
         self._on_startup = on_startup
         self._on_shutdown = on_shutdown
 
-        self._priveleges = tuple(priveleges) if priveleges else None
+        self._privileges = tuple(privileges) if privileges else None
         self._master_users = tuple(master_users) if master_users else None
 
         self._file_logging_mode = file_logging_mode

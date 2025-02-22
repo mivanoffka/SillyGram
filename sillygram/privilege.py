@@ -5,7 +5,7 @@ if TYPE_CHECKING:
     from .text import SillyText
 
 
-class SillyPrivelege:
+class SillyPrivilege:
     _name: str
     _message: Optional[SillyText]
 

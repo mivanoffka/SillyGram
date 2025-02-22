@@ -4,7 +4,7 @@ from .manager import SillyManager
 from .user import SillyUser
 from .text import SillyText
 from .events import SillyEvent, SillyErrorEvent
-from .privelege import SillyPrivelege
+from .privilege import SillyPrivilege
 
 from .ui import (
     SillyPage,

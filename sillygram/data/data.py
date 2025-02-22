@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 from datetime import datetime
 
 from .db import SillyDB
-from .sections import IO, Pages, Users, Stats, Priveleges
+from .sections import IO, Pages, Users, Stats, Privileges
 from .orm import (
     FormatArgORM,
     UserORM,
@@ -35,7 +35,7 @@ class Data(SillyDB):
     _registry: SillyDiskRegistry
     _users: Users
     _stats: Stats
-    _priveleges: Priveleges
+    _privileges: Privileges
 
     @property
     def users(self) -> Users:
@@ -56,7 +56,7 @@ class Data(SillyDB):
     @property
     def registry(self) -> SillyRegistry:
         return self._registry
-    
+
     @property
     def global_registry(self) -> SillyPersonalRegistry:
         return self._global_registry
@@ -64,10 +64,10 @@ class Data(SillyDB):
     @property
     def stats(self) -> Stats:
         return self._stats
-    
+
     @property
-    def priveleges(self) -> Priveleges:
-        return self._priveleges
+    def privileges(self) -> Privileges:
+        return self._privileges
 
     def indicate(self, aiogram_user: AiogramUser) -> int:
         with self._get_session() as session:
@@ -105,11 +105,11 @@ class Data(SillyDB):
 
         for nickname_or_id in self._settings.master_users:
             if user.nickname == nickname_or_id or user.id == nickname_or_id:
-                if user.privelege is None:
-                    self._users.set_privelege(user.id, self._priveleges.master.name)
+                if user.privilege is None:
+                    self._users.set_privilege(user.id, self._privileges.master.name)
                 else:
-                    if user.privelege.name != self._priveleges.master.name:
-                        self._users.set_privelege(user.id, self._priveleges.master.name)
+                    if user.privilege.name != self._privileges.master.name:
+                        self._users.set_privilege(user.id, self._privileges.master.name)
 
     def _save_as_recent_user(self, session, user_id: int):
         types = (HourlyUserORM, DailyUserORM, MonthlyUserORM, YearlyUserORM)
@@ -174,4 +174,4 @@ class Data(SillyDB):
         self._registry = SillyDiskRegistry(self)
         self._global_registry = SillyPersonalRegistry(self._registry, None)
         self._stats = Stats(self)
-        self._priveleges = Priveleges(self, self._settings.priveleges)
+        self._privileges = Privileges(self, self._settings.privileges)
