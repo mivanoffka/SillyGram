@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 from typing import TYPE_CHECKING, Optional
 
 from ..registry import SillyRegistry
-
 from ..db import SillyDbSection, SillyDB
 from ..orm import PrivilegeORM, UserORM, BanORM
 

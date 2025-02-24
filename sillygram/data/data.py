@@ -1,9 +1,7 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Optional, Sequence, Tuple
 
-from .registry.registry import SillyRegistry
-
-from .registry import SillyPersonalRegistry, SillyDiskRegistry
+from .registry import SillyPersonalRegistry, SillyRegistry
 
 if TYPE_CHECKING:
     from sillygram.manager import SillyManager
@@ -32,7 +30,7 @@ class Data(SillyDB):
     _io: IO
     _pages: Pages
     _settings: SillySettings
-    _registry: SillyDiskRegistry
+    _registry: SillyRegistry
     _users: Users
     _stats: Stats
     _privileges: Privileges
@@ -171,7 +169,7 @@ class Data(SillyDB):
         super().__init__("sillygram", DECLARATIVE_BASE)
         self._pages = Pages(*pages)
         self._settings = settings
-        self._registry = SillyDiskRegistry(self)
-        self._global_registry = SillyPersonalRegistry(self._registry, None)
+        self._registry = SillyRegistry(self)
+        self._global_registry = SillyPersonalRegistry(self, self._registry, 0)
         self._stats = Stats(self)
         self._privileges = Privileges(self, self._settings.privileges)

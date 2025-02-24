@@ -92,7 +92,6 @@ root_controls_page = SillyPage(
             SillyNavigationButton(
                 SillyDefaults.Controls.MORE_BUTTON_TEXT,
                 SillyDefaults.Names.Pages.CUSTOM_CONTROLS,
-                not_found_message=SillyDefaults.Controls.ADDITIONAL_CONTROLS_PAGE_TEMPLATE_TEXT,
             ),
         ),
     ),

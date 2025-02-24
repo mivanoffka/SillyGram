@@ -71,6 +71,6 @@ class SillyUser:
     # endregion
 
     def __init__(self, manager: SillyManager, user_id: int, registry: SillyRegistry):
-        self._registry = SillyPersonalRegistry(registry, user_id)
+        self._registry = registry.get_personal(user_id)
         self._manager = manager
         self._id = user_id

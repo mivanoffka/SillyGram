@@ -136,7 +136,7 @@ class SillyManager:
             await self.show_page(user, SillyDefaults.Names.Pages.HOME)
             return
 
-        @SillyManager.privileged(page.privileged if page.privileged else None)
+        @SillyManager.privileged(page.privileged if page.privileged else False)
         async def _(manager: SillyManager, event: SillyEvent):
             format_args: Optional[Tuple[str, ...]] = None
 

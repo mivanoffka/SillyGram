@@ -4,7 +4,7 @@ from sillygram import (
     SillyActionButton,
     SillyManager,
     SillyEvent,
-    SillyRegistry
+    SillyRegistry,
 )
 from ..text import Text
 
@@ -16,7 +16,7 @@ async def _get_format_args(manager: SillyManager, event: SillyEvent):
         event.user.registry[KEY_NAME] = "1"
     else:
         event.user.registry[KEY_NAME] = str(int(str_value) + 1)
-    current_value = event.user.registry[KEY_NAME] 
+    current_value = event.user.registry[KEY_NAME]
     return (event.user.nickname, current_value)
 
 
