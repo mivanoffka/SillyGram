@@ -90,24 +90,28 @@ class Data(SillyDB):
                 user.language_code = aiogram_user.language_code
                 user.last_seen_at = datetime.now()
 
-            self._ensure_master(session, user)
             self._save_as_recent_user(session, user.id)
 
             id_to_return = user.id
             session.commit()
             return id_to_return
 
-    def _ensure_master(self, session, user: UserORM) -> None:
+    def _ensure_master(self, user_id: int):
         if not self._settings.master_users:
             return
 
-        for nickname_or_id in self._settings.master_users:
-            if user.nickname == nickname_or_id or user.id == nickname_or_id:
-                if user.privilege is None:
-                    self._users.set_privilege(user.id, self._privileges.master.name)
-                else:
-                    if user.privilege.name != self._privileges.master.name:
+        with self._get_session() as session:
+            user = session.query(UserORM).filter_by(id=user_id).first()
+
+            for nickname_or_id in self._settings.master_users:
+                if user.nickname == nickname_or_id or user.id == nickname_or_id:
+                    if user.privilege is None:
                         self._users.set_privilege(user.id, self._privileges.master.name)
+                    else:
+                        if user.privilege.name != self._privileges.master.name:
+                            self._users.set_privilege(
+                                user.id, self._privileges.master.name
+                            )
 
     def _save_as_recent_user(self, session, user_id: int):
         types = (HourlyUserORM, DailyUserORM, MonthlyUserORM, YearlyUserORM)

@@ -129,11 +129,8 @@ class Users(SillyDbSection):
 
     # region Common
 
-    def get(self, nickname_or_id: int | str) -> Optional[SillyUser]:
-        try:
-            return self._create_silly_user(self._validate(nickname_or_id))
-        except Exception:
-            return None
+    def get(self, nickname_or_id: int | str) -> SillyUser:
+        return self._create_silly_user(self._validate(nickname_or_id))
 
     def get_all(self) -> tuple[SillyUser, ...]:
         with self._get_session() as session:
