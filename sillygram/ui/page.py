@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, Tuple, Self
 
 from aiogram.types import InlineKeyboardMarkup
 from enum import Flag, auto
@@ -30,7 +30,7 @@ class SillyPage:
         START = auto()
         CUSTOM_CONTROLS = auto()
 
-        def __or__(self, other):
+        def __or__(self, other: Self):
             if (
                 self is SillyPage.Flags.CUSTOM_CONTROLS
                 or other is SillyPage.Flags.CUSTOM_CONTROLS
@@ -45,7 +45,7 @@ class SillyPage:
     _text: SillyText
     _name: str
     _buttons: Sequence[Sequence[SillyButton]]
-    _priveled: bool | str
+    _privileged: bool | str
 
     _flags: Flags
 

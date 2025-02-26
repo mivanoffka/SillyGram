@@ -73,7 +73,7 @@ class SillyManager:
             self, SillyEvent(user, *(f_args or ()), **(f_kwargs or {}))
         )
 
-        @SillyManager.privileged(page.privileged if page.privileged else None)
+        @SillyManager.privileged(page.privileged if page.privileged else False)
         async def _(manager: SillyManager, event: SillyEvent):
             if new_target_message:
                 await self._send_new_target_message(
