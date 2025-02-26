@@ -4,10 +4,11 @@ from datetime import datetime, timedelta
 from ..context import PATH
 from pathlib import Path
 import colorlog
+from enum import Enum
 
 
 class SillyLogger:
-    class Mode:
+    class Mode(Enum):
         ALL = 10
         DEBUG = 10
         INFO = 20
@@ -15,6 +16,9 @@ class SillyLogger:
         ERROR = 40
         CRITICAL = 50
         DISABLED = 9999
+
+        def __int__(self):
+            return self.value
 
     _file_logging_mode: Mode
     _console_logging_mode: Mode
@@ -47,10 +51,10 @@ class SillyLogger:
             return
 
         logger = logging.getLogger()
-        logger.setLevel(SillyLogger.Mode.ALL)
+        logger.setLevel(int(SillyLogger.Mode.ALL))
 
         file_handler = logging.FileHandler(current_log_file)
-        file_handler.setLevel(self._file_logging_mode)
+        file_handler.setLevel(int(self._file_logging_mode))
         file_handler.setFormatter(
             logging.Formatter(
                 "%(asctime)s - [%(levelname)s] - %(funcName)s - %(message)s"
@@ -59,7 +63,7 @@ class SillyLogger:
         logger.addHandler(file_handler)
 
         console_handler = logging.StreamHandler()
-        console_handler.setLevel(self._console_logging_mode)
+        console_handler.setLevel(int(self._console_logging_mode))
 
         color_formatter = colorlog.ColoredFormatter(
             "%(log_color)s%(asctime)s - [%(levelname)s] - %(funcName)s - %(message)s",
