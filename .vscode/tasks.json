@@ -7,7 +7,7 @@
             "command": "${command:osPlatform}",
             "args": [],
             "windows": {
-                 "command": "${workspaceFolder}\\.venv/Scripts\\python.exe -m sample.main"
+                "command": "${workspaceFolder}\\.venv/Scripts\\python.exe -m sample.main"
             },
             "linux": {
                 "command": "${workspaceFolder}/.venv/bin/python -m sample.main"
@@ -40,6 +40,6 @@
                 "isDefault": true
             },
             "problemMatcher": []
-        }        
+        }
     ]
 }

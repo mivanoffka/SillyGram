@@ -1,13 +1,14 @@
 import asyncio
-import logging
 from datetime import time, timedelta
-from typing import Optional, Sequence, Callable, Awaitable, Any
+from typing import List, Optional, Sequence, Any
 
 from aiogram import Bot as AiogramBot, Dispatcher, F
 from aiogram.client.default import DefaultBotProperties
 from aiogram.filters import Command
 from aiogram.types import Message, CallbackQuery, InaccessibleMessage
 from aiogram.methods import DeleteWebhook
+
+from .ui.buttons.button import SillyButton
 
 from .context import PATH
 
@@ -120,7 +121,7 @@ class SillyBot:
         self._dispatcher.message.register(self._on_other_input)
 
         pages = (self._data.pages.get(name) for name in self._data.pages.names)
-        buttons = []
+        buttons: List[SillyButton] = []
         for page in pages:
             if page is None:
                 raise KeyError("Page not found")

@@ -49,9 +49,7 @@ class SillyPage:
 
     _flags: Flags
 
-    _get_format_args: Callable[
-        [SillyManager, SillyEvent], Awaitable[Optional[Tuple[str, ...]]]
-    ]
+    _get_format_args: Callable[[SillyManager, SillyEvent], Awaitable[Tuple[str, ...]]]
 
     @property
     def text(self) -> SillyText:
@@ -81,9 +79,12 @@ class SillyPage:
     def privileged(self) -> str | bool:
         return self._privileged
 
-    async def get_format_args(self, manager: SillyManager, event: SillyEvent):
+    async def get_format_args(
+        self, manager: SillyManager, event: SillyEvent
+    ) -> Tuple[str, ...]:
         args = event.args
         kwargs = event.kwargs.values()
+
         if len(args) > 0 or len(kwargs) > 0:
             return (
                 *args,
@@ -106,8 +107,8 @@ class SillyPage:
         flags: Flags = Flags.NO,
     ):
 
-        buttons_edited = []
-        row = []
+        buttons_edited: Sequence[Sequence[SillyButton]] = []
+        row: Sequence[SillyButton] = []
 
         if isinstance(buttons, SillyButton):
             buttons_edited = [[buttons]]

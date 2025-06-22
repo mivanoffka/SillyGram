@@ -53,14 +53,13 @@ class _Broadcaster:
         self._processed_users_count = 0
         self._should_stop = False
 
-
         for user in users:
             if self._should_stop:
                 break
 
             try:
                 await manager.show_notice(user, SillyText(text))
-            except Exception as e:  # noqa: F841
+            except Exception:  # noqa: F841
                 ...
 
             self._processed_users_count += 1
@@ -73,5 +72,6 @@ class _Broadcaster:
 
     async def stop(self) -> None:
         self._should_stop = True
+
 
 broadcaster = _Broadcaster()

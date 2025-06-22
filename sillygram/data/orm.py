@@ -26,8 +26,8 @@ class UserORM(DECLARATIVE_BASE):
     registered_at: Mapped[datetime | None] = mapped_column(nullable=True)
     last_seen_at: Mapped[datetime | None] = mapped_column(nullable=True)
 
-    privilege: Mapped["PrivilegeORM"] = relationship(
-        "PrivilegeORM", back_populates="users"
+    privilege: Mapped["PrivilegeORM"] | None = relationship(
+        "PrivilegeORM", back_populates="users", nullable=True
     )
 
     local_values: Mapped[list["RegistryValueORM"]] = relationship(
@@ -66,7 +66,7 @@ class BanORM(DECLARATIVE_BASE):
     __tablename__ = "bans"
 
     id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
-    expires: Mapped[datetime | None] = mapped_column(nullable=True)
+    expires: Mapped[datetime] = mapped_column(nullable=False)
 
 
 class RegistryValueORM(DECLARATIVE_BASE):

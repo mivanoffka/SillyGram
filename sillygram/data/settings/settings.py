@@ -4,8 +4,6 @@ from typing import Optional, Sequence, Callable, Awaitable, TYPE_CHECKING, Tuple
 
 from ..logger import SillyLogger
 
-from .defaults import SillyDefaults
-
 if TYPE_CHECKING:
     from ...manager import SillyManager
     from ...activities import SillyRegularActivity

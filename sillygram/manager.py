@@ -14,7 +14,7 @@ from .text import SillyText
 from .data import SillyDefaults, Data
 from .user import SillyUser
 from .events import SillyEvent
-from typing import Any, Awaitable, Callable, Dict, Optional, Tuple
+from typing import Any, Awaitable, Callable, Dict, List, Optional, Tuple
 
 TIME_DELTA = 0.2
 MAX_TIME = 120
@@ -55,9 +55,9 @@ class SillyManager:
         self,
         user: SillyUser,
         page_name: Any,
-        new_target_message=False,
+        new_target_message: bool = False,
         not_found_message: Optional[SillyText] = None,
-        f_args: Optional[Tuple] = None,
+        f_args: Optional[Tuple[Any, ...]] = None,
         f_kwargs: Optional[Dict[str, Any]] = None,
     ):
         page = self._data.pages.get(page_name)
@@ -101,7 +101,7 @@ class SillyManager:
         self,
         user: SillyUser,
         not_found_message: Optional[SillyText] = None,
-        f_args: Optional[Tuple] = None,
+        f_args: Optional[Tuple[Any]] = None,
         f_kwargs: Optional[Dict[str, Any]] = None,
     ):
         await self.show_page(
@@ -116,7 +116,7 @@ class SillyManager:
         self,
         user: SillyUser,
         not_found_message: Optional[SillyText] = None,
-        f_args: Optional[Tuple] = None,
+        f_args: Optional[Tuple[str, ...]] = None,
         f_kwargs: Optional[Dict[str, Any]] = None,
     ):
         page: Optional[SillyPage] = None
@@ -172,9 +172,11 @@ class SillyManager:
         *dialog_options: SillyText,
         cancelable: bool = False,
     ) -> int | None:
-        buttons = []
-        row = []
+        buttons: List[List[InlineKeyboardButton]] = []
+        row: List[InlineKeyboardButton] = []
+
         c = 0
+
         for i, text in enumerate(dialog_options):
             c += 1
             row.append(
@@ -399,7 +401,7 @@ class SillyManager:
         await self._prevent_restore(user)
 
     async def _send_separation_messages(self, user: SillyUser):
-        for i in range(0, 5):
+        for _ in range(0, 5):
             await self._aiogram_bot.send_message(
                 user.id,
                 text=self._data.settings.labels.emoji_separator.localize(
@@ -415,7 +417,7 @@ class SillyManager:
         if target_message_id is not None:
             try:
                 await self._aiogram_bot.delete_message(user.id, target_message_id)
-            except Exception as e:  # noqa: F841
+            except Exception as _:  # noqa: F841
                 ...
 
         await self._send_new_target_message(user, text, keyboard)
@@ -427,7 +429,7 @@ class SillyManager:
 
         try:
             await self._aiogram_bot.delete_message(user.id, target_message_id)
-        except Exception as e:  # noqa: F841
+        except Exception as _:  # noqa: F841
             pass
 
     # endregion

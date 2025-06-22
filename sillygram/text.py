@@ -20,25 +20,31 @@ class SillyText:
         elif len(args) < placeholders_count:
             for _ in range(placeholders_count - len(args)):
                 args.append(self._undefined_content)
-            logging.warning(f"Not enough arguments passed to '{text_to_format}'. Missing will be filled with '{self._undefined_content}'.")
+            logging.warning(
+                f"Not enough arguments passed to '{text_to_format}'. Missing will be filled with '{self._undefined_content}'."
+            )
 
         return args
 
     def format(self, *args: object) -> "SillyText":
-        if args is None or len(args) == 0:
+        if len(args) == 0:
             return SillyText(self._text)
 
         _args: List[str] = [str(arg) for arg in args]
 
         if isinstance(self._text, str):
-            return SillyText(self._text.format(*self._fix_args_count(_args, self._text)))
+            return SillyText(
+                self._text.format(*self._fix_args_count(_args, self._text))
+            )
 
         if isinstance(self._text, dict):
             text = {}
 
             for key in self._text.keys():
                 if isinstance(key, str) or isinstance(key, Sequence):
-                    text[key] = self._text[key].format(*self._fix_args_count(_args, self._text[key]))
+                    text[key] = self._text[key].format(
+                        *self._fix_args_count(_args, self._text[key])
+                    )
 
             return SillyText(text)
 

@@ -57,7 +57,7 @@ class SillyDefaults:
         NEGATIVE_PRIVILEGE_INFO = SillyText(
             "User {} currently does not possess any privileges.\n\nWould you like to change it?"
         )
-        PRIVEGELE_PROMPT = SillyText("What privilege status should be given to {}?")
+        PRIVILEGE_PROMPT = SillyText("What privilege status should be given to {}?")
         DEFAULT_PRIVILEGE = SillyText("No privileges")
         PRIVILEGE_POSITIVE_SETTING_SUCCESS = SillyText("User {} is now {}")
         PRIVILEGE_NEGATIVE_SETTING_SUCCESS = SillyText(
@@ -129,7 +129,6 @@ class SillyDefaults:
         class BannedPage:
             NAME = _to_default_name("BANNED", PAGE_TYPE_NAME)
             TEXT = SillyText("Banned page")
-            LIST_MESSAGE_TEMPLATE = SillyText("SillyText(Banned users list:\n\n{}")
 
             BAN_USER_ID_INPUT_PROMPT = SillyText(
                 "Please enter the ID of the user you want to ban."
@@ -229,3 +228,4 @@ class SillyDefaults:
             CUSTOM_CONTROLS_FLAG_INCOMPATIBLE = (
                 "CUSTOM_CONTROLS flag is incompatible with any others"
             )
+            NOT_FOUND_TEMPLATE = "{} not found"

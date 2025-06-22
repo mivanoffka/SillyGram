@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING, Optional, Sequence, Tuple
 
+from sqlalchemy.orm import Session
+
 from .registry import SillyPersonalRegistry, SillyRegistry
 
 if TYPE_CHECKING:
@@ -68,7 +70,7 @@ class Data(SillyDB):
         return self._privileges
 
     def indicate(self, aiogram_user: AiogramUser) -> int:
-        with self._get_session() as session:
+        with self.get_session() as session:
             user = session.query(UserORM).filter_by(id=aiogram_user.id).first()
             if not user:
                 user = UserORM(
@@ -100,8 +102,11 @@ class Data(SillyDB):
         if not self._settings.master_users:
             return
 
-        with self._get_session() as session:
+        with self.get_session() as session:
             user = session.query(UserORM).filter_by(id=user_id).first()
+
+            if user is None:
+                return
 
             for nickname_or_id in self._settings.master_users:
                 if user.nickname == nickname_or_id or user.id == nickname_or_id:
@@ -113,40 +118,52 @@ class Data(SillyDB):
                                 user.id, self._privileges.master.name
                             )
 
-    def _save_as_recent_user(self, session, user_id: int):
+    def _save_as_recent_user(self, session: Session, user_id: int):
         types = (HourlyUserORM, DailyUserORM, MonthlyUserORM, YearlyUserORM)
-        for user_orm in types:
-            recent_user = session.query(user_orm).filter_by(id=user_id).first()
+
+        for type in types:
+            recent_user = session.query(type).filter_by(id=user_id).first()
+
             if not recent_user:
-                recent_user = user_orm(id=user_id)
+                recent_user = type(id=user_id)
                 session.add(recent_user)
 
     def get_target_message_id(self, user_id: int) -> int | None:
-        with self._get_session() as session:
-            return (
-                session.query(UserORM).filter_by(id=user_id).first().target_message_id
-            )
+        with self.get_session() as session:
+            user = session.query(UserORM).filter_by(id=user_id).first()
+
+            return user.target_message_id if user else None
 
     def set_target_message_id(self, user_id: int, message_id: int):
-        with self._get_session() as session:
+        with self.get_session() as session:
             user = session.query(UserORM).filter_by(id=user_id).first()
+
+            if user is None:
+                return
+
             user.target_message_id = message_id
+
             session.commit()
 
     def get_current_page_name(self, user_id: int) -> str | None:
-        with self._get_session() as session:
-            return (
-                session.query(UserORM).filter_by(id=user_id).first().current_page_name
-            )
+        with self.get_session() as session:
+            user = session.query(UserORM).filter_by(id=user_id).first()
+
+            return user.current_page_name if user else None
 
     def set_current_page_name(self, user_id: int, page_name: str):
-        with self._get_session() as session:
+        with self.get_session() as session:
             user = session.query(UserORM).filter_by(id=user_id).first()
+
+            if user is None:
+                return
+
             user.current_page_name = page_name
+
             session.commit()
 
     def set_format_args(self, user_id: int, format_args: Optional[Sequence[str]]):
-        with self._get_session() as session:
+        with self.get_session() as session:
             existing_args = session.query(FormatArgORM).filter_by(user_id=user_id).all()
             for arg in existing_args:
                 session.delete(arg)
@@ -157,7 +174,7 @@ class Data(SillyDB):
             session.commit()
 
     def get_format_args(self, user_id: int) -> Tuple[str, ...]:
-        with self._get_session() as session:
+        with self.get_session() as session:
             return tuple(
                 arg.arg
                 for arg in session.query(FormatArgORM).filter_by(user_id=user_id).all()
@@ -170,7 +187,7 @@ class Data(SillyDB):
         self._io = IO(manager)
 
     def __init__(self, settings: SillySettings, *pages: SillyPage):
-        super().__init__("sillygram", DECLARATIVE_BASE)
+        super().__init__("sillygram", DECLARATIVE_BASE)  # type: ignore
         self._pages = Pages(*pages)
         self._settings = settings
         self._registry = SillyRegistry(self)

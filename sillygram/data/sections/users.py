@@ -24,7 +24,7 @@ class Users(SillyDbSection):
 
     # region System
 
-    def _create_silly_user(self, user_id: int):
+    def _get_or_create_entity(self, user_id: int):
         with self._get_session() as session:
             user = session.query(UserORM).filter_by(id=user_id).first()
             if not user:
@@ -33,94 +33,95 @@ class Users(SillyDbSection):
                 user_id=user_id, manager=self._manager, registry=self._registry
             )
 
-    def _validate(self, nickname_or_id: int | str) -> int:
+    def _validate_and_get_id(self, nickname_or_id: int | str) -> int:
         with self._get_session() as session:
-            id_to_return: Optional[int] = None
-            if isinstance(nickname_or_id, int):
-                id_to_return = (
-                    session.query(UserORM).filter_by(id=nickname_or_id).first().id
-                )
-            elif isinstance(nickname_or_id, str):
-                id_to_return = (
-                    session.query(UserORM).filter_by(nickname=nickname_or_id).first().id
-                )
-            else:
-                raise TypeError()
 
-            if not id_to_return:
+            kwargs = (
+                {"nickname": nickname_or_id}
+                if isinstance(nickname_or_id, str)
+                else {"id": nickname_or_id}
+            )
+
+            user = session.query(UserORM).filter_by(**kwargs).first()
+
+            if not user:
                 raise KeyError()
 
-            return id_to_return
+            return user.id
 
     # endregion
 
     # region Attributes
 
-    def get_nick_name(self, nickname_or_id: int | str) -> str:
+    def get_nick_name(self, nickname_or_id: int | str) -> str | None:
         with self._get_session() as session:
-            return (
+            user = (
                 session.query(UserORM)
-                .filter_by(id=self._validate(nickname_or_id))
+                .filter_by(id=self._validate_and_get_id(nickname_or_id))
                 .first()
-                .nickname
             )
 
-    def get_first_name(self, nickname_or_id: int | str) -> str:
+            return user.nickname if user else None
+
+    def get_first_name(self, nickname_or_id: int | str) -> Optional[str]:
         with self._get_session() as session:
-            return (
+            user = (
                 session.query(UserORM)
-                .filter_by(id=self._validate(nickname_or_id))
+                .filter_by(id=self._validate_and_get_id(nickname_or_id))
                 .first()
-                .first_name
+            )
+            return user.first_name if user else None
+
+    def get_last_name(self, nickname_or_id: int | str) -> Optional[str]:
+        with self._get_session() as session:
+            user = (
+                session.query(UserORM)
+                .filter_by(id=self._validate_and_get_id(nickname_or_id))
+                .first()
+            )
+            return user.last_name if user else None
+
+    def get_registration_date(self, nickname_or_id: int | str) -> Optional[datetime]:
+        with self._get_session() as session:
+            user = (
+                session.query(UserORM)
+                .filter_by(id=self._validate_and_get_id(nickname_or_id))
+                .first()
+            )
+            return user.registered_at if user else None
+
+    def get_last_visit_date(self, nickname_or_id: int | str) -> Optional[datetime]:
+        with self._get_session() as session:
+            user = (
+                session.query(UserORM)
+                .filter_by(id=self._validate_and_get_id(nickname_or_id))
+                .first()
             )
 
-    def get_last_name(self, nickname_or_id: int | str) -> str:
-        with self._get_session() as session:
-            return (
-                session.query(UserORM)
-                .filter_by(id=self._validate(nickname_or_id))
-                .first()
-                .last_name
-            )
+            return user.last_seen_at if user else None
 
-    def get_registration_date(self, nickname_or_id: int | str) -> datetime:
+    def get_language_code(self, nickname_or_id: int | str) -> Optional[str]:
         with self._get_session() as session:
-            return (
+            user = (
                 session.query(UserORM)
-                .filter_by(id=self._validate(nickname_or_id))
+                .filter_by(id=self._validate_and_get_id(nickname_or_id))
                 .first()
-                .registered_at
             )
-
-    def get_last_visit_date(self, nickname_or_id: int | str) -> datetime:
-        with self._get_session() as session:
-            return (
-                session.query(UserORM)
-                .filter_by(id=self._validate(nickname_or_id))
-                .first()
-                .last_visited
-            )
-
-    def get_language_code(self, nickname_or_id: int | str) -> str:
-        with self._get_session() as session:
-            return (
-                session.query(UserORM)
-                .filter_by(id=self._validate(nickname_or_id))
-                .first()
-                .language_code
-            )
+            return user.language_code if user else None
 
     def is_banned(self, nickname_or_id: int | str) -> bool:
         with self._get_session() as session:
             return bool(
-                session.query(BanORM).filter_by(id=self._validate(nickname_or_id)).all()
+                session.query(BanORM)
+                .filter_by(id=self._validate_and_get_id(nickname_or_id))
+                .all()
             )
 
     def get_ban_expiration_date(self, nickname_or_id: int | str) -> Optional[datetime]:
         with self._get_session() as session:
             ban = (
                 session.query(BanORM)
-                .filter_by(id=self._validate(nickname_or_id))
+                .filter_by(id=self._validate_and_get_id(nickname_or_id))
                 .first()
             )
             return ban.expires if ban else None
@@ -130,12 +131,12 @@ class Users(SillyDbSection):
     # region Common
 
     def get(self, nickname_or_id: int | str) -> SillyUser:
-        return self._create_silly_user(self._validate(nickname_or_id))
+        return self._get_or_create_entity(self._validate_and_get_id(nickname_or_id))
 
     def get_all(self) -> tuple[SillyUser, ...]:
         with self._get_session() as session:
             return tuple(
-                self._create_silly_user(user.id)
+                self._get_or_create_entity(user.id)
                 for user in session.query(UserORM).all()
             )
 
@@ -145,11 +146,16 @@ class Users(SillyDbSection):
 
     def get_privilege_name(self, nickname_or_id: int | str) -> Optional[str]:
         with self._get_session() as session:
-            privilege = (
+            user = (
                 session.query(UserORM)
-                .filter_by(id=self._validate(nickname_or_id))
+                .filter_by(id=self._validate_and_get_id(nickname_or_id))
                 .first()
-            ).privilege
+            )
+
+            if user is None:
+                return None
+
+            privilege = user.privilege
 
             if privilege:
                 return privilege.name
@@ -159,15 +165,23 @@ class Users(SillyDbSection):
     def set_privilege(
         self, nickname_or_id: int | str, privilege_name: Optional[str] = None
     ):
-        user_id = self._validate(nickname_or_id)
+        user_id = self._validate_and_get_id(nickname_or_id)
         with self._get_session() as session:
             user = session.query(UserORM).filter_by(id=user_id).first()
+
+            if user is None:
+                return
+
             if privilege_name is None:
                 user.privilege_id = None
                 return
             privilege = (
                 session.query(PrivilegeORM).filter_by(name=privilege_name).first()
             )
+
+            if privilege is None:
+                return
+
             user.privilege_id = privilege.id
             session.commit()
 
@@ -178,15 +192,17 @@ class Users(SillyDbSection):
     def get_all_banned(self) -> tuple[SillyUser, ...]:
         with self._get_session() as session:
             return tuple(
-                self._create_silly_user(user.id) for user in session.query(BanORM).all()
+                self._get_or_create_entity(user.id)
+                for user in session.query(BanORM).all()
             )
 
     def ban(self, nickname_or_id: int | str, duration: timedelta):
-        user_id = self._validate(nickname_or_id)
+        user_id = self._validate_and_get_id(nickname_or_id)
         expires = datetime.now() + duration
 
         with self._get_session() as session:
             ban = session.query(BanORM).filter_by(id=user_id).first()
+
             if not ban:
                 ban = BanORM(id=user_id, expires=expires)
                 session.add(ban)
@@ -197,7 +213,7 @@ class Users(SillyDbSection):
             return expires
 
     def unban(self, nickname_or_id: int | str):
-        user_id = self._validate(nickname_or_id)
+        user_id = self._validate_and_get_id(nickname_or_id)
 
         with self._get_session() as session:
             ban = session.query(BanORM).filter_by(id=user_id).first()

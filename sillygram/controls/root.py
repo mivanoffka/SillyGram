@@ -42,7 +42,7 @@ async def _on_privileges_button_clicked(manager: SillyManager, event: SillyEvent
 
     privilege_id = await manager.show_dialog(
         event.user,
-        SillyDefaults.Controls.PRIVEGELE_PROMPT.format(user_to_check.nickname_or_id),
+        SillyDefaults.Controls.PRIVILEGE_PROMPT.format(user_to_check.nickname_or_id),
         *privilege_options
     )
 

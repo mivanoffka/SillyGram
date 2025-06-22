@@ -98,9 +98,7 @@ class Stats(SillyDbSection):
             noun_label = _STATS_NOUN_LABELS[pair[0]]
             with self._get_session() as session:
                 last_unit = (
-                session.query(pair[0])
-                .order_by(pair[0].ends_at.desc())
-                .first()
+                    session.query(pair[0]).order_by(pair[0].ends_at.desc()).first()
                 )
                 delta = total_users_count
                 if last_unit:

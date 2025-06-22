@@ -1,7 +1,5 @@
-from enum import Enum
 import logging
-from typing import Dict, Any, Tuple, Optional
-from ..settings import SillyDefaults
+from typing import Dict, Any, List, Tuple, Optional
 from ...ui import SillyPage
 
 
@@ -19,8 +17,8 @@ class Pages:
         return None
 
     @staticmethod
-    def _pages_to_dict(*pages: SillyPage) -> Dict[Any, SillyPage]:
-        pages_dict = {}
+    def _pages_to_dict(*pages: SillyPage) -> Dict[str, SillyPage]:
+        pages_dict: Dict[str, SillyPage] = {}
         for page in pages:
             if page.name in pages_dict.keys():
                 raise ValueError(f"Page named {page.name} already exists")
@@ -31,7 +29,7 @@ class Pages:
         return pages_dict
 
     def _setup_specials(self):
-        start_pages = []
+        start_pages: List[SillyPage] = []
         for page in self._pages.values():
             if page.flags & SillyPage.Flags.START:
                 start_pages.append(page)
@@ -40,11 +38,11 @@ class Pages:
             logging.warning("There must be a START page.")
         else:
             if len(start_pages) > 1:
-                logging.warning("There should beonly one START page.")
+                logging.warning("There should be only one START page.")
 
             self._pages[SillyPage.Pointers.START] = start_pages[0]
 
-        home_pages = []
+        home_pages: List[SillyPage] = []
         for page in self._pages.values():
             if page.flags & SillyPage.Flags.HOME:
                 home_pages.append(page)
@@ -56,7 +54,7 @@ class Pages:
                 logging.warning("There should be only one HOME page.")
             self._pages[SillyPage.Pointers.HOME] = home_pages[0]
 
-        custom_controls_pages = []
+        custom_controls_pages: List[SillyPage] = []
         for page in self._pages.values():
             if page.flags & SillyPage.Flags.CUSTOM_CONTROLS:
                 custom_controls_pages.append(page)
